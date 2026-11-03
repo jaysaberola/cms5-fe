@@ -1,0 +1,558 @@
+.wrap {
+  width: 100%;
+}
+
+.wrapEmbedded {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid #d7dee8;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.wrapEmbedded .hero {
+  padding: 2.75rem 1rem 2.5rem;
+}
+
+.wrapEmbedded .resultsPanel {
+  padding: 1.5rem 1rem 2rem;
+}
+
+.wrapEmbedded .resultsInner {
+  max-width: none;
+}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+
+.hero {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  padding: 3.5rem 1rem 3rem;
+}
+
+.heroInner {
+  max-width: 56rem;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.subtitle {
+  margin: 0 0 2rem;
+  max-width: 42rem;
+  font-size: clamp(0.95rem, 1.5vw, 1.0625rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.searchForm {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 9999px;
+  padding: 0.35rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  margin-bottom: 1.25rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  background: transparent;
+  padding: 0.85rem 9.5rem 0.85rem 3rem;
+  border: 0;
+  border-radius: 9999px;
+  color: #0f172a;
+  font-size: 1rem;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.searchBtn {
+  position: absolute;
+  right: 0.35rem;
+  border: 0;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.7rem 1.35rem;
+  border-radius: 9999px;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.searchBtn:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.searchBtnShort {
+  display: none;
+}
+
+.heroError {
+  margin: -0.5rem 0 1rem;
+  color: #fecaca;
+  font-size: 0.875rem;
+}
+
+.tldRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 48rem;
+}
+
+.tldRowExtra {
+  margin-top: 0.5rem;
+}
+
+.tldPill {
+  border: 0;
+  background: #ffffff;
+  color: #1d4ed8;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tldPillActive {
+  background: #0f2f86;
+  color: #ffffff;
+}
+
+.tldMore {
+  border: 1px dashed rgba(255, 255, 255, 0.55);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Results panel ─────────────────────────────────────────── */
+
+.resultsPanel {
+  background: #f3f5f8;
+  padding: 2rem 1rem 2.5rem;
+}
+
+.resultsInner {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.secondarySearch {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.secondaryInput {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 1rem;
+  border: 1px solid #d7dee8;
+  border-radius: 4px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 0.9375rem;
+  outline: none;
+}
+
+.secondaryBtn {
+  height: 46px;
+  padding: 0 1.25rem;
+  border: 1px solid #1d4ed8;
+  border-radius: 4px;
+  background: #fff;
+  color: #1d4ed8;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.secondaryBtn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.resultsError {
+  margin: 0 0 1rem;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.availabilityBanner {
+  padding: 0.85rem 1rem;
+  border-radius: 2px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.availabilityBannerTaken,
+.availabilityBannerUnknown {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.availabilityBannerAvailable {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.loadingState {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+/* ── TLD grid cards ────────────────────────────────────────── */
+
+.tldGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.tldCard {
+  position: relative;
+  background: #fff;
+  border: 1px solid #d7dee8;
+  border-radius: 4px;
+  padding: 1rem 0.75rem 0.85rem;
+  text-align: center;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.newBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.45rem;
+  border-bottom-left-radius: 4px;
+}
+
+.tldCardExtension {
+  color: #2563eb;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+
+.tldCardPrice {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-bottom: auto;
+  padding-bottom: 0.75rem;
+}
+
+.takenBtn,
+.addBtn {
+  width: 100%;
+  border: 0;
+  border-radius: 3px;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.takenBtn {
+  background: #b8c0cc;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+.addBtn {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* ── Tabbed results table ──────────────────────────────────── */
+
+.resultsTable {
+  background: #fff;
+  border: 1px solid #d7dee8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tabRow {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabBtn {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.9rem 0 0.75rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tabBtnActive {
+  color: #1d4ed8;
+  border-bottom-color: #2563eb;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.column {
+  min-width: 0;
+}
+
+.column + .column {
+  border-left: 1px solid #e2e8f0;
+}
+
+.columnTitle {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fafbfd;
+}
+
+.singleColumn {
+  padding: 0.5rem 0;
+}
+
+.listGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.listRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.listRow:last-child {
+  border-bottom: 0;
+}
+
+.listRowDomain {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.listRowDomain strong {
+  font-size: 0.875rem;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.premiumBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.listRowPrice {
+  font-size: 0.75rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.listRow .takenBtn,
+.listRow .addBtn {
+  width: auto;
+  min-width: 96px;
+  padding: 0.45rem 0.65rem;
+}
+
+.emptyTab {
+  margin: 0;
+  padding: 1.25rem 1rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.note {
+  margin: 1rem 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .tldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .column + .column {
+    border-left: 0;
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero {
+    padding: 1.75rem 0.85rem 1.5rem;
+  }
+
+  .wrapEmbedded .hero {
+    padding: 1.5rem 0.85rem 1.35rem;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  .title {
+    margin-bottom: 0.5rem;
+    font-size: 1.45rem;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    margin-bottom: 1rem;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .searchForm {
+    flex-wrap: nowrap;
+    border-radius: 9999px;
+    padding: 0.25rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .searchIcon {
+    left: 0.75rem;
+  }
+
+  .searchInput {
+    padding: 0.7rem 5.6rem 0.7rem 2.4rem;
+    font-size: 16px;
+  }
+
+  .searchBtn {
+    position: absolute;
+    right: 0.25rem;
+    width: auto;
+    margin-top: 0;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.75rem;
+  }
+
+  .searchBtnFull {
+    display: none;
+  }
+
+  .searchBtnShort {
+    display: inline;
+  }
+
+  .tldRow {
+    gap: 0.35rem;
+  }
+
+  .tldPill,
+  .tldMore {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .secondarySearch {
+    flex-direction: column;
+  }
+
+  .secondaryBtn {
+    width: 100%;
+  }
+
+  .listRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .listRow .takenBtn,
+  .listRow .addBtn {
+    width: 100%;
+  }
+}

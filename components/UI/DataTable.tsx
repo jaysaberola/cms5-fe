@@ -1,0 +1,522 @@
+import { ReactNode, useMemo, useState, useEffect, useCallback } from "react";
+import type { CSSProperties } from "react";
+import { DEFAULT_CMS_TABLE_PAGE_SIZE } from "@/components/Modules/moduleTableUi";
+import { defaultAdminRowId } from "@/lib/useRowSelection";
+
+type SortOrder = "asc" | "desc";
+
+export interface Column<T> {
+  key: string;
+  header: ReactNode;
+  render?: (row: T) => ReactNode;
+  thClassName?: string;
+  tdClassName?: string;
+  width?: number | string;
+  minWidth?: number | string;
+  maxWidth?: number | string;
+  thStyle?: CSSProperties;
+  tdStyle?: CSSProperties;
+  sortable?: boolean;
+  sortField?: string;
+  sortLabel?: string;
+  defaultSortOrder?: SortOrder;
+}
+
+interface DataTableProps<T> {
+  columns: Column<T>[];
+  data: T[];
+  loading?: boolean;
+  wrapperClassName?: string;
+  wrapperStyle?: CSSProperties;
+  tableClassName?: string;
+  tableStyle?: CSSProperties;
+  fixedLayout?: boolean;
+  stickyHeader?: boolean;
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  itemsPerPage?: number;
+  onItemsPerPageChange?: (n: number) => void;
+  sortBy?: string;
+  sortOrder?: SortOrder;
+  onSortChange?: (sortBy: string, sortOrder: SortOrder) => void;
+  actions?: ReactNode;
+  entriesPlacement?: "bottom" | "top" | "none";
+  /** Multi-select checkboxes before the first data column (admin tables). Default: true */
+  selectable?: boolean;
+  getRowId?: (row: T, index: number) => string | number;
+  selectedIds?: string[];
+  onSelectionChange?: (ids: string[]) => void;
+}
+
+function buildPageList(current: number, total: number): (number | "ellipsis")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "ellipsis")[] = [1];
+  if (current > 3) pages.push("ellipsis");
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p += 1) {
+    pages.push(p);
+  }
+  if (current < total - 2) pages.push("ellipsis");
+  pages.push(total);
+  return pages;
+}
+
+function cmsColumnWidth(key: string, explicit?: number | string): string | undefined {
+  if (explicit != null) return typeof explicit === "number" ? `${explicit}px` : explicit;
+  switch (key) {
+    case "select":
+      return "48px";
+    case "title":
+    case "name":
+      return "24%";
+    case "created_at":
+    case "updated_at":
+    case "lastModified":
+    case "modified":
+      return "12%";
+    case "options":
+    case "action":
+    case "actions":
+      return "11.5rem";
+    default:
+      return undefined;
+  }
+}
+
+export default function DataTable<T>({
+  columns,
+  data,
+  loading = false,
+  currentPage,
+  totalPages,
+  onPageChange,
+  itemsPerPage = DEFAULT_CMS_TABLE_PAGE_SIZE,
+  onItemsPerPageChange,
+  sortBy,
+  sortOrder,
+  onSortChange,
+  wrapperClassName,
+  wrapperStyle,
+  tableClassName,
+  tableStyle,
+  fixedLayout = false,
+  stickyHeader = false,
+  actions,
+  entriesPlacement = "bottom",
+  selectable = true,
+  getRowId,
+  selectedIds: controlledSelectedIds,
+  onSelectionChange,
+}: DataTableProps<T>) {
+  const isServerPaginated =
+    typeof currentPage === "number" &&
+    typeof totalPages === "number" &&
+    typeof onPageChange === "function";
+
+  const sortableColumns = useMemo(() => columns.filter((c) => c.sortable), [columns]);
+  const newestField = sortableColumns.find((col) =>
+    /created|updated|modified|date|issued/i.test(String(col.sortField ?? col.key)),
+  );
+  const firstSortableField =
+    newestField?.sortField ?? newestField?.key ?? sortableColumns[0]?.sortField ?? sortableColumns[0]?.key;
+  const [localSortBy, setLocalSortBy] = useState<string | undefined>(firstSortableField);
+  const [localSortOrder, setLocalSortOrder] = useState<SortOrder>(newestField ? "desc" : "asc");
+  const [internalSelectedIds, setInternalSelectedIds] = useState<string[]>([]);
+
+  const effectiveSortBy = onSortChange ? sortBy : (sortBy ?? localSortBy);
+  const effectiveSortOrder: SortOrder = onSortChange ? (sortOrder ?? "asc") : (sortOrder ?? localSortOrder);
+  const selectedIds = controlledSelectedIds ?? internalSelectedIds;
+
+  const applySortChange = (nextBy: string, nextOrder: SortOrder) => {
+    if (onSortChange) {
+      onSortChange(nextBy, nextOrder);
+      return;
+    }
+    setLocalSortBy(nextBy);
+    setLocalSortOrder(nextOrder);
+  };
+
+  const getHeaderLabel = (col: Column<T>) => {
+    if (col.sortLabel) return col.sortLabel;
+    if (typeof col.header === "string") return col.header;
+    return col.key;
+  };
+
+  const renderSortableHeader = (col: Column<T>) => {
+    const field = col.sortField ?? col.key;
+    const label = getHeaderLabel(col);
+    const active = (effectiveSortBy ?? "") === field;
+    const order = active ? effectiveSortOrder : undefined;
+    const iconClass = !active
+      ? "fas fa-sort"
+      : order === "asc"
+        ? "fas fa-sort-up"
+        : "fas fa-sort-down";
+    const defaultOrder: SortOrder = col.defaultSortOrder ?? "asc";
+
+    return (
+      <button
+        type="button"
+        className={`dt-sort-btn${active ? " is-active" : ""}`}
+        onClick={() => {
+          if (active) {
+            applySortChange(field, effectiveSortOrder === "asc" ? "desc" : "asc");
+            return;
+          }
+          applySortChange(field, defaultOrder);
+        }}
+        aria-label={`Sort by ${label}`}
+        title={`Sort by ${label}`}
+      >
+        <span>{col.header}</span>
+        <i className={iconClass} />
+      </button>
+    );
+  };
+
+  const sortedData = useMemo(() => {
+    if (onSortChange) return data;
+    if (!effectiveSortBy) return data;
+    const col = columns.find((c) => (c.sortField ?? c.key) === effectiveSortBy);
+    if (!col || !col.sortable) return data;
+    const direction = effectiveSortOrder === "asc" ? 1 : -1;
+    const field = effectiveSortBy;
+    const valueOf = (row: any) => row?.[field];
+    const toComparable = (v: any) => {
+      if (v == null) return "";
+      if (typeof v === "number") return v;
+      if (typeof v === "boolean") return v ? 1 : 0;
+      const asString = String(v);
+      const ms = Date.parse(asString);
+      if (Number.isFinite(ms)) return ms;
+      return asString.toLowerCase();
+    };
+    return data
+      .map((row, idx) => ({ row, idx }))
+      .sort((a, b) => {
+        const av = toComparable(valueOf(a.row));
+        const bv = toComparable(valueOf(b.row));
+        let cmp = 0;
+        if (typeof av === "number" && typeof bv === "number") cmp = av - bv;
+        else cmp = String(av).localeCompare(String(bv));
+        if (cmp === 0) cmp = a.idx - b.idx;
+        return cmp * direction;
+      })
+      .map((x) => x.row);
+  }, [columns, data, effectiveSortBy, effectiveSortOrder, onSortChange]);
+
+  const [clientPage, setClientPage] = useState(1);
+  const [selectedItemsPerPage, setSelectedItemsPerPage] = useState(itemsPerPage);
+
+  useEffect(() => {
+    setSelectedItemsPerPage(itemsPerPage);
+  }, [itemsPerPage]);
+
+  const effectiveCurrentPage = isServerPaginated ? currentPage || 1 : clientPage;
+  const effectiveTotalPages = isServerPaginated
+    ? totalPages || 1
+    : Math.max(1, Math.ceil(sortedData.length / selectedItemsPerPage));
+
+  const clampPage = (p: number) => Math.min(Math.max(1, p), effectiveTotalPages);
+
+  const handlePageChange = (p: number) => {
+    const next = clampPage(p);
+    if (isServerPaginated) onPageChange?.(next);
+    else setClientPage(next);
+  };
+
+  const pageData = isServerPaginated
+    ? data
+    : sortedData.slice(
+        (effectiveCurrentPage - 1) * selectedItemsPerPage,
+        effectiveCurrentPage * selectedItemsPerPage
+      );
+
+  const resolveRowId = useCallback(
+    (row: T, index: number) =>
+      String(getRowId ? getRowId(row, index) : defaultAdminRowId(row, index)),
+    [getRowId]
+  );
+
+  const pageIds = useMemo(
+    () => pageData.map((row, index) => resolveRowId(row, index)),
+    [pageData, resolveRowId]
+  );
+
+  const setSelected = useCallback(
+    (next: string[]) => {
+      if (controlledSelectedIds == null) setInternalSelectedIds(next);
+      onSelectionChange?.(next);
+    },
+    [controlledSelectedIds, onSelectionChange]
+  );
+
+  const allSelected =
+    pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+  const someSelected =
+    pageIds.some((id) => selectedIds.includes(id)) && !allSelected;
+
+  const toggleRow = (row: T, index: number) => {
+    const id = resolveRowId(row, index);
+    setSelected(
+      selectedIds.includes(id)
+        ? selectedIds.filter((entry) => entry !== id)
+        : [...selectedIds, id]
+    );
+  };
+
+  const toggleAll = () => {
+    setSelected(
+      allSelected
+        ? selectedIds.filter((id) => !pageIds.includes(id))
+        : Array.from(new Set([...selectedIds, ...pageIds]))
+    );
+  };
+
+  const hasCustomSelectColumn = columns.some((col) => col.key === "select");
+  const showRowSelect = selectable && !hasCustomSelectColumn;
+  const colSpan = columns.length + (showRowSelect ? 1 : 0);
+
+  const safeTotal = Math.max(1, effectiveTotalPages);
+  const safeCurrent = Math.min(Math.max(1, effectiveCurrentPage), safeTotal);
+  const pageList = buildPageList(safeCurrent, safeTotal);
+  const entriesOptions = [5, 10, 25, 50, 100];
+  const showBottomEntries =
+    entriesPlacement === "bottom" &&
+    (!isServerPaginated || typeof onItemsPerPageChange === "function");
+  const shouldRenderPaginationBlock = showBottomEntries || effectiveTotalPages > 1;
+
+  const thPad: CSSProperties = { padding: "12px 16px" };
+  const tdPad: CSSProperties = { padding: "12px 16px" };
+
+  const entriesControl = (
+    <div className="dt-entries-control">
+      <label>Show</label>
+      <select
+        value={selectedItemsPerPage}
+        onChange={(e) => {
+          const v = Number(e.target.value) || DEFAULT_CMS_TABLE_PAGE_SIZE;
+          setSelectedItemsPerPage(v);
+          if (!isServerPaginated) setClientPage(1);
+          if (isServerPaginated && typeof onItemsPerPageChange === "function") {
+            onItemsPerPageChange(v);
+          }
+        }}
+      >
+        {entriesOptions.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+      <span>entries</span>
+    </div>
+  );
+
+  const selectedCount = selectedIds.length;
+
+  return (
+    <>
+      {(entriesPlacement === "top" || actions || (showRowSelect && selectedCount > 0)) && (
+        <div className="dt-toolbar">
+          <div className="dt-toolbar__left">
+            {actions}
+            {showRowSelect && selectedCount > 0 ? (
+              <span className="dt-selection-count">{selectedCount} selected</span>
+            ) : null}
+          </div>
+          <div>{entriesPlacement === "top" ? entriesControl : null}</div>
+        </div>
+      )}
+
+      <div
+        className={["cms-table-wrap", wrapperClassName ?? ""].filter(Boolean).join(" ")}
+        style={wrapperStyle}
+      >
+        <table
+          className={`dt-enhanced-table${tableClassName ? ` ${tableClassName}` : ""}`}
+          style={{
+            tableLayout: "fixed",
+            width: "100%",
+            ...tableStyle,
+          }}
+        >
+          <colgroup>
+            {showRowSelect ? <col style={{ width: "52px" }} /> : null}
+            {columns.map((col) => {
+              const width = cmsColumnWidth(col.key, col.width);
+              return <col key={col.key} style={width ? { width } : undefined} />;
+            })}
+          </colgroup>
+          <thead>
+            <tr>
+              {showRowSelect ? (
+                <th
+                  className="dt-select-col"
+                  style={{
+                    ...thPad,
+                    ...(stickyHeader ? { position: "sticky", top: 0, zIndex: 2 } : {}),
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    className="dt-select-checkbox"
+                    checked={allSelected}
+                    ref={(el) => {
+                      if (el) el.indeterminate = someSelected;
+                    }}
+                    onChange={toggleAll}
+                    disabled={loading || pageData.length === 0}
+                    aria-label="Select all rows on this page"
+                  />
+                </th>
+              ) : null}
+              {columns.map((col) => (
+                <th
+                  key={col.key}
+                  className={[col.key === "select" ? "dt-select-col" : "", col.thClassName].filter(Boolean).join(" ") || undefined}
+                  style={{
+                    ...thPad,
+                    ...(stickyHeader ? { position: "sticky", top: 0, zIndex: 2 } : {}),
+                    ...(col.width != null ? { width: col.width } : {}),
+                    ...col.thStyle,
+                  }}
+                >
+                  {col.sortable ? renderSortableHeader(col) : col.header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {loading &&
+              Array.from({ length: 4 }).map((_, i) => (
+                <tr key={`sk-${i}`} className="dt-skeleton-row">
+                  {showRowSelect ? (
+                    <td className="dt-select-col" style={tdPad}>
+                      <div className="dt-skeleton-bar" style={{ width: 16 }} />
+                    </td>
+                  ) : null}
+                  {columns.map((col) => (
+                    <td key={col.key} style={tdPad}>
+                      <div
+                        className="dt-skeleton-bar"
+                        style={{
+                          width: col.key === "options" ? 80 : `${55 + ((i * 7) % 30)}%`,
+                        }}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+
+            {!loading && pageData.length === 0 && (
+              <tr>
+                <td colSpan={colSpan} className="dt-empty-state">
+                  <div className="dt-empty-state__icon">
+                    <i className="fas fa-inbox" />
+                  </div>
+                  <div className="dt-empty-state__title">No records found</div>
+                  <div className="text-muted small mt-1">
+                    Try adjusting your search or filters.
+                  </div>
+                </td>
+              </tr>
+            )}
+
+            {!loading &&
+              pageData.map((row, rowIndex) => {
+                const rowId = resolveRowId(row, rowIndex);
+                const checked = selectedIds.includes(rowId);
+                return (
+                  <tr key={rowId} className={checked ? "dt-row-selected" : undefined}>
+                    {showRowSelect ? (
+                      <td className="dt-select-col" style={tdPad}>
+                        <input
+                          type="checkbox"
+                          className="dt-select-checkbox"
+                          checked={checked}
+                          onChange={() => toggleRow(row, rowIndex)}
+                          aria-label={`Select row ${rowId}`}
+                        />
+                      </td>
+                    ) : null}
+                    {columns.map((col) => (
+                      <td
+                        key={col.key}
+                        className={[col.key === "select" ? "dt-select-col" : "", col.tdClassName].filter(Boolean).join(" ") || undefined}
+                        style={{
+                          ...tdPad,
+                          overflow: col.key === "select" ? "visible" : "hidden",
+                          ...(col.width != null ? { width: col.width } : {}),
+                          ...col.tdStyle,
+                        }}
+                      >
+                        {col.render ? col.render(row) : (row as any)[col.key]}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+        {shouldRenderPaginationBlock ? (
+          <div className="dt-footer" data-cms-token="module-pagination">
+            <div>{showBottomEntries && entriesControl}</div>
+
+            <nav aria-label="Pagination">
+              <div className="dt-pagination">
+                <button
+                  type="button"
+                  className="dt-pg-btn"
+                  onClick={() => handlePageChange(safeCurrent - 1)}
+                  disabled={safeCurrent <= 1}
+                  aria-label="Previous page"
+                >
+                  <i className="fas fa-chevron-left" style={{ fontSize: 10 }} />
+                  Prev
+                </button>
+
+                {safeTotal <= 7 ? (
+                  pageList.map((p, idx) =>
+                    p === "ellipsis" ? (
+                      <span key={`e-${idx}`} className="dt-pg-info" style={{ padding: "0 8px" }}>
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        type="button"
+                        className={`dt-pg-btn${p === safeCurrent ? " is-active" : ""}`}
+                        onClick={() => handlePageChange(p)}
+                        aria-label={`Page ${p}`}
+                        aria-current={p === safeCurrent ? "page" : undefined}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )
+                ) : (
+                  <span className="dt-pg-info">
+                    {safeCurrent} / {safeTotal}
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  className="dt-pg-btn"
+                  onClick={() => handlePageChange(safeCurrent + 1)}
+                  disabled={safeCurrent >= safeTotal}
+                  aria-label="Next page"
+                >
+                  Next
+                  <i className="fas fa-chevron-right" style={{ fontSize: 10 }} />
+                </button>
+              </div>
+            </nav>
+          </div>
+        ) : null}
+      </div>
+    </>
+  );
+}

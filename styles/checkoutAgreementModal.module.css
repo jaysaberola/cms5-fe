@@ -1,0 +1,442 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.62);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: agreementOverlayIn 0.24s ease;
+}
+
+.dialog {
+  width: min(820px, 100%);
+  max-height: min(88dvh, calc(100dvh - 2rem), 920px);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 1rem;
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.28);
+  overflow: hidden;
+  animation: agreementDialogIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #334155;
+}
+
+@keyframes agreementOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes agreementDialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog {
+    animation: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 1.5rem 1.15rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.kicker {
+  margin: 0 0 0.4rem;
+  color: #2563eb;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  color: #64748b;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.closeBtn {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 1.25rem 1.5rem 1rem;
+  background: #ffffff;
+}
+
+.section {
+  margin-bottom: 1.35rem;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.sectionNumber {
+  color: #2563eb;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #0f172a;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.sectionText {
+  margin: 0 0 0.65rem;
+  color: #475569;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.sectionText:last-child {
+  margin-bottom: 0;
+}
+
+.summaryCard {
+  border: 1px solid #bfdbfe;
+  border-radius: 0.75rem;
+  background: #f8fbff;
+  padding: 1rem 1.1rem;
+}
+
+.summaryLead {
+  margin: 0 0 0.85rem;
+  color: #0f172a;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.summaryBlock {
+  padding-top: 0.85rem;
+  border-top: 1px solid #dbeafe;
+}
+
+.summaryBlock:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.summaryBlockHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.summaryBlockTitle {
+  margin: 0;
+  color: #334155;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.summaryBlockPrice {
+  color: #0f172a;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.summaryMeta {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+.addonLine {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  color: #475569;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.addonLine strong {
+  color: #0f172a;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.serviceLineWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.serviceLine {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  color: #475569;
+  font-size: 0.8125rem;
+}
+
+.serviceLine strong {
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.acceptSection {
+  margin-top: 0.35rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.checkboxList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+.checkboxRowEnabled {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.checkboxRow input {
+  margin-top: 0.15rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #2563eb;
+}
+
+.checkboxRow input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.checkboxLabel {
+  color: #334155;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.scrollHint {
+  margin: 0.75rem 0 0;
+  color: #64748b;
+  font-size: 0.8125rem;
+}
+
+.scrollHintReady {
+  margin: 0.75rem 0 0;
+  color: #059669;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.continueBtn {
+  min-width: 210px;
+  min-height: 2.125rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #bfdbfe;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+.continueBtnReady {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
+  cursor: pointer;
+}
+
+.continueBtnReady:hover {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    padding: 0.6rem;
+    align-items: center;
+  }
+
+  .dialog {
+    width: 100%;
+    max-height: min(82dvh, calc(100dvh - 1.2rem));
+    border-radius: 0.85rem;
+  }
+
+  .header {
+    gap: 0.6rem;
+    padding: 0.75rem 0.8rem 0.65rem;
+  }
+
+  .kicker {
+    margin-bottom: 0.2rem;
+    font-size: 0.6875rem;
+  }
+
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .closeBtn {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+
+  .body {
+    padding: 0.7rem 0.8rem 0.75rem;
+  }
+
+  .section {
+    margin-bottom: 0.8rem;
+  }
+
+  .sectionHeading {
+    margin-bottom: 0.45rem;
+  }
+
+  .sectionNumber,
+  .sectionTitle {
+    font-size: 0.8125rem;
+  }
+
+  .sectionText {
+    margin-bottom: 0.4rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .summaryCard {
+    padding: 0.7rem 0.75rem;
+  }
+
+  .summaryLead {
+    margin-bottom: 0.55rem;
+    font-size: 0.8125rem;
+  }
+
+  .summaryBlock {
+    padding-top: 0.55rem;
+  }
+
+  .summaryBlockHead,
+  .addonLine,
+  .serviceLine {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .summaryBlockPrice,
+  .addonLine strong,
+  .serviceLine strong {
+    white-space: normal;
+  }
+
+  .checkboxRow {
+    gap: 0.5rem;
+    padding: 0.6rem 0.65rem;
+  }
+
+  .checkboxLabel {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .scrollHint,
+  .scrollHintReady {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .footer {
+    padding: 0.65rem 0.8rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .continueBtn {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.4rem;
+  }
+}
