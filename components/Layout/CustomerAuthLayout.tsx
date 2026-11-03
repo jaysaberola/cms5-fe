@@ -10,7 +10,7 @@ export default function CustomerAuthLayout({ children, title = "Account" }: Cust
   return (
     <>
       <Head>
-        <title>{title} | WebFocus Solutions, Inc.</title>
+        <title>{`${title} | WebFocus Solutions, Inc.`}</title>
       </Head>
       {children}
       <ToastHost />

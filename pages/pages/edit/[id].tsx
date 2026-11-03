@@ -6,28 +6,21 @@ import { useRouter } from "next/router";
 import { toast } from "@/lib/toast";
 import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
 import { isDefaultProtectedPage } from "@/lib/defaultPages";
-import PageEditorToolbar from "@/components/Pages/PageEditorToolbar";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
 import { prefetchPagesSwitcherList, invalidatePagesSwitcherListCache } from "@/lib/pagesListCache";
 import { syncAuthTokenCookieFromStorage } from "@/lib/authToken";
 import { beginStudioPageSwitch, consumeStudioPageSwitch } from "@/lib/studioPageSwitch";
 
-const TinyEditor = dynamic(() => import("@/components/UI/Editor"), {
-  ssr: false,
-  loading: () => <div className="page-editor__editor-placeholder">Loading editor...</div>,
-});
-
 const GrapesEditor = dynamic(() => import("@/components/UI/GrapesEditor"), {
   ssr: false,
   loading: () => <div className="page-editor__editor-placeholder">Loading visual builder...</div>,
 });
+
 type PageSnapshot = {
   title: string;
   label: string;
-  tinyContent: string;
   grapesContent: string;
-  editorType: "tinymce" | "grapesjs";
   visibility: boolean;
   albumId: number | "";
   menuId: number | "";
@@ -64,9 +57,7 @@ function EditPage() {
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
   const [pageSlug, setPageSlug] = useState("");
-  const [tinyContent, setTinyContent] = useState("");
   const [grapesContent, setGrapesContent] = useState("");
-  const [editorType, setEditorType] = useState<"tinymce" | "grapesjs">("tinymce");
   const [visibility, setVisibility] = useState(true);
   const [albumId, setAlbumId] = useState<number | "">("");
   const [albums, setAlbums] = useState<any[]>([]);
@@ -89,9 +80,7 @@ function EditPage() {
     (): PageSnapshot => ({
       title,
       label,
-      tinyContent,
       grapesContent,
-      editorType,
       visibility,
       albumId,
       menuId,
@@ -99,23 +88,13 @@ function EditPage() {
       seoDescription,
       seoKeywords,
     }),
-    [title, label, tinyContent, grapesContent, editorType, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords],
+    [title, label, grapesContent, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords],
   );
 
   const isDirty = useMemo(() => {
     if (!savedSnapshot) return false;
     return JSON.stringify(savedSnapshot) !== JSON.stringify(buildSnapshot());
   }, [savedSnapshot, buildSnapshot]);
-
-  const handleEditorTypeChange = (nextType: "tinymce" | "grapesjs") => {
-    if (nextType === "tinymce" && !tinyContent && grapesContent) {
-      setTinyContent(grapesContent);
-    }
-    if (nextType === "grapesjs" && !grapesContent && tinyContent) {
-      setGrapesContent(tinyContent);
-    }
-    setEditorType(nextType);
-  };
 
   useEffect(() => {
     if (!id || !Number.isFinite(pageId)) return;
@@ -136,13 +115,16 @@ function EditPage() {
               grapes_css: page.grapes_css || "",
               grapes_js: page.grapes_js || "",
             })
-          : page.contents || "";
+          : composeContentFromGrapes({
+              grapes_html: page.contents || "",
+              grapes_css: "",
+              grapes_js: "",
+            });
 
         const nextTitle = page.name || "";
         const nextLabel = page.label || "";
         const nextAlbumId = page.album_id ?? "";
         const nextMenuId = page.menu_id ?? "";
-        const nextEditorType = isGrapes ? "grapesjs" : "tinymce";
         const nextVisibility = page.status === "published";
         const nextSeoTitle = page.meta_title || "";
         const nextSeoDescription = page.meta_description || "";
@@ -153,9 +135,7 @@ function EditPage() {
         setPageSlug(page.slug || "");
         setAlbumId(nextAlbumId);
         setMenuId(nextMenuId);
-        setTinyContent(composedContent);
         setGrapesContent(composedContent);
-        setEditorType(nextEditorType);
         setVisibility(nextVisibility);
         setLockedStatus(page.status === "draft" ? "draft" : page.status === "private" ? "private" : "published");
         setDefaultPageLocked(
@@ -172,9 +152,7 @@ function EditPage() {
         setSavedSnapshot({
           title: nextTitle,
           label: nextLabel,
-          tinyContent: composedContent,
           grapesContent: composedContent,
-          editorType: nextEditorType,
           visibility: nextVisibility,
           albumId: nextAlbumId,
           menuId: nextMenuId,
@@ -204,6 +182,7 @@ function EditPage() {
     });
     return cancel;
   }, []);
+
   useEffect(() => {
     if (!isDirty) return;
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -222,9 +201,7 @@ function EditPage() {
 
     try {
       setLoading(true);
-      const activeContent = editorType === "grapesjs" ? grapesContent : tinyContent;
       const grapesParts = extractGrapesParts(grapesContent);
-      const isGrapes = editorType === "grapesjs";
       const hasGrapesData = Boolean(
         grapesParts.grapes_html?.trim() || grapesParts.grapes_css?.trim() || grapesParts.grapes_js?.trim(),
       );
@@ -235,11 +212,11 @@ function EditPage() {
         label: label || undefined,
         album_id: albumId,
         menu_id: menuId,
-        contents: activeContent,
-        content_type: isGrapes ? "grapes" : "tiny",
-        grapes_html: isGrapes || hasGrapesData ? grapesParts.grapes_html : undefined,
-        grapes_css: isGrapes || hasGrapesData ? grapesParts.grapes_css : undefined,
-        grapes_js: isGrapes || hasGrapesData ? grapesParts.grapes_js : undefined,
+        contents: grapesContent,
+        content_type: "grapes",
+        grapes_html: hasGrapesData ? grapesParts.grapes_html : undefined,
+        grapes_css: hasGrapesData ? grapesParts.grapes_css : undefined,
+        grapes_js: hasGrapesData ? grapesParts.grapes_js : undefined,
         status: defaultPageLocked ? lockedStatus : nextVisibility ? "published" : "private",
         meta_title: seoTitle || undefined,
         meta_description: seoDescription || undefined,
@@ -271,7 +248,7 @@ function EditPage() {
       void handleSaveRef.current({ silent: true });
     }, 5000);
     return () => window.clearTimeout(timer);
-  }, [isDirty, grapesContent, tinyContent, title, label, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords, editorType, initialLoading]);
+  }, [isDirty, grapesContent, title, label, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords, initialLoading]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -287,9 +264,9 @@ function EditPage() {
   const handlePageSelect = (nextId: number) => {
     if (nextId === pageId) return;
     if (isDirty && !window.confirm("You have unsaved changes on this page. Switch without saving?")) return;
-    beginStudioPageSwitch(editorType === "grapesjs");
+    beginStudioPageSwitch(true);
     setPageSwitching(true);
-    pendingStudioSwitchRef.current = { active: true, fromGrapes: editorType === "grapesjs" };
+    pendingStudioSwitchRef.current = { active: true, fromGrapes: true };
     router.push(`/pages/edit/${nextId}`);
   };
 
@@ -316,128 +293,39 @@ function EditPage() {
       onSeoDescriptionChange={setSeoDescription}
       seoKeywords={seoKeywords}
       onSeoKeywordsChange={setSeoKeywords}
-      editorType={editorType}
-      onEditorTypeChange={handleEditorTypeChange}
-      showEditorToggle
     />
   );
 
-  const keepStudioVisible =
-    editorType === "grapesjs" || (pageSwitching && pendingStudioSwitchRef.current.fromGrapes);
-
-  if (initialLoading && !keepStudioVisible) {
-    return (
-      <div className="container-fluid px-4 pt-3 page-editor">
-        <div className="page-editor-toolbar">
-          <div className="text-muted">Loading page editor...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (keepStudioVisible) {
-    return (
-      <GrapesEditor
-        fullScreen
-        value={grapesContent}
-        onChange={setGrapesContent}
-        pageTitle={title}
-        saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
-        pageId={pageId}
-        pageSlug={pageSlug}
-        isPageLoading={initialLoading || pageSwitching}
-        onPageSelect={handlePageSelect}
-        onCreatePage={() => {
-          if (isDirty && !window.confirm("You have unsaved changes on this page. Switch without saving?")) return;
-          router.push("/pages/create");
-        }}
-        onBack={() => {
-          if (isDirty && !window.confirm("You have unsaved changes. Leave this page anyway?")) return;
-          router.push("/pages");
-        }}
-        onSave={() => void handleSave()}
-        onPublish={() => void handleSave({ publish: true })}
-        onPreviewPublic={() => {
-          syncAuthTokenCookieFromStorage();
-          window.open(`/pages/preview/${pageId}`, "_blank", "noopener,noreferrer");
-        }}
-        onOpenSettings={() => setSettingsOpen(true)}
-        onCloseSettings={() => setSettingsOpen(false)}
-        settingsOpen={settingsOpen}
-        settingsPanel={metaFields}
-      />
-    );
-  }
-
   return (
-    <div className="container-fluid px-4 pt-3 page-editor">
-      <PageEditorToolbar
-        pageId={pageId}
-        pageTitle={title}
-        pageSlug={pageSlug}
-        isDirty={isDirty}
-        isSaving={loading}
-        onSave={() => void handleSave()}
-        onPageSelect={handlePageSelect}
-      />
-
-      <div className="page-editor__layout">
-        <div className="page-editor__main">
-          <div className="page-editor__canvas-card" data-cms-tour="page-editor-canvas">
-            <div className="page-editor__canvas-header">
-              <h4>Page Content</h4>
-              <div className="page-editor__editor-toggle" data-cms-tour="page-editor-toggle">
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="editorType"
-                    id="editorTinyMce"
-                    checked
-                    onChange={() => handleEditorTypeChange("tinymce")}
-                  />
-                  <label className="form-check-label" htmlFor="editorTinyMce">
-                    TinyMCE
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="editorType"
-                    id="editorGrapes"
-                    checked={false}
-                    onChange={() => handleEditorTypeChange("grapesjs")}
-                  />
-                  <label className="form-check-label" htmlFor="editorGrapes">
-                    Visual Builder
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="page-editor__canvas-body">
-              <div className="page-editor__editor-shell">
-                <TinyEditor key={pageId} value={tinyContent} onChange={setTinyContent} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <aside className="page-editor__sidebar" data-cms-tour="page-editor-sidebar">
-          {metaFields}
-        </aside>
-      </div>
-
-      <button
-        type="button"
-        className="btn btn-primary page-editor__mobile-save"
-        data-cms-tour="page-editor-mobile-save"
-        onClick={() => void handleSave()}
-        disabled={loading}
-      >
-        {loading ? "Saving..." : "Save Page"}
-      </button>
-    </div>
+    <GrapesEditor
+      fullScreen
+      value={grapesContent}
+      onChange={setGrapesContent}
+      pageTitle={title}
+      saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
+      pageId={pageId}
+      pageSlug={pageSlug}
+      isPageLoading={initialLoading || pageSwitching}
+      onPageSelect={handlePageSelect}
+      onCreatePage={() => {
+        if (isDirty && !window.confirm("You have unsaved changes on this page. Switch without saving?")) return;
+        router.push("/pages/create");
+      }}
+      onBack={() => {
+        if (isDirty && !window.confirm("You have unsaved changes. Leave this page anyway?")) return;
+        router.push("/pages");
+      }}
+      onSave={() => void handleSave()}
+      onPublish={() => void handleSave({ publish: true })}
+      onPreviewPublic={() => {
+        syncAuthTokenCookieFromStorage();
+        window.open(`/pages/preview/${pageId}`, "_blank", "noopener,noreferrer");
+      }}
+      onOpenSettings={() => setSettingsOpen(true)}
+      onCloseSettings={() => setSettingsOpen(false)}
+      settingsOpen={settingsOpen}
+      settingsPanel={metaFields}
+    />
   );
 }
 

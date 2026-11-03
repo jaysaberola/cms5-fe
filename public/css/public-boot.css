@@ -1,0 +1,130 @@
+/* Early paint (linked in _document) — stable dark canvas before React hydrates */
+
+html.public-booting {
+  background: #050505;
+}
+
+html.public-booting body {
+  margin: 0;
+  background: #050505;
+  color: rgba(255, 255, 255, 0.72);
+  overflow-x: hidden;
+}
+
+html.public-booting .public-site-shell--executra,
+html.public-booting .public-site-shell--executra .public-site-main,
+html.public-booting .public-site-shell--executra .public-site-main > .container-fluid {
+  background: #050505;
+}
+
+/* Hero layout before CSS modules hydrate (home main banner) */
+[data-public-hero] {
+  position: relative;
+  min-height: min(88vh, 820px);
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+[data-public-hero-strip] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+[data-public-hero-strip] img,
+[data-public-hero-strip] video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.public-page-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Logo size before module CSS loads */
+.public-site-shell .brand img,
+.public-site-shell a[aria-label*="WebFocus"] img,
+img[src="/images/webfocus-logo.png"] {
+  display: block;
+  height: 30px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+}
+
+.public-site-header svg {
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  flex-shrink: 0;
+}
+
+/* Progressive scroll reveals — visible until JS arms observers */
+html:not(.biz-anim-armed) .biz-fade,
+html:not(.biz-anim-armed) .public-page-content .wsi-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.biz-anim-armed .biz-tpl .biz-fade:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+html.biz-anim-armed .public-page-content .wsi-reveal:not(.is-visible) {
+  opacity: 0;
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--wsi-reveal-delay, 0ms);
+}
+
+/* No full-page fade/slide on hard refresh — keeps reload feeling instant */
+html.page-loaded .public-site-shell,
+html.page-loaded .public-site-main > .container-fluid,
+html.page-loaded .public-site-main > .container {
+  animation: none !important;
+}
+
+/* Subtle hero placeholder while banner media loads (Executra palette) */
+html.public-booting [data-public-hero-strip] {
+  background: linear-gradient(
+    110deg,
+    #0a0a0a 0%,
+    #141414 24%,
+    #1c1c1c 48%,
+    #141414 72%,
+    #0a0a0a 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: publicHeroShimmer 2.2s ease-in-out infinite;
+}
+
+@keyframes publicHeroShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+html.page-loaded [data-public-hero-ready="true"] [data-public-hero-strip],
+html:not(.public-booting) [data-public-hero-strip] {
+  animation: none;
+  background: #0a0a0a !important;
+  background-size: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.public-booting [data-public-hero-strip] {
+    animation: none;
+  }
+}

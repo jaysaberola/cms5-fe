@@ -4,6 +4,7 @@ import DataTable, { Column } from "@/components/UI/DataTable";
 import SearchBar from "@/components/UI/SearchBar";
 import ConfirmModal from "@/components/UI/ConfirmModal";
 import { toast } from "@/lib/toast";
+import { publicNewsPath } from "@/lib/publicPaths";
 import {
   deleteArticle,
   getArticles,
@@ -78,7 +79,7 @@ function ManageNews() {
   const getNewsViewUrl = (row: NewsRow) => {
     const status = normalizeStatus(row);
     if (status === "published" && row.slug) {
-      return `/public/news/${row.slug}`;
+      return publicNewsPath(row.slug);
     }
     return `/news/preview/${row.id}`;
   };

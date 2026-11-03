@@ -5,16 +5,10 @@ import { createPage } from "@/services/pageService";
 import { useRouter } from "next/router";
 import { toast } from "@/lib/toast";
 import { extractGrapesParts } from "@/lib/grapesContent";
-import PageEditorToolbar from "@/components/Pages/PageEditorToolbar";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
 import { prefetchPagesSwitcherList } from "@/lib/pagesListCache";
 import { beginStudioPageSwitch } from "@/lib/studioPageSwitch";
-
-const TinyEditor = dynamic(() => import("@/components/UI/Editor"), {
-  ssr: false,
-  loading: () => <div className="page-editor__editor-placeholder">Loading editor...</div>,
-});
 
 const GrapesEditor = dynamic(() => import("@/components/UI/GrapesEditor"), {
   ssr: false,
@@ -26,9 +20,7 @@ const DEFAULT_CONTENT = ``;
 type PageSnapshot = {
   title: string;
   label: string;
-  tinyContent: string;
   grapesContent: string;
-  editorType: "tinymce" | "grapesjs";
   visibility: boolean;
   albumId: number | "";
   menuId: number | "";
@@ -40,9 +32,7 @@ type PageSnapshot = {
 const emptySnapshot = (): PageSnapshot => ({
   title: "",
   label: "",
-  tinyContent: DEFAULT_CONTENT,
   grapesContent: DEFAULT_CONTENT,
-  editorType: "grapesjs",
   visibility: true,
   albumId: "",
   menuId: "",
@@ -76,9 +66,7 @@ export default function CreatePage() {
 
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
-  const [tinyContent, setTinyContent] = useState(DEFAULT_CONTENT);
   const [grapesContent, setGrapesContent] = useState(DEFAULT_CONTENT);
-  const [editorType, setEditorType] = useState<"tinymce" | "grapesjs">("grapesjs");
   const [visibility, setVisibility] = useState(true);
   const [albumId, setAlbumId] = useState<number | "">("");
   const [albums, setAlbums] = useState<any[]>([]);
@@ -94,9 +82,7 @@ export default function CreatePage() {
     (): PageSnapshot => ({
       title,
       label,
-      tinyContent,
       grapesContent,
-      editorType,
       visibility,
       albumId,
       menuId,
@@ -104,22 +90,12 @@ export default function CreatePage() {
       seoDescription,
       seoKeywords,
     }),
-    [title, label, tinyContent, grapesContent, editorType, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords],
+    [title, label, grapesContent, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords],
   );
 
   const isDirty = useMemo(() => {
     return JSON.stringify(emptySnapshot()) !== JSON.stringify(buildSnapshot());
   }, [buildSnapshot]);
-
-  const handleEditorTypeChange = (nextType: "tinymce" | "grapesjs") => {
-    if (nextType === "tinymce" && !tinyContent && grapesContent) {
-      setTinyContent(grapesContent);
-    }
-    if (nextType === "grapesjs" && !grapesContent && tinyContent) {
-      setGrapesContent(tinyContent);
-    }
-    setEditorType(nextType);
-  };
 
   useEffect(() => {
     const cancel = scheduleIdleTask(() => {
@@ -155,9 +131,7 @@ export default function CreatePage() {
 
     try {
       setLoading(true);
-      const activeContent = editorType === "grapesjs" ? grapesContent : tinyContent;
       const grapesParts = extractGrapesParts(grapesContent);
-      const isGrapes = editorType === "grapesjs";
       const hasGrapesData = Boolean(
         grapesParts.grapes_html?.trim() || grapesParts.grapes_css?.trim() || grapesParts.grapes_js?.trim(),
       );
@@ -168,11 +142,11 @@ export default function CreatePage() {
         label: label || undefined,
         album_id: albumId || undefined,
         menu_id: menuId || undefined,
-        contents: activeContent,
-        content_type: isGrapes ? "grapes" : "tiny",
-        grapes_html: isGrapes || hasGrapesData ? grapesParts.grapes_html : undefined,
-        grapes_css: isGrapes || hasGrapesData ? grapesParts.grapes_css : undefined,
-        grapes_js: isGrapes || hasGrapesData ? grapesParts.grapes_js : undefined,
+        contents: grapesContent,
+        content_type: "grapes",
+        grapes_html: hasGrapesData ? grapesParts.grapes_html : undefined,
+        grapes_css: hasGrapesData ? grapesParts.grapes_css : undefined,
+        grapes_js: hasGrapesData ? grapesParts.grapes_js : undefined,
         status: nextVisibility ? "published" : "private",
         meta_title: seoTitle || undefined,
         meta_description: seoDescription || undefined,
@@ -205,7 +179,7 @@ export default function CreatePage() {
   const handlePageSelect = (nextId: number) => {
     if (!nextId) return;
     if (isDirty && !window.confirm("You have unsaved changes on this new page. Switch without saving?")) return;
-    beginStudioPageSwitch(editorType === "grapesjs");
+    beginStudioPageSwitch(true);
     router.push(`/pages/edit/${nextId}`);
   };
 
@@ -230,99 +204,25 @@ export default function CreatePage() {
       onSeoDescriptionChange={setSeoDescription}
       seoKeywords={seoKeywords}
       onSeoKeywordsChange={setSeoKeywords}
-      editorType={editorType}
-      onEditorTypeChange={handleEditorTypeChange}
-      showEditorToggle
     />
   );
 
-  if (editorType === "grapesjs") {
-    return (
-      <GrapesEditor
-        fullScreen
-        value={grapesContent}
-        onChange={setGrapesContent}
-        pageTitle={title}
-        saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
-        onPageSelect={handlePageSelect}
-        onBack={handleCancel}
-        onSave={() => void handleSave()}
-        onPublish={() => void handleSave({ publish: true })}
-        onOpenSettings={() => setSettingsOpen(true)}
-        onCloseSettings={() => setSettingsOpen(false)}
-        settingsOpen={settingsOpen}
-        settingsPanel={metaFields}
-      />
-    );
-  }
-
   return (
-    <div className="container-fluid px-4 pt-3 page-editor">
-      <PageEditorToolbar
-        mode="create"
-        pageTitle={title}
-        isSaving={loading}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
-
-      <div className="page-editor__layout">
-        <div className="page-editor__main">
-          <div className="page-editor__canvas-card" data-cms-tour="page-editor-canvas">
-            <div className="page-editor__canvas-header">
-              <h4>Page Content</h4>
-              <div className="page-editor__editor-toggle" data-cms-tour="page-editor-toggle">
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="editorType"
-                    id="editorTinyMce"
-                    checked
-                    onChange={() => handleEditorTypeChange("tinymce")}
-                  />
-                  <label className="form-check-label" htmlFor="editorTinyMce">
-                    TinyMCE
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="editorType"
-                    id="editorGrapes"
-                    checked={false}
-                    onChange={() => handleEditorTypeChange("grapesjs")}
-                  />
-                  <label className="form-check-label" htmlFor="editorGrapes">
-                    Visual Builder
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="page-editor__canvas-body">
-              <div className="page-editor__editor-shell">
-                <TinyEditor value={tinyContent} onChange={setTinyContent} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <aside className="page-editor__sidebar" data-cms-tour="page-editor-sidebar">
-          {metaFields}
-        </aside>
-      </div>
-
-      <button
-        type="button"
-        className="btn btn-primary page-editor__mobile-save"
-        data-cms-tour="page-editor-mobile-save"
-        onClick={handleSave}
-        disabled={loading}
-      >
-        {loading ? "Saving..." : "Save Page"}
-      </button>
-    </div>
+    <GrapesEditor
+      fullScreen
+      value={grapesContent}
+      onChange={setGrapesContent}
+      pageTitle={title}
+      saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
+      onPageSelect={handlePageSelect}
+      onBack={handleCancel}
+      onSave={() => void handleSave()}
+      onPublish={() => void handleSave({ publish: true })}
+      onOpenSettings={() => setSettingsOpen(true)}
+      onCloseSettings={() => setSettingsOpen(false)}
+      settingsOpen={settingsOpen}
+      settingsPanel={metaFields}
+    />
   );
 }
 

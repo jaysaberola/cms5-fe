@@ -70,7 +70,7 @@ function ResetPasswordPage() {
           Reset Password
         </button>
 
-        <a href="/" className={styles.secondaryLink}>
+        <a href="/login" className={styles.secondaryLink}>
           Cancel
         </a>
       </div>

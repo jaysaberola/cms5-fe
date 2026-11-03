@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import styles from "@/styles/news.module.css";
 
 type Props = {
@@ -11,16 +11,18 @@ type Props = {
 export default function NewsReveal({ children, className = "", delay = 0, immediate = false }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const node = ref.current;
     if (!node) return;
 
     const show = () => node.classList.add(styles.revealVisible);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion || immediate) {
+    const inInitialView = node.getBoundingClientRect().top < window.innerHeight * 0.94;
+
+    if (reducedMotion || immediate || inInitialView) {
       show();
-      return;
+      if (reducedMotion || immediate) return;
     }
 
     if (!("IntersectionObserver" in window)) {

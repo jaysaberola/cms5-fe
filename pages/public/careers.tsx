@@ -54,7 +54,7 @@ export default function CareersPage({ jobs, currentPage, totalPages, totalCount,
     if (merged.view) q.view = merged.view;
     if (merged.page && merged.page > 1) q.page = String(merged.page);
 
-    return { pathname: "/public/careers", query: q };
+    return { pathname: "/careers", query: q };
   };
 
   const clearFiltersHref = buildHref({ search: undefined, department: undefined, type: undefined, location: undefined, page: 1 });
@@ -418,7 +418,8 @@ export async function getServerSideProps({ query }: any) {
         types: mapToFacetItems(facetCounts.types),
         locations: mapToFacetItems(facetCounts.locations),
       },
-      pageData: res.data
+      pageData: res.data,
+      layout: { fullWidth: true, hideBanner: true },
     },
   };
 }

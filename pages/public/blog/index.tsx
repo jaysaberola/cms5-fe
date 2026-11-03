@@ -98,7 +98,7 @@ export default function BlogPage({ posts, currentPage, totalPages, viewMode: ini
                 {posts.map((post) => (
                   <div key={post.id} className="col-sm-6 col-lg-6 p-b-40">
                     <Link
-                      href={`/public/blog/${post.slug}`}
+                      href={`/blog/${post.slug}`}
                       className="dis-block"
                       style={{ textDecoration: "none", height: "100%" }}
                     >
@@ -167,7 +167,7 @@ export default function BlogPage({ posts, currentPage, totalPages, viewMode: ini
                   <div className="pic-blo4 hov-img-zoom bo-rad-10 pos-relative">
 
                     {/* SINGLE LINK ONLY */}
-                    <Link href={`/public/blog/${post.slug}`} style={{ textDecoration: "none" }}>
+                    <Link href={`/blog/${post.slug}`} style={{ textDecoration: "none" }}>
                       <BlogImageSlider images={post.images} alt={post.title} />
                     </Link>
 
@@ -180,7 +180,7 @@ export default function BlogPage({ posts, currentPage, totalPages, viewMode: ini
                   <div className="text-blo4 p-t-33">
                     <h4 className="p-b-16">
                       <Link
-                        href={`/public/blog/${post.slug}`}
+                        href={`/blog/${post.slug}`}
                         className="tit9"
                         style={{ textDecoration: "none" }}
                       >
@@ -207,7 +207,7 @@ export default function BlogPage({ posts, currentPage, totalPages, viewMode: ini
                     <p>{post.excerpt}</p>
 
                     <Link
-                      href={`/public/blog/${post.slug}`}
+                      href={`/blog/${post.slug}`}
                       className="dis-block txt4 m-t-30"
                       style={{ textDecoration: "none" }}
                     >
@@ -227,7 +227,7 @@ export default function BlogPage({ posts, currentPage, totalPages, viewMode: ini
                 return (
                   <Link
                     key={page}
-                    href={`/public/blog?page=${page}&view=${view}`}
+                    href={`/blog?page=${page}&view=${view}`}
                     className={`item-pagination flex-c-m trans-0-4 ${
                       page === currentPage ? "active-pagination" : ""
                     }`}
@@ -301,7 +301,8 @@ export async function getServerSideProps({ query }: any) {
       currentPage,
       totalPages,
       viewMode,
-      pageData: res.data
+      pageData: res.data,
+      layout: { fullWidth: true, hideBanner: true },
     },
   };
 }

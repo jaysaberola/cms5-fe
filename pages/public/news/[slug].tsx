@@ -1,24 +1,55 @@
 import Head from "next/head";
 import LandingPageLayout from "@/components/Layout/GuestLayout";
 import NewsArticleView from "@/components/News/NewsArticleView";
+import { usePublicPageAutoRecover } from "@/lib/usePublicPageAutoRecover";
+import { usePublicRouteTransition } from "@/lib/usePublicRouteTransition";
 import { getArticleBySlug } from "@/services/articleService";
+import { getPublicPageBySlug } from "@/services/publicPageService";
 import { getMenuById } from "@/services/menuService";
 import styles from "@/styles/news.module.css";
+import { useRouter } from "next/router";
 
 type Props = {
   pageData: any;
   article: any;
 };
 
-export default function NewsDetailPage({ article }: Props) {
+export default function NewsDetailPage({ article, pageData }: Props) {
+  const router = useRouter();
+  const isRouteTransitioning = usePublicRouteTransition();
+  usePublicPageAutoRecover(article ?? pageData, { isRouteTransitioning });
+
+  if (!article && (!router.isReady || isRouteTransitioning)) {
+    return (
+      <div className={styles.page} data-public-news-page="" aria-busy="true">
+        <div className={styles.shell}>
+          <p className={styles.pageLead}>Loading article…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!article) {
+    return (
+      <div className={styles.page} data-public-news-page="">
+        <div className={styles.shell}>
+          <p className={styles.pageLead}>Article not found.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const title = article.meta_title || article.name || "News";
+  const description = article.meta_description || article.teaser || "";
+
   return (
     <>
       <Head>
-        <title>{article.meta_title || article.name}</title>
-        <meta name="description" content={article.meta_description || article.teaser} />
+        <title>{title}</title>
+        {description ? <meta name="description" content={description} /> : null}
       </Head>
 
-      <div className={styles.page}>
+      <div className={styles.page} data-public-news-page="">
         <NewsArticleView article={article} />
       </div>
     </>
@@ -27,10 +58,19 @@ export default function NewsDetailPage({ article }: Props) {
 
 export async function getServerSideProps({ params }: any) {
   try {
-    const res = await getArticleBySlug(params.slug);
+    const slug = String(params?.slug ?? "").trim();
+    if (!slug) {
+      return { notFound: true };
+    }
 
-    let article = res.data;
-    let contents = article.contents || "";
+    const res = await getArticleBySlug(slug);
+    const payload = res.data?.data ?? res.data;
+    if (!payload || typeof payload !== "object") {
+      return { notFound: true };
+    }
+
+    let article = payload as Record<string, unknown>;
+    let contents = String(article.contents || "");
 
     const matches = Array.from(contents.matchAll(/<!--\s*CMS_MENU:(\d+)\s*-->/g));
     const menuIds = [...new Set(matches.map((m) => Number((m as RegExpMatchArray)[1])))] as number[];
@@ -81,15 +121,24 @@ export async function getServerSideProps({ params }: any) {
       }
     }
 
-    article = { ...article, contents };
+    article = { ...article, contents } as typeof article;
+
+    let newsPageMeta: any = { slug: "news", title: "News" };
+    try {
+      const newsPageRes = await getPublicPageBySlug("news");
+      newsPageMeta = newsPageRes.data;
+    } catch {
+      // keep fallback
+    }
 
     return {
       props: {
         pageData: {
-          title: res.data.name,
+          ...newsPageMeta,
+          title: (article.name as string) || "News",
           meta: {
-            title: res.data.meta_title || res.data.name,
-            description: res.data.meta_description || res.data.teaser || null,
+            title: (article.meta_title as string) || (article.name as string) || "News",
+            description: (article.meta_description as string) || (article.teaser as string) || null,
           },
         },
         layout: { fullWidth: true, hideBanner: true },

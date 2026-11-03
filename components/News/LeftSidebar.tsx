@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { publicNewsPath } from "@/lib/publicPaths";
 import styles from "@/styles/news.module.css";
 
 type Props = {
@@ -28,6 +29,11 @@ export default function LeftSidebar({ categories, archive }: Props) {
   const [search, setSearch] = useState((router.query.search as string) || "");
   const [openYears, setOpenYears] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    if (!router.isReady) return;
+    setSearch((router.query.search as string) || "");
+  }, [router.isReady, router.query.search]);
+
   const activeCategory = (router.query.category as string) || "";
   const activeYear = (router.query.year as string) || "";
   const activeMonth = (router.query.month as string) || "";
@@ -41,7 +47,7 @@ export default function LeftSidebar({ categories, archive }: Props) {
       }
     });
 
-    router.push({ pathname: "/public/news", query: nextQuery });
+    router.push({ pathname: publicNewsPath(), query: nextQuery });
   };
 
   const handleSearch = (event?: FormEvent) => {
@@ -57,17 +63,21 @@ export default function LeftSidebar({ categories, archive }: Props) {
     [archive]
   );
 
+  const hasActiveFilters = Boolean(activeCategory || activeYear || activeMonth || router.query.search);
+
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.sidebarCard}>
-        <h3 className={styles.sidebarTitle}>Search articles</h3>
-        <form className={styles.searchForm} onSubmit={handleSearch}>
+    <aside className={`${styles.sidebar} public-news-sidebar`}>
+      <div className={`${styles.sidebarCard} public-news-sidebar-card`}>
+        <h3 className={`${styles.sidebarTitle} public-news-sidebar-title`}>Search articles</h3>
+        <form className={`${styles.searchForm} public-news-search-form`} onSubmit={handleSearch}>
           <input
-            className={styles.searchInput}
+            className={`${styles.searchInput} public-news-search-input`}
             type="search"
+            name="search"
             placeholder="Search news..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
+            autoComplete="off"
           />
           <button type="submit" className={styles.searchBtn} aria-label="Search">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -79,9 +89,18 @@ export default function LeftSidebar({ categories, archive }: Props) {
       </div>
 
       {categories.length > 0 && (
-        <div className={styles.sidebarCard}>
-          <h3 className={styles.sidebarTitle}>Categories</h3>
+        <div className={`${styles.sidebarCard} public-news-sidebar-card`}>
+          <h3 className={`${styles.sidebarTitle} public-news-sidebar-title`}>Topics</h3>
           <ul className={styles.sidebarList}>
+            <li className={styles.sidebarItem}>
+              <button
+                type="button"
+                className={`${styles.sidebarLink} ${!activeCategory && !hasActiveFilters ? styles.sidebarLinkActive : ""}`}
+                onClick={() => router.push(publicNewsPath())}
+              >
+                <span>All articles</span>
+              </button>
+            </li>
             {categories.map((cat) => {
               const isActive = activeCategory === cat.slug;
               return (
@@ -102,8 +121,8 @@ export default function LeftSidebar({ categories, archive }: Props) {
       )}
 
       {archiveYears.length > 0 && (
-        <div className={styles.sidebarCard}>
-          <h3 className={styles.sidebarTitle}>Archive</h3>
+        <div className={`${styles.sidebarCard} public-news-sidebar-card`}>
+          <h3 className={`${styles.sidebarTitle} public-news-sidebar-title`}>Archive</h3>
           {archiveYears.map(([year, months]) => {
             const isOpen = openYears[year] ?? activeYear === year;
             return (

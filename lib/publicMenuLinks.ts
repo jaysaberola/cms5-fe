@@ -1,4 +1,5 @@
 import type { PublicMenuItem } from "@/services/publicPageService";
+import { publicNewsPath, publicPagePath } from "@/lib/publicPaths";
 
 /** Known dev/prod hosts saved in menu/footer targets — strip to pathname at render time. */
 const KNOWN_PUBLIC_HOSTS = new Set([
@@ -12,13 +13,7 @@ const SKIP_HREF_PREFIX =
   /^(#|mailto:|tel:|sms:|javascript:|data:|blob:)/i;
 
 /**
- * Normalize CMS / Grapes / menu URLs so they work on any host.
- * Examples:
- * - https://webfocus-fe.vercel.app/public/about-us → /public/about-us
- * - http://127.0.0.1:3000/public/services → /public/services
- * - webfocus-fe.vercel.app/public/about-us → /public/about-us
- * - public/about-us → /public/about-us
- * - about-us → /public/about-us
+ * Normalize CMS / Grapes / menu URLs so they work on any host (no `/public` prefix).
  */
 export function normalizePublicHref(href: string): string {
   const target = String(href ?? "").trim();
@@ -26,7 +21,13 @@ export function normalizePublicHref(href: string): string {
   if (SKIP_HREF_PREFIX.test(target)) return target;
 
   if (target.startsWith("/") && !target.startsWith("//")) {
-    return target;
+    const pathOnly = target.split("?")[0];
+    if (pathOnly === "/news" || pathOnly.startsWith("/public/news")) {
+      const slug = pathOnly.replace(/^\/public\/news\/?/, "").replace(/^\/news\/?/, "");
+      const qs = target.includes("?") ? target.slice(target.indexOf("?")) : "";
+      return `${publicNewsPath(slug || undefined)}${qs}`;
+    }
+    return normalizePublicPath(target);
   }
 
   if (target.startsWith("//")) {
@@ -40,7 +41,6 @@ export function normalizePublicHref(href: string): string {
   try {
     return normalizeParsedUrl(new URL(target), target);
   } catch {
-    // Bare host without protocol: webfocus-fe.vercel.app/public/about-us
     if (/^[a-z0-9.-]+\.[a-z]{2,}([/:?]|$)/i.test(target)) {
       try {
         return normalizeParsedUrl(new URL(`https://${target}`), `https://${target}`);
@@ -50,55 +50,65 @@ export function normalizePublicHref(href: string): string {
     }
 
     if (target.startsWith("public/")) {
-      return `/${target}`;
+      return publicPagePath(target);
     }
 
-    // Relative slug like "about-us" or "about" from the Grapes canvas
     const clean = target.replace(/^\/+/, "");
     if (clean && !clean.includes("://") && !clean.startsWith("?")) {
-      return `/public/${clean}`;
+      if (clean === "news" || clean.startsWith("news/")) {
+        const slug = clean.replace(/^news\/?/, "");
+        return publicNewsPath(slug || undefined);
+      }
+      return publicPagePath(clean);
     }
 
-    return `/${clean}`;
+    return publicPagePath(clean);
   }
+}
+
+function normalizePublicPath(path: string): string {
+  const withQuery = path.split("?")[0];
+  if (withQuery.startsWith("/public/news")) {
+    const slug = withQuery.replace(/^\/public\/news\/?/, "");
+    const qs = path.includes("?") ? path.slice(path.indexOf("?")) : "";
+    return `${publicNewsPath(slug || undefined)}${qs}`;
+  }
+  if (withQuery === "/public/news") {
+    const qs = path.includes("?") ? path.slice(path.indexOf("?")) : "";
+    return `${publicNewsPath()}${qs}`;
+  }
+  return publicPagePath(path);
 }
 
 function normalizeParsedUrl(url: URL, fallback: string): string {
   const host = url.hostname.toLowerCase();
   const isKnownHost = KNOWN_PUBLIC_HOSTS.has(host);
-  const isPublicPath = url.pathname.startsWith("/public/");
+  const isPublicPath =
+    url.pathname === "/" ||
+    url.pathname.startsWith("/public/") ||
+    url.pathname.startsWith("/articles");
 
   if (isKnownHost || isPublicPath) {
-    return `${url.pathname || "/"}${url.search}${url.hash}`;
+    const normalized = normalizePublicHref(`${url.pathname}${url.search}${url.hash}`);
+    return normalized;
   }
 
-  // External absolute URL — keep as-is
   if (/^https?:$/i.test(url.protocol)) {
     return fallback.startsWith("http") ? fallback : url.toString();
   }
 
-  return `${url.pathname || "/"}${url.search}${url.hash}`;
+  return normalizePublicHref(`${url.pathname}${url.search}${url.hash}`);
 }
 
-/**
- * Menu items are stored with full URLs (e.g. http://127.0.0.1:3000/public/home).
- * For internal pages, always use a relative path so links work on any domain.
- */
 export function resolvePublicMenuHref(item: Pick<PublicMenuItem, "type" | "target">): string {
   const target = String(item.target ?? "").trim();
   if (!target) return "#";
-
-  if (item.type !== "page") {
-    return normalizePublicHref(target);
-  }
-
   return normalizePublicHref(target);
 }
 
 /** Prefer relative paths when saving menu page items. */
 export function buildPublicPageMenuTarget(slug: string): string {
-  const clean = slug.replace(/^\/+/, "").replace(/^public\//, "");
-  return `/public/${clean}`;
+  return publicPagePath(slug);
 }
 
 /** Full public URL for admin display (Manage Pages, tooltips, copy). */

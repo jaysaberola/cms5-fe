@@ -37,13 +37,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     const denyCustomer = () => {
       if (!alive) return;
       setAccessState("blocked");
-      void router.replace("/public/home");
+      void router.replace("/");
     };
 
     const denyUnauthenticated = () => {
       if (!alive) return;
       setAccessState("blocked");
-      void router.replace("/");
+      const redirect = encodeURIComponent(router.asPath);
+      void router.replace(`/login?redirect=${redirect}`);
     };
 
     const allowCms = () => {

@@ -8,7 +8,7 @@ import CmsHelpGuideAvatar from "@/components/Help/CmsHelpGuideAvatar";
 import CmsHelpLiveCaption from "@/components/Help/CmsHelpLiveCaption";
 import CmsHelpPlaybackControls from "@/components/Help/CmsHelpPlaybackControls";
 import CmsHelpStepIllustration from "@/components/Help/CmsHelpStepIllustration";
-import { CMS_GUIDE_NAME, spokenStepScript } from "@/lib/cmsHelp/guideVoice";
+import { CMS_GUIDE_ROLE, spokenStepScript } from "@/lib/cmsHelp/guideVoice";
 import {
   getAriaPrefs,
   setAriaPrefs,
@@ -495,7 +495,7 @@ export default function CmsHelpTourOverlay({
         <div className="cms-help-tour__guide-bar">
           <CmsHelpGuideAvatar size="sm" speaking={talking && voiceOn} />
           <div className="cms-help-tour__guide-copy">
-            <strong>{CMS_GUIDE_NAME} is guiding you</strong>
+            <strong>{CMS_GUIDE_ROLE} is guiding you</strong>
             <span>
               {guideTitle} · Step {stepIndex + 1} of {totalSteps}
               {!voiceOn ? " · voice off" : talking ? " · speaking" : ""}

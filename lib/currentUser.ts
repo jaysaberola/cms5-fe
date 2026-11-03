@@ -1,5 +1,7 @@
+import { AxiosError } from "axios";
 import { accountService, User } from "@/services/accountService";
 import { isAdminLikeUser } from "@/lib/adminPreviewAccess";
+import { clearStoredAuthToken, readStoredAuthToken } from "@/lib/authToken";
 import { getUserPermissions } from "@/lib/userPermissions";
 import { resolveStorageAssetUrl } from "@/lib/storageAssets";
 
@@ -38,7 +40,22 @@ export function notifyCurrentUserUpdated() {
 
 let inflight: Promise<User> | null = null;
 
+function clearInvalidSession() {
+  clearStoredAuthToken();
+  storeCurrentUser(null);
+  notifyCurrentUserUpdated();
+}
+
+function isUnauthorizedError(error: unknown): boolean {
+  return error instanceof AxiosError && error.response?.status === 401;
+}
+
 async function refreshCurrentUser(): Promise<User> {
+  if (!readStoredAuthToken()) {
+    clearInvalidSession();
+    throw new Error("Not authenticated");
+  }
+
   if (!inflight) {
     inflight = accountService
       .getCurrentUser()
@@ -47,12 +64,25 @@ async function refreshCurrentUser(): Promise<User> {
         notifyCurrentUserUpdated();
         return user;
       })
+      .catch((error) => {
+        if (isUnauthorizedError(error)) {
+          clearInvalidSession();
+        }
+        throw error;
+      })
       .finally(() => {
         inflight = null;
       });
   }
 
   return inflight;
+}
+
+/** Background refresh; never leave a floating rejection (dev overlay / stale token). */
+function refreshCurrentUserInBackground() {
+  void refreshCurrentUser().catch(() => {
+    // Expected when auth_token is missing or invalid (e.g. after DB swap).
+  });
 }
 
 export function userPermissionsLoaded(user: User | null | undefined): boolean {
@@ -70,7 +100,7 @@ export async function getCurrentUserCached(opts?: { force?: boolean }): Promise<
       if (!userPermissionsLoaded(stored)) {
         return refreshCurrentUser();
       }
-      void refreshCurrentUser();
+      refreshCurrentUserInBackground();
       return stored;
     }
   }

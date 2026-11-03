@@ -10,8 +10,8 @@ export function getHeroPreloadImage(album?: PublicAlbum | null) {
   if (!first) return DEFAULT_HERO_IMAGE;
 
   return (
-    resolveStorageAssetUrl(first.image_url) ||
     resolveStorageAssetUrl(first.image_path) ||
+    resolveStorageAssetUrl(first.image_url) ||
     DEFAULT_HERO_IMAGE
   );
 }

@@ -1,0 +1,270 @@
+/* Static fallback when CSS modules hydrate late — targets global .public-site-header shell */
+
+.public-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: rgba(5, 5, 5, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "Outfit", system-ui, sans-serif;
+}
+
+.public-site-header [class*="topbar-inner"] {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 0 clamp(16px, 2.5vw, 32px);
+  min-height: 74px;
+}
+
+.public-site-header [class*="left"] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.public-site-header [class*="actions"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.public-site-header [class*="searchShell"] {
+  display: none;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.public-site-header [class*="searchShellOpen"] {
+  width: min(300px, 26vw) !important;
+  border-color: rgba(235, 81, 36, 0.55) !important;
+  background: #111111 !important;
+}
+
+.public-site-header [class*="searchToggle"] {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.public-site-header [class*="searchField"] {
+  color: #f8fafc !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.public-site-header [class*="searchField"]::placeholder {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+@media (min-width: 992px) {
+  .public-site-header [class*="searchShell"] {
+    display: flex !important;
+  }
+
+  .public-site-header [class*="search-mobile-btn"],
+  .public-site-header [class*="mobile-toggle"] {
+    display: none !important;
+  }
+
+  .public-site-header nav[class*="nav-wrap"] {
+    display: flex !important;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+}
+
+.public-site-header [class*="searchShell"]:not([class*="searchShellOpen"]) [class*="searchForm"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.public-site-header [class*="searchLabel"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+
+.public-site-header [class*="demo-btn"],
+.public-site-header .public-demo-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  background: #eb5124;
+  color: #fff !important;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.public-site-header svg {
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  flex-shrink: 0;
+}
+
+/* Main menu — static rules so nav works even if CSS modules load late */
+.public-site-header .public-site-nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.public-site-header .public-site-nav [class*="nav-list"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.public-site-header .public-site-nav :is(.menu-link, [class*="menu-link"]) {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 14px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.public-site-header .public-site-nav :is(.menu-link, [class*="menu-link"]):hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.public-site-header [class*="mobile-utilities"] {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .public-site-header [class*="mobile-toggle"],
+  .public-site-header [class*="search-mobile-btn"] {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .public-site-header .public-site-nav {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 64px;
+    z-index: 1000;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background: #0a0a0a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .public-site-header .public-site-nav[class*="nav-wrap-open"] {
+    display: block;
+  }
+
+  .public-site-header .public-site-nav [class*="nav-list"] {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px 0;
+  }
+
+  .public-site-header .public-site-nav :is(.menu-link, [class*="menu-link"]) {
+    width: 100%;
+    border-radius: 0;
+    padding: 14px 20px;
+    justify-content: flex-start;
+  }
+
+  .public-site-header [class*="mobile-toggle"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+  }
+
+  .public-site-header [class*="mobile-toggle-bar"] {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+  }
+
+  .public-site-header [class*="search-mobile-btn"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .public-site-header nav[class*="nav-wrap-open"] [class*="mobile-utilities"] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.public-site-footer-host {
+  display: block;
+  visibility: visible;
+  min-height: 0;
+}

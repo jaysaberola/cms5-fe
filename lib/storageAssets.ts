@@ -3,10 +3,18 @@
  * Accepts a relative storage path (`banners/foo.jpg`), `/storage/...`, or a full URL
  * from any host and rewrites it using NEXT_PUBLIC_API_URL.
  */
+function extractEmbeddedAbsoluteUrl(value: string): string | undefined {
+  const match = value.match(/\/storage\/+(https?:\/\/[^\s"']+)/i);
+  return match?.[1];
+}
+
 export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | undefined {
   const raw = (pathOrUrl ?? "").toString().trim().replace(/\\/g, "/");
   if (!raw) return undefined;
   if (raw.startsWith("blob:") || raw.startsWith("data:")) return raw;
+
+  const embeddedAbsolute = extractEmbeddedAbsoluteUrl(raw);
+  if (embeddedAbsolute) return embeddedAbsolute;
 
   // Pass through non-storage absolute URLs (frontend assets, CDN, etc.)
   if (/^https?:\/\//i.test(raw)) {
@@ -34,6 +42,8 @@ export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | unde
 
   storagePath = storagePath.replace(/^\/+/, "").split("?")[0]?.split("#")[0] ?? "";
   if (!storagePath) return undefined;
+
+  if (/^https?:\/\//i.test(storagePath)) return storagePath;
 
   const configuredBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
   const base = configuredBase.endsWith("/api") ? configuredBase.slice(0, -4) : configuredBase;

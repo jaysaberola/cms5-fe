@@ -125,7 +125,7 @@ export function resolveStepVisual(step: CmsHelpStep): HelpVisualConfig {
   } else if (step.route?.includes("/pages/")) {
     layout = "page-editor";
     highlight = "canvas";
-  } else if (step.route?.includes("/dashboard")) {
+  } else if (step.route?.includes("/admin-panel") || step.route?.includes("/dashboard")) {
     layout = "dashboard";
     highlight = "hero";
   } else if (

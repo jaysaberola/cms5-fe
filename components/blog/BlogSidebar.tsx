@@ -38,7 +38,7 @@ export default function BlogSidebar() {
     if (!value) return;
 
     const viewSuffix = view ? `&view=${encodeURIComponent(view)}` : "";
-    router.push(`/public/blog?search=${encodeURIComponent(value)}${viewSuffix}`);
+    router.push(`/blog?search=${encodeURIComponent(value)}${viewSuffix}`);
   };
 
   return (
@@ -65,7 +65,7 @@ export default function BlogSidebar() {
             <li key={cat} className="bo5-b p-t-8 p-b-8">
               <Link
                 href={{
-                  pathname: "/public/blog",
+                  pathname: "/blog",
                   query: {
                     category: cat,
                     ...(view ? { view } : {}),
@@ -91,7 +91,7 @@ export default function BlogSidebar() {
                 className="size16 bo-rad-10 wrap-pic-w of-hidden m-r-18"
                 style={{ position: "relative" }}
               >
-                <Link href={`/public/blog/${post.slug}`} style={{ textDecoration: "none" }}>
+                <Link href={`/blog/${post.slug}`} style={{ textDecoration: "none" }}>
                   <Image
                     src={`/images/${post.images[0]}`}
                     alt={post.title}
@@ -104,7 +104,7 @@ export default function BlogSidebar() {
 
               <div className="size28">
                 <Link
-                  href={`/public/blog/${post.slug}`}
+                  href={`/blog/${post.slug}`}
                   className="dis-block txt28 m-b-8"
                   style={{ textDecoration: "none" }}
                 >
@@ -125,7 +125,7 @@ export default function BlogSidebar() {
             <li key={month} className="flex-sb-m p-t-8 p-b-8">
               <Link
                 href={{
-                  pathname: "/public/blog",
+                  pathname: "/blog",
                   query: {
                     month,
                     ...(view ? { view } : {}),

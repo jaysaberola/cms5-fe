@@ -2,8 +2,6 @@
 
 import { useCmsHelp } from "@/lib/cmsHelp/CmsHelpContext";
 import CmsHelpGuideAvatar from "@/components/Help/CmsHelpGuideAvatar";
-import { CMS_GUIDE_NAME } from "@/lib/cmsHelp/guideVoice";
-
 export default function CmsHelpLauncher() {
   const { mode, openBrowse } = useCmsHelp();
 
@@ -13,8 +11,8 @@ export default function CmsHelpLauncher() {
     <button
       type="button"
       className="cms-help-launcher"
-      aria-label={`Open ${CMS_GUIDE_NAME} CMS guide`}
-      title={`${CMS_GUIDE_NAME} — CMS Guide Library`}
+      aria-label="Open CMS guide library"
+      title="CMS guide library"
       onClick={() => openBrowse()}
     >
       <CmsHelpGuideAvatar size="sm" />

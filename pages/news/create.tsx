@@ -1,94 +1,102 @@
-"use client";
-
 import AdminLayout from "@/components/Layout/AdminLayout";
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import NewsEditorMetaFields from "@/components/News/NewsEditorMetaFields";
+import { extractGrapesParts } from "@/lib/grapesContent";
 import { toast } from "@/lib/toast";
 import { createArticle, fetchArticleCategories, ArticleCategory } from "@/services/articleService";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import CmsModuleShell from "@/components/Modules/CmsModuleShell";
-import {
-  CmsSettingsField,
-  CmsSettingsFileField,
-  CmsSettingsFooter,
-  CmsSettingsGrid,
-  CmsSettingsLayout,
-  CmsSettingsSection,
-} from "@/components/Modules/CmsSettingsForm";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-const TinyEditor = dynamic(() => import("@/components/UI/Editor"), {
+const GrapesEditor = dynamic(() => import("@/components/UI/GrapesEditor"), {
   ssr: false,
-  loading: () => <div className="page-editor__editor-placeholder">Loading editor...</div>,
+  loading: () => <div className="page-editor__editor-placeholder">Loading visual builder...</div>,
+});
+
+const DEFAULT_CONTENT = "";
+
+type NewsSnapshot = {
+  title: string;
+  date: string;
+  category: string;
+  grapesContent: string;
+  teaser: string;
+  isPublished: boolean;
+  isFeatured: boolean;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
+};
+
+const emptySnapshot = (): NewsSnapshot => ({
+  title: "",
+  date: new Date().toISOString().slice(0, 10),
+  category: "",
+  grapesContent: DEFAULT_CONTENT,
+  teaser: "",
+  isPublished: true,
+  isFeatured: false,
+  seoTitle: "",
+  seoDescription: "",
+  seoKeywords: "",
 });
 
 function CreateNews() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [category, setCategory] = useState("");
+  const [grapesContent, setGrapesContent] = useState(DEFAULT_CONTENT);
+  const [teaser, setTeaser] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [content, setContent] = useState("");
-  const [teaser, setTeaser] = useState("");
-
   const [isPublished, setIsPublished] = useState(true);
   const [isFeatured, setIsFeatured] = useState(false);
-
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [seoKeywords, setSeoKeywords] = useState("");
-
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-
   const [categories, setCategories] = useState<ArticleCategory[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!title || !date || !content || !teaser || !banner || !thumbnail) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+  const buildSnapshot = useCallback(
+    (): NewsSnapshot => ({
+      title,
+      date,
+      category,
+      grapesContent,
+      teaser,
+      isPublished,
+      isFeatured,
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+    }),
+    [
+      title,
+      date,
+      category,
+      grapesContent,
+      teaser,
+      isPublished,
+      isFeatured,
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+    ],
+  );
 
-    if (!category) {
-      toast.error("Please select a category");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      await createArticle({
-        title,
-        date,
-        category_id: Number(category),
-        content,
-        teaser,
-        banner,
-        thumbnail,
-        status: isPublished ? "published" : "private",
-        is_featured: isFeatured,
-        meta_title: seoTitle || title,
-        meta_keyword: seoKeywords,
-        meta_description: seoDescription || teaser,
-      });
-
-      toast.success("News saved successfully");
-      router.push("/news");
-    } catch (err: any) {
-      toast.error("Failed to save news");
-      console.error(err);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
-      if (thumbnailPreview) URL.revokeObjectURL(thumbnailPreview);
-    };
-  }, [bannerPreview, thumbnailPreview]);
+  const isDirty = useMemo(() => {
+    const base = emptySnapshot();
+    base.date = date;
+    return (
+      JSON.stringify(base) !== JSON.stringify(buildSnapshot()) ||
+      Boolean(banner || thumbnail)
+    );
+  }, [buildSnapshot, date, banner, thumbnail]);
 
   useEffect(() => {
     fetchArticleCategories()
@@ -97,193 +105,166 @@ function CreateNews() {
       .finally(() => setLoadingCategories(false));
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (bannerPreview?.startsWith("blob:")) URL.revokeObjectURL(bannerPreview);
+      if (thumbnailPreview?.startsWith("blob:")) URL.revokeObjectURL(thumbnailPreview);
+    };
+  }, [bannerPreview, thumbnailPreview]);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [isDirty]);
+
   const fillSeoFromDetails = () => {
     if (!seoTitle.trim()) setSeoTitle(title);
     if (!seoDescription.trim()) setSeoDescription(teaser);
   };
 
+  const articleHasBody = (content: string) => {
+    const parts = extractGrapesParts(content);
+    return Boolean(parts.grapes_html?.trim() || content.trim());
+  };
+
+  const handleSave = async (opts?: { publish?: boolean }) => {
+    if (!title.trim() || !date || !teaser.trim()) {
+      toast.error("Please fill in all required fields in News Details");
+      setSettingsOpen(true);
+      return;
+    }
+    if (!category) {
+      toast.error("Please select a category");
+      setSettingsOpen(true);
+      return;
+    }
+    if (!banner || !thumbnail) {
+      toast.error("Article banner and thumbnail are required");
+      setSettingsOpen(true);
+      return;
+    }
+    if (!articleHasBody(grapesContent)) {
+      toast.error("Article content is required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const nextPublished = opts?.publish ? true : isPublished;
+
+      const response = await createArticle({
+        title,
+        date,
+        category_id: Number(category),
+        content: grapesContent,
+        teaser,
+        banner,
+        thumbnail,
+        status: nextPublished ? "published" : "private",
+        is_featured: isFeatured,
+        meta_title: seoTitle || title,
+        meta_keyword: seoKeywords,
+        meta_description: seoDescription || teaser,
+      });
+
+      const created = response.data?.data ?? response.data;
+      const newId = Number(created?.id);
+
+      toast.success("News saved successfully");
+
+      if (Number.isFinite(newId) && newId > 0) {
+        router.push(`/news/edit/${newId}`);
+      } else {
+        router.push("/news");
+      }
+    } catch (err) {
+      toast.error("Failed to save news");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveRef = useRef(handleSave);
+  handleSaveRef.current = handleSave;
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        void handleSaveRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const handleBannerChange = (file: File | null) => {
+    setBanner(file);
+    setBannerPreview(file ? URL.createObjectURL(file) : null);
+  };
+
+  const handleThumbnailChange = (file: File | null) => {
+    setThumbnail(file);
+    setThumbnailPreview(file ? URL.createObjectURL(file) : null);
+  };
+
+  const metaFields = (
+    <NewsEditorMetaFields
+      mode="create"
+      title={title}
+      onTitleChange={setTitle}
+      onTitleBlur={fillSeoFromDetails}
+      date={date}
+      onDateChange={setDate}
+      category={category}
+      onCategoryChange={setCategory}
+      categories={categories}
+      loadingCategories={loadingCategories}
+      teaser={teaser}
+      onTeaserChange={setTeaser}
+      onTeaserBlur={fillSeoFromDetails}
+      isPublished={isPublished}
+      onIsPublishedChange={setIsPublished}
+      isFeatured={isFeatured}
+      onIsFeaturedChange={setIsFeatured}
+      bannerPreview={bannerPreview}
+      onBannerChange={handleBannerChange}
+      thumbnailPreview={thumbnailPreview}
+      onThumbnailChange={handleThumbnailChange}
+      seoTitle={seoTitle}
+      onSeoTitleChange={setSeoTitle}
+      seoDescription={seoDescription}
+      onSeoDescriptionChange={setSeoDescription}
+      seoKeywords={seoKeywords}
+      onSeoKeywordsChange={setSeoKeywords}
+    />
+  );
+
   return (
-    <CmsModuleShell
-      title="Create News"
-      description="Write and publish a news article with banner, thumbnail, content, and SEO settings."
-      icon="fa-solid fa-newspaper"
-      stats={[
-        { label: "Status", value: isPublished ? "Published" : "Private", tone: isPublished ? "published" : "private" },
-        { label: "Featured", value: isFeatured ? "Yes" : "No", tone: isFeatured ? "accent" : "default" },
-        { label: "Category", value: categories.find((item) => String(item.id) === category)?.name || "—" },
-      ]}
-    >
-      <CmsSettingsLayout>
-        <CmsSettingsSection
-          title="News Details"
-          description="Basic article information and visibility settings."
-          icon="fa-solid fa-file-lines"
-        >
-          <CmsSettingsGrid columns={2}>
-            <CmsSettingsField label="Title" required span={2}>
-              <input
-                type="text"
-                className="form-control"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={fillSeoFromDetails}
-                placeholder="Enter news title"
-              />
-            </CmsSettingsField>
-            <CmsSettingsField label="Date" required>
-              <input
-                type="date"
-                className="form-control"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </CmsSettingsField>
-            <CmsSettingsField label="Category" required>
-              <select
-                className="form-select"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                disabled={loadingCategories}
-              >
-                <option value="">
-                  {loadingCategories ? "Loading categories..." : "Select category"}
-                </option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </CmsSettingsField>
-            <CmsSettingsField label="Visibility">
-              <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="visibilitySwitch"
-                  checked={isPublished}
-                  onChange={() => setIsPublished(!isPublished)}
-                />
-                <label className="form-check-label" htmlFor="visibilitySwitch">
-                  {isPublished ? "Published" : "Private"}
-                </label>
-              </div>
-            </CmsSettingsField>
-            <CmsSettingsField label="Featured" hint="Maximum of 3 featured news items on the public site.">
-              <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="featuredSwitch"
-                  checked={isFeatured}
-                  onChange={() => setIsFeatured(!isFeatured)}
-                />
-                <label className="form-check-label" htmlFor="featuredSwitch">
-                  Mark as featured
-                </label>
-              </div>
-            </CmsSettingsField>
-            <CmsSettingsField label="Teaser" required span={2} hint="Short summary shown in news listings.">
-              <textarea
-                className="form-control"
-                rows={3}
-                value={teaser}
-                onChange={(e) => setTeaser(e.target.value)}
-                onBlur={fillSeoFromDetails}
-                placeholder="Write a short teaser for this article"
-              />
-            </CmsSettingsField>
-          </CmsSettingsGrid>
-        </CmsSettingsSection>
-
-        <CmsSettingsSection
-          title="Media"
-          description="Upload the banner and thumbnail images for this article."
-          icon="fa-solid fa-image"
-        >
-          <CmsSettingsGrid columns={2}>
-            <CmsSettingsFileField
-              label="Article Banner"
-              previewUrl={bannerPreview}
-              fileName={banner?.name}
-              hint="Recommended wide image • JPG or PNG"
-              accept="image/*"
-              previewVariant="logo"
-              onChange={(event) => {
-                const file = event.target.files?.[0] || null;
-                setBanner(file);
-                setBannerPreview(file ? URL.createObjectURL(file) : null);
-              }}
-            />
-            <CmsSettingsFileField
-              label="Article Thumbnail"
-              previewUrl={thumbnailPreview}
-              fileName={thumbnail?.name}
-              hint="Square or listing image • JPG or PNG"
-              accept="image/*"
-              previewVariant="favicon"
-              onChange={(event) => {
-                const file = event.target.files?.[0] || null;
-                setThumbnail(file);
-                setThumbnailPreview(file ? URL.createObjectURL(file) : null);
-              }}
-            />
-          </CmsSettingsGrid>
-        </CmsSettingsSection>
-
-        <CmsSettingsSection
-          title="Content"
-          description="Write the full article body."
-          icon="fa-solid fa-align-left"
-        >
-          <TinyEditor value={content} onChange={setContent} />
-        </CmsSettingsSection>
-
-        <CmsSettingsSection
-          title="SEO Settings"
-          description="Search engine title, description, and keywords."
-          icon="fa-solid fa-magnifying-glass"
-        >
-          <CmsSettingsGrid columns={1}>
-            <CmsSettingsField label="SEO Title" hint="Leave blank to use the article title.">
-              <input
-                type="text"
-                className="form-control"
-                value={seoTitle}
-                onChange={(e) => setSeoTitle(e.target.value)}
-              />
-            </CmsSettingsField>
-            <CmsSettingsField label="SEO Description" hint="Leave blank to use the teaser.">
-              <textarea
-                className="form-control"
-                rows={4}
-                value={seoDescription}
-                onChange={(e) => setSeoDescription(e.target.value)}
-              />
-            </CmsSettingsField>
-            <CmsSettingsField label="SEO Keywords">
-              <input
-                type="text"
-                className="form-control"
-                value={seoKeywords}
-                onChange={(e) => setSeoKeywords(e.target.value)}
-                placeholder="news, updates, company"
-              />
-            </CmsSettingsField>
-          </CmsSettingsGrid>
-        </CmsSettingsSection>
-
-        <CmsSettingsFooter onSave={handleSubmit} saveLabel="Save News" saving={saving}>
-          <button
-            type="button"
-            className="btn btn-outline-secondary cms-module__toolbar-btn"
-            onClick={() => router.push("/news")}
-          >
-            Cancel
-          </button>
-        </CmsSettingsFooter>
-      </CmsSettingsLayout>
-    </CmsModuleShell>
+    <GrapesEditor
+      fullScreen
+      value={grapesContent}
+      onChange={setGrapesContent}
+      pageTitle={title || "Create News"}
+      saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
+      onBack={() => {
+        if (isDirty && !window.confirm("Discard this article and go back?")) return;
+        router.push("/news");
+      }}
+      onSave={() => void handleSave()}
+      onPublish={() => void handleSave({ publish: true })}
+      onOpenSettings={() => setSettingsOpen(true)}
+      onCloseSettings={() => setSettingsOpen(false)}
+      settingsOpen={settingsOpen}
+      settingsPanel={metaFields}
+      settingsTitle="News settings"
+    />
   );
 }
 

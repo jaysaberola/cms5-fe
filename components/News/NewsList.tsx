@@ -29,12 +29,21 @@ export default function NewsList({ articles, showFeatured = false }: Props) {
   return (
     <>
       {featured && (
-        <NewsReveal>
-          <FeaturedNewsItem article={featured} />
-        </NewsReveal>
+        <>
+          <p className={`${styles.sectionLabel} public-news-section-label`}>Featured story</p>
+          <NewsReveal>
+            <FeaturedNewsItem article={featured} />
+          </NewsReveal>
+        </>
       )}
 
-      <div className={styles.grid}>
+      {rest.length > 0 ? (
+        <p className={`${styles.sectionLabel} public-news-section-label`}>
+          {featured ? "More stories" : "Latest articles"}
+        </p>
+      ) : null}
+
+      <div className={`${styles.grid} public-news-grid`}>
         {rest.map((article, index) => (
           <NewsReveal key={article.id} delay={index * 80}>
             <NewsCard article={article} delay={index * 80} />

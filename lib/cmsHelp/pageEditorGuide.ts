@@ -125,27 +125,6 @@ function buildSteps(mode: "create" | "edit"): CmsHelpStep[] {
       placement: "left",
     },
     {
-      title: "Classic TinyMCE toolbar",
-      body: "If you switched to TinyMCE, this bar has save, preview, and page switching for the text editor.",
-      target: tour.pageEditorToolbar,
-      route,
-      placement: "bottom",
-      skipIfMissing: true,
-    },
-    {
-      title: "Choose your editor",
-      body: "Visual Builder is recommended for layout-heavy pages. TinyMCE is a classic rich-text editor for simpler content.",
-      details: [
-        "Visual Builder — drag blocks, sections, images, and columns.",
-        "TinyMCE — type and format text like a word processor.",
-        "Stick to one editor per page for best results.",
-      ],
-      target: tour.pageEditorToggle,
-      route,
-      placement: "bottom",
-      skipIfMissing: true,
-    },
-    {
       title: "Page Details",
       body: "Set the page title, internal label, album, menu group, and published/private visibility here.",
       details: [

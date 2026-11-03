@@ -1761,6 +1761,14 @@ body.cms-visual-studio-open .cms-admin-main {
   color: #94a3b8 !important;
 }
 
+.cms-visual-builder-settings .text-danger {
+  color: #f87171 !important;
+}
+
+.cms-visual-builder-settings img.img-fluid {
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
 .cms-visual-builder-settings .page-editor__settings-body,
 .cms-visual-builder-settings .page-editor__settings-card .card-body,
 .cms-visual-builder-settings .accordion-body {

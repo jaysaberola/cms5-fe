@@ -29,7 +29,7 @@ function readJsonStorage<T>(key: string, fallback: T): T {
     return fallback;
   }
 }
-const WEB_DESIGN_SERVICES_URL = "/public/services?tab=webdesign";
+const WEB_DESIGN_SERVICES_URL = "/services?tab=webdesign";
 
 function isInternalHref(href: string) {
   return href.startsWith("/") && !href.startsWith("//");
@@ -40,7 +40,7 @@ function resolveSecondaryBannerUrl(url: string, label: string) {
   const isCustomPackages =
     normalizedLabel.includes("custom package") || normalizedLabel === "custom packages";
 
-  if (isCustomPackages || !url || url === "#" || url === "/public/products") {
+  if (isCustomPackages || !url || url === "#" || url === "/products") {
     return WEB_DESIGN_SERVICES_URL;
   }
 
@@ -49,10 +49,37 @@ function resolveSecondaryBannerUrl(url: string, label: string) {
 
 const DEFAULT_HERO_IMAGE = "/images/homescreenify-sA3wymYqyaI-unsplash.jpg";
 
+/** Inline so first paint never shows a full-width 1920px img before CSS modules load. */
+const HERO_CARD_STYLE = {
+  position: "relative",
+  minHeight: "min(88vh, 820px)",
+  overflow: "hidden",
+} as const;
+
+const HERO_STRIP_STYLE = {
+  position: "absolute",
+  inset: 0,
+  overflow: "hidden",
+} as const;
+
+const HERO_SLIDE_STYLE = {
+  position: "absolute",
+  inset: 0,
+} as const;
+
+const HERO_MEDIA_STYLE = {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  display: "block",
+} as const;
+
 function resolveSlideImage(banner: { image_url?: string; image_path?: string }) {
   const resolved =
-    resolveStorageAssetUrl(banner.image_url) ||
-    resolveStorageAssetUrl(banner.image_path);
+    resolveStorageAssetUrl(banner.image_path) ||
+    resolveStorageAssetUrl(banner.image_url);
 
   return resolved || DEFAULT_HERO_IMAGE;
 }
@@ -107,12 +134,11 @@ export default function MainBanner({ album }: MainBannerProps) {
     return true;
   };
 
+  /** Empty on first render so SSR and hydration match; localStorage applied after mount. */
   const [visibilityOverrides, setVisibilityOverrides] = useState<
     Record<string, { is_active?: boolean }>
-  >(() => readJsonStorage(HOME_BANNER_VISIBILITY_STORAGE_KEY, {}));
-  const [fontOverrides, setFontOverrides] = useState<Record<string, any>>(() =>
-    readJsonStorage(HOME_BANNER_FONT_STORAGE_KEY, {})
-  );
+  >({});
+  const [fontOverrides, setFontOverrides] = useState<Record<string, any>>({});
 
   useEffect(() => {
     setVisibilityOverrides(readJsonStorage(HOME_BANNER_VISIBILITY_STORAGE_KEY, {}));
@@ -146,6 +172,22 @@ export default function MainBanner({ album }: MainBannerProps) {
   }, [album.banners, album.banner_type, albumBannerType, visibilityOverrides]);
   const [current, setCurrent] = useState(0);
   const [exiting, setExiting] = useState<number | null>(null);
+  const [heroMediaReady, setHeroMediaReady] = useState(false);
+  const [heroInteractive, setHeroInteractive] = useState(false);
+
+  useEffect(() => {
+    setHeroInteractive(true);
+  }, []);
+
+  useEffect(() => {
+    setHeroMediaReady(false);
+  }, [album?.id]);
+
+  useEffect(() => {
+    if (heroMediaReady) return;
+    const fallback = window.setTimeout(() => setHeroMediaReady(true), 4500);
+    return () => window.clearTimeout(fallback);
+  }, [heroMediaReady, banners.length]);
 
   const transitionInClass = resolveBannerTransitionClass(album as Record<string, unknown>, "in");
   const transitionOutClass = resolveBannerTransitionClass(album as Record<string, unknown>, "out");
@@ -315,63 +357,61 @@ export default function MainBanner({ album }: MainBannerProps) {
           ? false
           : undefined;
 
-  const titleStyle = titleFont
-    ? ({
-        fontFamily: titleFont,
-        ...(typeof titleFontSize === "number" && Number.isFinite(titleFontSize)
-          ? { fontSize: Math.max(10, Math.min(120, titleFontSize)) }
-          : {}),
-        ...(typeof titleBold === "boolean" ? { fontWeight: titleBold ? 800 : 400 } : {}),
-      } as const)
-    : (
-        typeof titleFontSize === "number" || typeof titleBold === "boolean"
-          ? ({
-              ...(typeof titleFontSize === "number" && Number.isFinite(titleFontSize)
-                ? { fontSize: Math.max(10, Math.min(120, titleFontSize)) }
-                : {}),
-              ...(typeof titleBold === "boolean" ? { fontWeight: titleBold ? 800 : 400 } : {}),
-            } as const)
-          : undefined
-      );
+  const buildInlineStyle = (
+    parts: Array<Record<string, string | number> | undefined | false>,
+  ): React.CSSProperties | undefined => {
+    const merged = Object.assign({}, ...parts.filter(Boolean));
+    return Object.keys(merged).length ? merged : undefined;
+  };
 
-  const subtitleStyle =
-    descriptionFont || typeof descriptionFontSize === "number" || typeof descriptionBold === "boolean"
-      ? ({
-          ...(descriptionFont ? { fontFamily: descriptionFont } : {}),
-          ...(typeof descriptionFontSize === "number" && Number.isFinite(descriptionFontSize)
-            ? { fontSize: Math.max(10, Math.min(120, descriptionFontSize)) }
-            : {}),
-          ...(typeof descriptionBold === "boolean" ? { fontWeight: descriptionBold ? 600 : 400 } : {}),
-        } as const)
-      : undefined;
+  const titleStyle = buildInlineStyle([
+    titleFont ? { fontFamily: titleFont } : undefined,
+    typeof titleFontSize === "number" && Number.isFinite(titleFontSize)
+      ? { fontSize: Math.max(10, Math.min(120, titleFontSize)) }
+      : undefined,
+    typeof titleBold === "boolean" ? { fontWeight: titleBold ? 800 : 400 } : undefined,
+  ]);
 
-  const primaryButtonStyle =
-    buttonFont || typeof buttonFontSize === "number" || typeof buttonBold === "boolean"
-      ? ({
-          ...(buttonFont ? { fontFamily: buttonFont } : {}),
-          ...(typeof buttonFontSize === "number" && Number.isFinite(buttonFontSize)
-            ? { fontSize: Math.max(10, Math.min(120, buttonFontSize)) }
-            : {}),
-          ...(typeof buttonBold === "boolean" ? { fontWeight: buttonBold ? 800 : 400 } : {}),
-        } as const)
-      : undefined;
+  const subtitleStyle = buildInlineStyle([
+    descriptionFont ? { fontFamily: descriptionFont } : undefined,
+    typeof descriptionFontSize === "number" && Number.isFinite(descriptionFontSize)
+      ? { fontSize: Math.max(10, Math.min(120, descriptionFontSize)) }
+      : undefined,
+    typeof descriptionBold === "boolean" ? { fontWeight: descriptionBold ? 600 : 400 } : undefined,
+  ]);
 
-  const secondaryButtonStyle = buttonFont || typeof buttonFontSize === "number" || typeof buttonBold === "boolean"
-    ? ({
-        ...(buttonFont ? { fontFamily: buttonFont } : {}),
-        ...(typeof buttonFontSize === "number" && Number.isFinite(buttonFontSize)
-          ? { fontSize: Math.max(10, Math.min(120, buttonFontSize)) }
-          : {}),
-        ...(typeof buttonBold === "boolean" ? { fontWeight: buttonBold ? 700 : 400 } : {}),
-      } as const)
-    : undefined;
+  const primaryButtonStyle = buildInlineStyle([
+    buttonFont ? { fontFamily: buttonFont } : undefined,
+    typeof buttonFontSize === "number" && Number.isFinite(buttonFontSize)
+      ? { fontSize: Math.max(10, Math.min(120, buttonFontSize)) }
+      : undefined,
+    typeof buttonBold === "boolean" ? { fontWeight: buttonBold ? 800 : 400 } : undefined,
+  ]);
+
+  const secondaryButtonStyle = buildInlineStyle([
+    buttonFont ? { fontFamily: buttonFont } : undefined,
+    typeof buttonFontSize === "number" && Number.isFinite(buttonFontSize)
+      ? { fontSize: Math.max(10, Math.min(120, buttonFontSize)) }
+      : undefined,
+    typeof buttonBold === "boolean" ? { fontWeight: buttonBold ? 700 : 400 } : undefined,
+  ]);
 
   return (
     <section className={styles.bannerWrap}>
       <div className={styles.bannerHero}>
-        <div className={styles.bannerCard}>
+        <div
+          className={styles.bannerCard}
+          style={HERO_CARD_STYLE}
+          data-public-hero="1"
+          data-public-hero-ready={heroMediaReady ? "true" : undefined}
+        >
       {/* SLIDER STRIP */}
-      <div className={styles.sliderStrip}>
+      <div
+        className={styles.sliderStrip}
+        style={HERO_STRIP_STYLE}
+        data-public-hero-strip
+        data-hero-interactive={heroInteractive ? "1" : undefined}
+      >
         {banners.map((banner, index) => {
           const isActive = index === current;
           const isExiting = index === exiting;
@@ -393,30 +433,33 @@ export default function MainBanner({ album }: MainBannerProps) {
                 ...bannerAnimationClasses(animationName, shouldAnimate),
               ].filter(Boolean).join(" ")}
               style={{
+                ...HERO_SLIDE_STYLE,
                 ["--animate-duration" as any]: `${BANNER_ANIMATION_DURATION_MS}ms`,
               }}
             >
               {isVideoBanner(banner) ? (
                 <video
                   className={styles.slideVideo}
-                  src={resolveStorageAssetUrlWithFallback(banner.image_url || banner.image_path, DEFAULT_HERO_IMAGE)}
+                  style={HERO_MEDIA_STYLE}
+                  src={resolveStorageAssetUrlWithFallback(banner.image_path || banner.image_url, DEFAULT_HERO_IMAGE)}
                   autoPlay
                   loop
                   muted
                   playsInline
                   preload={index === 0 ? "auto" : "metadata"}
+                  onLoadedData={index === 0 ? () => setHeroMediaReady(true) : undefined}
                 />
               ) : (
                 <img
                   src={resolveSlideImage(banner)}
                   alt=""
                   className={styles.slideImage}
-                  width={1920}
-                  height={1080}
+                  style={HERO_MEDIA_STYLE}
                   sizes="100vw"
                   fetchPriority={index === 0 && isActive ? "high" : "auto"}
                   loading={index === 0 ? "eager" : "lazy"}
                   decoding={index === 0 ? "async" : "async"}
+                  onLoad={index === 0 ? () => setHeroMediaReady(true) : undefined}
                 />
               )}
             </div>
@@ -448,6 +491,8 @@ export default function MainBanner({ album }: MainBannerProps) {
                 href={resolvedPrimaryUrl}
                 className={styles.ctaPrimary}
                 style={primaryButtonStyle}
+                scroll={false}
+                prefetch
               >
                 {resolvedPrimaryText}
                 <span aria-hidden="true">→</span>
@@ -464,6 +509,8 @@ export default function MainBanner({ album }: MainBannerProps) {
                 href={resolvedSecondaryUrl}
                 className={styles.ctaSecondary}
                 style={secondaryButtonStyle}
+                scroll={false}
+                prefetch
               >
                 {resolvedSecondaryText}
               </Link>

@@ -1,0 +1,45 @@
+.heroSlot {
+  overflow: hidden;
+  max-height: min(88vh, 820px);
+  opacity: 1;
+  transition: max-height 0.32s ease-out, opacity 0.28s ease-out;
+}
+
+.heroSlot[data-public-hero-slot="hidden"] {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pagePending {
+  min-height: 40vh;
+}
+
+.main {
+  transition: opacity 0.28s ease-out, transform 0.28s ease-out;
+}
+
+.mainTransitioning {
+  opacity: 0.42;
+  transform: translateY(4px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroSlot {
+    transition: none;
+  }
+
+  .heroSlot[data-public-hero-slot="hidden"] {
+    max-height: 0;
+  }
+
+  .main {
+    transition: none;
+  }
+
+  .mainTransitioning {
+    opacity: 1;
+    transform: none;
+  }
+}

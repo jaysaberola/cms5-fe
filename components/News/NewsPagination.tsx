@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { publicNewsPath } from "@/lib/publicPaths";
 import styles from "@/styles/news.module.css";
 
 type PaginationMeta = {
@@ -29,7 +30,8 @@ export default function NewsPagination({ pagination }: Props) {
     });
 
     const qs = params.toString();
-    return qs ? `/public/news?${qs}` : "/public/news";
+    const base = publicNewsPath();
+    return qs ? `${base}?${qs}` : base;
   };
 
   const pages: number[] = [];
@@ -41,7 +43,12 @@ export default function NewsPagination({ pagination }: Props) {
   }
 
   return (
-    <nav className={styles.pagination} aria-label="News pagination">
+    <nav className={styles.paginationWrap} aria-label="News pagination">
+      <p className={styles.paginationSummary}>
+        Page {current_page} of {last_page}
+        {pagination.total > 0 ? ` · ${pagination.total} articles` : ""}
+      </p>
+      <div className={styles.pagination}>
       <Link
         href={buildHref(Math.max(1, current_page - 1))}
         className={`${styles.pageBtn} ${current_page <= 1 ? styles.pageBtnDisabled : ""}`}
@@ -68,6 +75,7 @@ export default function NewsPagination({ pagination }: Props) {
       >
         Next
       </Link>
+      </div>
     </nav>
   );
 }

@@ -8,6 +8,6 @@ export function registerCmsContactFormBlock(editor: any) {
     label: "WebFocus Contact Form",
     category: "CMS Forms",
     attributes: { class: "fa fa-envelope" },
-    content: `<div class="public-contact" style="max-width:720px;margin:0 auto;padding:24px;">${buildCmsContactFormMarkup()}</div>`,
+    content: `<div class="exec-tpl exec-contact"><div class="exec-container exec-reveal"><div class="exec-contact-form-panel">${buildCmsContactFormMarkup()}</div></div></div>`,
   });
 }

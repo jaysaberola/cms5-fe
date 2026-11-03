@@ -68,10 +68,13 @@ export default function LandingTopbar() {
   const closeMobileMenu = () => setMobileOpen(false);
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""} ${mobileOpen ? styles.menuOpen : ""}`}>
+    <header
+      className={`public-site-header ${scrolled ? "public-site-header-scrolled" : ""} ${styles.header} ${scrolled ? styles.scrolled : ""} ${mobileOpen ? styles.menuOpen : ""}`}
+    >
+      <div className={styles.headerAccent} aria-hidden="true" />
       <div className={styles["topbar-inner"]}>
         <div className={styles.left}>
-          <Link href="/public/home" className={styles.brand} onClick={closeMobileMenu} aria-label="WebFocus Solutions, Inc." prefetch>
+          <Link href="/" className={styles.brand} onClick={closeMobileMenu} aria-label="WebFocus CMS Demo" prefetch scroll={false}>
             {!logoFailed ? (
               <img
                 src={LOGO_SRC}
@@ -95,22 +98,25 @@ export default function LandingTopbar() {
               </span>
             )}
           </Link>
+          <span className={styles.brandBadge}>CMS Demo</span>
         </div>
 
         <nav
           id="landing-topbar-nav"
-          className={`${styles["nav-wrap"]} ${mobileOpen ? styles["nav-wrap-open"] : ""}`}
+          className={`public-site-nav ${styles["nav-wrap"]} ${mobileOpen ? styles["nav-wrap-open"] : ""}`}
           aria-label="Main navigation"
         >
           <div className={styles["mobile-utilities"]}>
-            <Link href="/public/search" className={styles["mobile-utility-link"]} onClick={closeMobileMenu}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <Link href="/search" className={styles["mobile-utility-link"]} onClick={closeMobileMenu} prefetch scroll={false}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <circle cx="11" cy="11" r="7" />
                 <path d="M20 20l-3.5-3.5" />
               </svg>
               Search
             </Link>
-            <SignInDropdown variant="menuTile" onNavigate={closeMobileMenu} />
+            {!isStaffLoggedIn ? (
+              <SignInDropdown variant="menuTile" onNavigate={closeMobileMenu} />
+            ) : null}
           </div>
           <ul className={styles["nav-list"]}>
             <Menu isMobile={mobileOpen} onNavigate={closeMobileMenu} />
@@ -120,27 +126,30 @@ export default function LandingTopbar() {
         <HeaderSearch />
 
         <div className={styles.actions}>
-          <Link href="/public/search" className={`${styles["search-mobile-btn"]} ${styles["desktop-only"]}`} aria-label="Search" title="Search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <Link href="/contact-us" className={`${styles["demo-btn"]} public-demo-cta`} prefetch scroll={false}>
+            Book a call
+          </Link>
+
+          {!isStaffLoggedIn ? (
+            <>
+              <div className={styles.actionsDivider} aria-hidden="true" />
+              <div className={styles["icon-group"]}>
+                <div className={styles.headerAccount}>
+                  <SignInDropdown
+                    buttonClassName={styles["portal-btn"]}
+                    chevronClassName={styles["portal-chevron"]}
+                  />
+                </div>
+              </div>
+            </>
+          ) : null}
+
+          <Link href="/search" className={styles["search-mobile-btn"]} aria-label="Search" title="Search" prefetch scroll={false}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
               <path d="M20 20l-3.5-3.5" />
             </svg>
           </Link>
-
-          <div className={styles["icon-group"]}>
-            <div className={styles.headerAccount}>
-              <SignInDropdown
-                buttonClassName={`${styles["portal-btn"]}${isStaffLoggedIn ? ` ${styles["portal-btnAccount"]}` : ""}`}
-                chevronClassName={styles["portal-chevron"]}
-              />
-            </div>
-
-            <Link href="/public/contact-us" className={styles["contact-btn"]} aria-label="Contact us" title="Contact us">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-            </Link>
-          </div>
 
           <button
             type="button"

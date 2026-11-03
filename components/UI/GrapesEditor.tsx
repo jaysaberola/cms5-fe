@@ -11,6 +11,7 @@ import {
   enhanceFoundationBlocks,
   normalizeStudioCategory,
   registerAdvancedCmsBlocks,
+  registerInazumaTemplateBlocks,
   registerBasicStudioBlocks,
   registerFormStudioBlocks,
   consolidateFormsBlockCategory,
@@ -18,7 +19,8 @@ import {
 import { registerCanvasWebsiteTemplates } from "./grapesWebsiteTemplates";
 import { applyContactUsPageSlugPolicy, registerContactUsPageTemplates } from "./grapesContactUsTemplates";
 import { registerCmsContactFormBlock } from "./grapesContactForm";
-import { CANVAS7_CANVAS_STYLES } from "@/lib/canvasTemplateCatalog";
+import { CANVAS7_CANVAS_STYLES, htmlNeedsCanvas7Assets } from "@/lib/canvasTemplateCatalog";
+import { runExecutraCanvasInFrame } from "@/lib/executraCanvasBoot";
 import {
   filterBlockPanel,
   isEditorCanvasEmpty,
@@ -69,6 +71,7 @@ type GrapesEditorProps = {
   onCloseSettings?: () => void;
   settingsOpen?: boolean;
   settingsPanel?: ReactNode;
+  settingsTitle?: string;
   pageId?: number;
   pageSlug?: string;
   onPageSelect?: (pageId: number) => void;
@@ -192,6 +195,15 @@ function resolveGrapesParser(editor: any) {
   return em?.Parser ?? editor.Parser ?? null;
 }
 
+function grapesCanvasIsReady(editor: any): boolean {
+  if (!editor?.Canvas) return false;
+  try {
+    return Boolean(editor.Canvas.getFrameEl?.());
+  } catch {
+    return false;
+  }
+}
+
 function canUseGrapesEditor(editor: any): boolean {
   if (!editor || editor.destroyed) return false;
   const em = editor.getModel?.();
@@ -200,6 +212,34 @@ function canUseGrapesEditor(editor: any): boolean {
   if (typeof em.Selectors?.getAll !== "function") return false;
   if (typeof em.Css?.getAll !== "function") return false;
   return true;
+}
+
+/** Prevent Grapes refreshCanvas crashes during Fast Refresh / after destroy. */
+function installSafeCanvasRefresh(editor: any) {
+  const em = editor?.getModel?.();
+  if (em && typeof em.refreshCanvas === "function") {
+    const original = em.refreshCanvas.bind(em);
+    em.refreshCanvas = (opts?: { tools?: boolean }) => {
+      if (em.destroyed || !grapesCanvasIsReady(editor)) return;
+      try {
+        original(opts);
+      } catch {
+        // canvas torn down (HMR, navigation)
+      }
+    };
+  }
+
+  if (typeof editor.refresh === "function") {
+    const originalRefresh = editor.refresh.bind(editor);
+    editor.refresh = (opts?: { tools?: boolean }) => {
+      if (editor.destroyed || !grapesCanvasIsReady(editor)) return;
+      try {
+        originalRefresh(opts);
+      } catch {
+        // ignore
+      }
+    };
+  }
 }
 
 function safeApplyGrapesContent(editor: any, body: string, css: string): boolean {
@@ -911,6 +951,7 @@ export default function GrapesEditor({
   onCloseSettings,
   settingsOpen = false,
   settingsPanel,
+  settingsTitle = "Page settings",
   pageId,
   pageSlug = "",
   onPageSelect,
@@ -1034,6 +1075,16 @@ export default function GrapesEditor({
     };
 
     jsRef.current = extractContentParts(valueRef.current).js;
+    const initialCanvasHtml = extractContentParts(valueRef.current).body;
+    const canvasStyles = [
+      "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap",
+      "/css/executra-cms-theme.css",
+      "/css/executra-studio-canvas.css",
+      "/css/cms-studio-buttons.css",
+    ];
+    if (htmlNeedsCanvas7Assets(initialCanvasHtml)) {
+      canvasStyles.push(...CANVAS7_CANVAS_STYLES);
+    }
 
     const editor = grapesjs.init({
       container: hostRef.current,
@@ -1058,7 +1109,7 @@ export default function GrapesEditor({
         ],
       },
       canvas: {
-        styles: ["/css/cms-studio-buttons.css", ...CANVAS7_CANVAS_STYLES],
+        styles: canvasStyles,
         scrollableCanvas: true,
         infiniteCanvas: false,
       },
@@ -1516,6 +1567,7 @@ export default function GrapesEditor({
     registerContactUsPageTemplates(editor);
     applyContactUsPageSlugPolicy(editor, pageSlugRef.current);
     registerAdvancedCmsBlocks(editor);
+    registerInazumaTemplateBlocks(editor);
     registerDesignedStudioBlocks(editor);
     registerBasicStudioBlocks(editor);
     registerFormStudioBlocks(editor);
@@ -1656,6 +1708,23 @@ export default function GrapesEditor({
     );
     registerStudioRteActions(editor);
     const syncPageScroll = () => unlockCanvasPageScroll(editor);
+
+    let executraBootTimer: number | null = null;
+    const syncExecutraCanvas = () => {
+      if (!editorAlive || !canUseGrapesEditor(editor) || !grapesCanvasIsReady(editor)) return;
+      const frame = editor.Canvas.getFrameEl() as HTMLIFrameElement | null;
+      runExecutraCanvasInFrame(frame?.contentWindow ?? null);
+    };
+    const queueExecutraCanvasBoot = () => {
+      if (!editorAlive) return;
+      if (executraBootTimer !== null) window.clearTimeout(executraBootTimer);
+      executraBootTimer = window.setTimeout(() => {
+        executraBootTimer = null;
+        syncExecutraCanvas();
+      }, 180);
+    };
+
+    installSafeCanvasRefresh(editor);
 
     editor.on("rte:enable", (_view: unknown, rte: unknown) => {
       rteInstanceRef.current = rte;
@@ -2422,7 +2491,7 @@ export default function GrapesEditor({
       }
 
       const fitCanvas = () => {
-        if (!editorAlive) return;
+        if (!editorAlive || !grapesCanvasIsReady(editor)) return;
         if (canvasInteractionGuards.isDragging()) {
           canvasInteractionGuards.pinViewport();
           return;
@@ -2525,6 +2594,8 @@ export default function GrapesEditor({
     editor.on("canvas:frame:load:body", syncPageScroll);
     editor.on("component:add", syncPageScroll);
     editor.on("component:remove", syncPageScroll);
+    editor.on("load", queueExecutraCanvasBoot);
+    editor.on("canvas:frame:load:body", queueExecutraCanvasBoot);
     editor.on("change:device", syncStudioDeviceState);
     editor.on("load", refreshCanvasLayout);
     editor.on("change:device", refreshCanvasLayout);
@@ -2795,10 +2866,16 @@ export default function GrapesEditor({
 
     return () => {
       editorAlive = false;
+      if (executraBootTimer !== null) {
+        window.clearTimeout(executraBootTimer);
+        executraBootTimer = null;
+      }
       pendingTimers.forEach((id) => window.clearTimeout(id));
       pendingTimers.length = 0;
 
       try {
+        editor.off("load", queueExecutraCanvasBoot);
+        editor.off("canvas:frame:load:body", queueExecutraCanvasBoot);
         if (emitTimerRef.current !== null) {
           window.clearTimeout(emitTimerRef.current);
         }
@@ -2833,6 +2910,9 @@ export default function GrapesEditor({
         rteToolbarCleanupRef.current?.();
         rteToolbarCleanupRef.current = null;
         canvasInteractionGuards.cleanup();
+        const em = editor.getModel?.();
+        (editor as { destroyed?: boolean }).destroyed = true;
+        if (em) (em as { destroyed?: boolean }).destroyed = true;
         editorRef.current = null;
         setEditorReady(false);
         editor.destroy();
@@ -3463,9 +3543,9 @@ export default function GrapesEditor({
       </div>
 
       {settingsOpen && settingsPanel ? (
-        <aside className="cms-visual-builder-settings" aria-label="Page settings">
+        <aside className="cms-visual-builder-settings" aria-label={settingsTitle}>
           <div className="cms-visual-builder-settings__header">
-            <strong>Page settings</strong>
+            <strong>{settingsTitle}</strong>
             {onCloseSettings ? (
               <button type="button" className="cms-visual-builder-settings__close" title="Close page settings" onClick={onCloseSettings}>
                 <i className="fa-solid fa-xmark" />

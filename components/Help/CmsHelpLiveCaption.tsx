@@ -1,7 +1,7 @@
 "use client";
 
 import CmsHelpGuideAvatar from "@/components/Help/CmsHelpGuideAvatar";
-import { CMS_GUIDE_NAME } from "@/lib/cmsHelp/guideVoice";
+import { CMS_GUIDE_ROLE } from "@/lib/cmsHelp/guideVoice";
 import { currentSpokenSentenceRange, karaokeTokens } from "@/lib/cmsHelp/ariaSpeech";
 
 type CaptionVariant = "chat" | "tour" | "dock";
@@ -60,7 +60,7 @@ export default function CmsHelpLiveCaption({
       <CmsHelpGuideAvatar size="sm" speaking={speaking} />
       <div className="cms-help-caption__bubble">
         <span className="cms-help-caption__name">
-          {CMS_GUIDE_NAME} {speaking ? "is saying" : "said"}
+          {CMS_GUIDE_ROLE} {speaking ? "is saying" : "said"}
         </span>
         <p>
           <CmsHelpKaraoke text={sentence} spokenChars={spokenInSentence} />

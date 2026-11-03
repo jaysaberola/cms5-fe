@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PublicFooter } from "@/services/publicPageService";
-import { getFooterCached, useStoredPublicFooter } from "@/lib/publicFooterCache";
-import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
+import { getFooterCached, isExecutraFooter, useStoredPublicFooter } from "@/lib/publicFooterCache";
+import { composeContentFromGrapes, extractGrapesParts, sanitizeGrapesPublicHtml } from "@/lib/grapesContent";
 import { rewritePublicHtmlHrefs } from "@/lib/publicMenuLinks";
+import { DEFAULT_PUBLIC_FOOTER_HTML } from "@/lib/defaultPublicFooterHtml";
 import { activateCmsPageAnimations } from "@/lib/publicPageScripts";
 
 function buildFooterHtml(footer: PublicFooter | null) {
@@ -17,7 +18,7 @@ function buildFooterHtml(footer: PublicFooter | null) {
   } else {
     const parsed = extractGrapesParts(footer.contents || "");
     html = composeContentFromGrapes({
-      grapes_html: (footer.grapes_html || "").trim() || parsed.grapes_html,
+      grapes_html: sanitizeGrapesPublicHtml((footer.grapes_html || "").trim() || parsed.grapes_html),
       grapes_css: (footer.grapes_css || "").trim() || parsed.grapes_css,
       grapes_js: (footer.grapes_js || "").trim() || parsed.grapes_js,
     });
@@ -29,13 +30,14 @@ function buildFooterHtml(footer: PublicFooter | null) {
 export default function LandingFooter() {
   const cachedFooter = useStoredPublicFooter();
   const [fetchedFooter, setFetchedFooter] = useState<PublicFooter | null>(null);
-  const footer = fetchedFooter ?? cachedFooter;
+  const footerCandidate = fetchedFooter ?? cachedFooter;
+  const footer = isExecutraFooter(footerCandidate) ? footerCandidate : null;
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let alive = true;
 
-    getFooterCached()
+    getFooterCached({ force: true })
       .then((data) => {
         if (alive && data) setFetchedFooter(data);
       })
@@ -48,7 +50,10 @@ export default function LandingFooter() {
     };
   }, []);
 
-  const html = useMemo(() => buildFooterHtml(footer), [footer]);
+  const html = useMemo(() => {
+    const built = buildFooterHtml(footer);
+    return built || DEFAULT_PUBLIC_FOOTER_HTML;
+  }, [footer]);
 
   useEffect(() => {
     const root = contentRef.current;
@@ -70,10 +75,6 @@ export default function LandingFooter() {
   useEffect(() => {
     return activateCmsPageAnimations(contentRef.current);
   }, [html]);
-
-  if (!html) {
-    return <footer className="public-site-footer-host public-site-footer-host--placeholder" aria-hidden="true" />;
-  }
 
   return (
     <footer className="public-site-footer-host">

@@ -50,7 +50,7 @@ export default function AuthLayout({
   return (
     <>
       <Head>
-        <title>{title} | WebFocus Admin Portal</title>
+        <title>{`${title} | WebFocus Admin Portal`}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href={AUTH_FONT_HREF} rel="stylesheet" />

@@ -1211,7 +1211,7 @@ function HomeBanner() {
             Public homepage preview
           </div>
           <iframe
-            src="/public/home"
+            src="/"
             style={{ width: "100%", height: 650, border: 0, display: "block" }}
             title="Public homepage preview"
           />

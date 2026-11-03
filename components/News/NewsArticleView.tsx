@@ -31,7 +31,7 @@ type Props = {
 
 export default function NewsArticleView({
   article,
-  backHref = "/public/news",
+  backHref = "/articles",
   backLabel = "Back to News",
   previewBanner,
 }: Props) {
@@ -109,7 +109,7 @@ export default function NewsArticleView({
               <div className={styles.detailAuthor}>
                 <span
                   className={styles.detailAuthorAvatar}
-                  style={{ background: `linear-gradient(135deg, ${categoryStyle.accent}, #004b93)` }}
+                  style={{ background: `linear-gradient(135deg, ${categoryStyle.accent}, #1a1a1a)` }}
                 >
                   {getAuthorInitials(article.user)}
                 </span>
@@ -130,10 +130,10 @@ export default function NewsArticleView({
         <NewsReveal delay={120}>
           <footer className={styles.detailEnd}>
             <div className={styles.detailEndCard}>
-              <span className={styles.detailEndLabel}>WebFocus Newsroom</span>
-              <p>Stay updated with company releases, technical guides, and industry insights.</p>
+              <span className={styles.detailEndLabel}>Keep reading</span>
+              <p>Explore more insights on growth, client delivery, and building a practice that compounds.</p>
               <Link href={backHref} className={styles.detailEndBtn}>
-                Browse all articles
+                View all articles
               </Link>
             </div>
           </footer>

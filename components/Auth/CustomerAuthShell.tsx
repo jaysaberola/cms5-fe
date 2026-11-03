@@ -12,7 +12,7 @@ type CustomerAuthShellProps = {
 
 export default function CustomerAuthShell({
   children,
-  backHref = "/public/home",
+  backHref = "/",
   backLabel = "Go back to website",
 }: CustomerAuthShellProps) {
   return (
@@ -32,7 +32,7 @@ export default function CustomerAuthShell({
 
         <p className={styles.footer}>
           Copyright © {new Date().getFullYear()} WebFocus Solutions, Inc. All Rights Reserved.{" "}
-          <Link href="/public/privacy-policy">Privacy Policy</Link>
+          <Link href="/privacy-policy">Privacy Policy</Link>
         </p>
       </div>
     </div>
@@ -48,8 +48,8 @@ export function CustomerTermsNotice({ variant = "signup" }: { variant?: "login" 
   return (
     <div className={styles.termsBox}>
       By clicking {actionText} below, you agree to WebFocus Solutions, Inc.&apos;s Universal{" "}
-      <Link href="/public/terms-of-service">Terms of Service</Link> and{" "}
-      <Link href="/public/privacy-policy">Privacy Policy</Link>.
+      <Link href="/terms-of-service">Terms of Service</Link> and{" "}
+      <Link href="/privacy-policy">Privacy Policy</Link>.
     </div>
   );
 }

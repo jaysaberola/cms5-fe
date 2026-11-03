@@ -8,6 +8,7 @@ import {
   CANVAS7_ONEPAGE_DESIGNER,
   CANVAS7_ONEPAGE_PARALLAX,
 } from "./grapesCanvas7OnePages";
+import { INAZUMA_CORPORATE_HOME } from "./grapesInazumaCorporate";
 
 export const CMS_TEMPLATES_CATEGORY = "Website Templates";
 export const CMS_SITE_TEMPLATE_TYPE = "cms-site-template";
@@ -16,6 +17,7 @@ const SITE_HTML_BY_KEY: Record<string, string> = {
   "onepage-default": CANVAS7_ONEPAGE_DEFAULT,
   "onepage-designer": CANVAS7_ONEPAGE_DESIGNER,
   "onepage-parallax": CANVAS7_ONEPAGE_PARALLAX,
+  "inazuma-corporate": INAZUMA_CORPORATE_HOME,
 };
 
 const preparedHtmlCache = new Map<string, string>();
@@ -350,6 +352,15 @@ SITE_HTML_BY_KEY.medical = MEDICAL_TEMPLATE;
 SITE_HTML_BY_KEY.restaurant = RESTAURANT_TEMPLATE;
 
 export const CANVAS7_WEBSITE_TEMPLATES = [
+  {
+    id: "cms-site-inazuma-corporate",
+    label: "Inazuma Corporate (MIT)",
+    demoPage: "https://ranyeh24.github.io/inazuma/",
+    thumb: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=640&q=80",
+    templateKey: "inazuma-corporate",
+    fast: true,
+    content: INAZUMA_CORPORATE_HOME,
+  },
   {
     id: "cms-site-seo",
     label: "SEO Website",

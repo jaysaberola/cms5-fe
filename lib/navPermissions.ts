@@ -18,7 +18,7 @@ export type CmsNavItem = {
 };
 
 export const CMS_NAV_ITEMS: CmsNavItem[] = [
-  { label: "Dashboard", icon: "fa-solid fa-house", href: "/dashboard", collapseMenus: true, permissions: ["dashboard.view"] },
+  { label: "Dashboard", icon: "fa-solid fa-house", href: "/admin-panel", collapseMenus: true, permissions: ["dashboard.view"] },
   { label: "Pages", icon: "fa-solid fa-file-lines", href: "/pages", permissions: ["pages.view"] },
   {
     label: "Banners",

@@ -10,5 +10,8 @@ export function revealAppDocument() {
   });
 
   document.body.style.removeProperty("display");
+  document.body.style.removeProperty("visibility");
   document.body.classList.add("page-loaded");
+  document.documentElement.classList.add("page-loaded");
+  document.documentElement.classList.remove("public-booting");
 }

@@ -1,6 +1,7 @@
+import { ADMIN_LOGIN_PATH } from "@/lib/publicPaths";
 import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
 
-const AUTH_ROUTES = new Set(["/", "/forgot-password", "/reset-password"]);
+const AUTH_ROUTES = new Set([ADMIN_LOGIN_PATH, "/forgot-password", "/reset-password"]);
 
 export function isAuthRoute(pathname: string) {
   return AUTH_ROUTES.has(pathname);

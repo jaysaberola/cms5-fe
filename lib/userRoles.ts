@@ -55,15 +55,21 @@ export function isSalesRoleUser(user: unknown) {
   return getUserRoleNames(user).some((role) => role === "sales staff" || role === "sales admin");
 }
 
+export const ADMIN_PANEL_PATH = "/admin-panel";
+
 export function resolveStaffLoginRedirect(user: unknown, requestedRedirect?: string) {
   const redirect = typeof requestedRedirect === "string" ? requestedRedirect.trim() : "";
-  const safeRedirect = redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "";
+  let safeRedirect = redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "";
+
+  if (safeRedirect === "/dashboard" || safeRedirect.startsWith("/dashboard/")) {
+    safeRedirect = safeRedirect.replace(/^\/dashboard(?=\/|$)/, ADMIN_PANEL_PATH);
+  }
 
   if (safeRedirect && !safeRedirect.startsWith("/public/commerce-admin")) {
     return safeRedirect;
   }
   if (!isStaffUser(user)) return "/";
-  return "/dashboard";
+  return ADMIN_PANEL_PATH;
 }
 
 const COMMERCE_STAFF_ROLES = new Set([

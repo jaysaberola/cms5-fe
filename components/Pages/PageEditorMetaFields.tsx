@@ -1,8 +1,6 @@
 import Tooltip from "@/components/UI/Tooltip";
 import PageEditorSettingsPanel from "@/components/Pages/PageEditorSettingsPanel";
 
-type EditorType = "tinymce" | "grapesjs";
-
 type AlbumRow = { id: number; name?: string };
 type MenuRow = { id: number; name?: string };
 
@@ -28,9 +26,6 @@ type PageEditorMetaFieldsProps = {
   onSeoDescriptionChange: (value: string) => void;
   seoKeywords: string;
   onSeoKeywordsChange: (value: string) => void;
-  editorType?: EditorType;
-  onEditorTypeChange?: (next: EditorType) => void;
-  showEditorToggle?: boolean;
 };
 
 export default function PageEditorMetaFields({
@@ -55,48 +50,12 @@ export default function PageEditorMetaFields({
   onSeoDescriptionChange,
   seoKeywords,
   onSeoKeywordsChange,
-  editorType,
-  onEditorTypeChange,
-  showEditorToggle = false,
 }: PageEditorMetaFieldsProps) {
   const lockCoreFields = mode === "edit" && pageId === 1;
   const showRelations = mode === "create" || pageId !== 1;
 
   return (
     <div className="page-editor__settings-stack">
-      {showEditorToggle && onEditorTypeChange ? (
-        <PageEditorSettingsPanel title="Editor">
-          <div className="page-editor__editor-toggle">
-            <div className="form-check form-check-inline">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="studioEditorType"
-                id="studioEditorTinyMce"
-                checked={editorType === "tinymce"}
-                onChange={() => onEditorTypeChange("tinymce")}
-              />
-              <label className="form-check-label" htmlFor="studioEditorTinyMce">
-                TinyMCE
-              </label>
-            </div>
-            <div className="form-check form-check-inline">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="studioEditorType"
-                id="studioEditorGrapes"
-                checked={editorType === "grapesjs"}
-                onChange={() => onEditorTypeChange("grapesjs")}
-              />
-              <label className="form-check-label" htmlFor="studioEditorGrapes">
-                Visual Builder
-              </label>
-            </div>
-          </div>
-        </PageEditorSettingsPanel>
-      ) : null}
-
       <PageEditorSettingsPanel title="Page Details" tourId="page-editor-details">
         <div className="mb-3">
           <label className="form-label d-flex align-items-center">

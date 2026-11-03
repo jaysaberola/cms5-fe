@@ -128,7 +128,7 @@ export default function Sidebar({ isOpen, isMobile, onClose, width }: SidebarPro
       </div>
 
       <div className="sb-viewsite">
-        <Link href="/public/home" target="_blank" rel="noopener noreferrer">
+        <Link href="/" target="_blank" rel="noopener noreferrer">
           <span className="sb-viewsite-dot" />
           View Website
           <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: 10, opacity: 0.7 }} />

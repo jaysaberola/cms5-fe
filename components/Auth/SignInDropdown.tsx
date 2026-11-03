@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { createPortal } from "react-dom";
-import { getCurrentUserCached, notifyCurrentUserUpdated, resolveAvatarUrl } from "@/lib/currentUser";
+import { getCurrentUserCached, notifyCurrentUserUpdated } from "@/lib/currentUser";
 import { readStoredAuthToken } from "@/lib/authToken";
-import { getRoleDisplayLabel, isStaffUser } from "@/lib/userRoles";
+import { isStaffUser } from "@/lib/userRoles";
 import { scheduleIdleTask, useStoredPublicAuthState } from "@/lib/publicAuthState";
-import { signOutAdminAndStayOnSite } from "@/lib/publicSignOut";
-import { customerDisplayName } from "@/services/publicCustomerService";
 import styles from "@/styles/signInDropdown.module.css";
 
 type SignInDropdownProps = {
@@ -131,105 +129,9 @@ export default function SignInDropdown({
     onNavigate?.();
   };
 
-  const signOutAdmin = () => {
-    close();
-    signOutAdminAndStayOnSite();
-  };
-
-  const [adminAvatarFailed, setAdminAvatarFailed] = useState(false);
-
-  useEffect(() => {
-    setAdminAvatarFailed(false);
-  }, [adminUser?.avatar]);
-
-  const adminRoleLabel = getRoleDisplayLabel(adminUser);
-  const adminDisplayName = customerDisplayName(adminUser?.fname, adminUser?.lname) || "Admin User";
-  const adminInitial = (adminDisplayName.charAt(0) || "A").toUpperCase();
-  const adminAvatarUrl = resolveAvatarUrl(adminUser?.avatar);
-  const showAdminAvatar = Boolean(adminAvatarUrl && !adminAvatarFailed);
-  const showCmsAdminLink = isStaffUser(adminUser);
-
+  /* Staff sessions stay in localStorage but the public header stays visitor-facing; use /admin-panel (or /) directly. */
   if (adminUser) {
-    return (
-      <div className={`${styles.root}${isMenuTile ? ` ${styles.menuTile}` : ""}`} ref={rootRef}>
-        <button
-          type="button"
-          className={`${styles.loggedInBtn}${isMenuTile ? ` ${styles.menuTileBtn}` : ""} ${buttonClassName || ""}`}
-          aria-haspopup="menu"
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-        >
-          <span className={styles.avatar}>
-            {showAdminAvatar ? (
-              <img
-                src={adminAvatarUrl}
-                alt=""
-                width={24}
-                height={24}
-                onError={() => setAdminAvatarFailed(true)}
-              />
-            ) : (
-              adminInitial
-            )}
-          </span>
-          <span className={styles.loggedInName}>{adminDisplayName}</span>
-          {isMenuTile ? null : (
-            <i className={`fas fa-chevron-down ${chevronClassName || ""}`} aria-hidden="true" />
-          )}
-        </button>
-        <FloatingPanel
-          open={open}
-          className={styles.accountPanel}
-          role="menu"
-          ariaLabel="Admin menu"
-          onClose={() => setOpen(false)}
-          panelRef={panelRef}
-        >
-          <div className={styles.accountHeader}>
-            <span className={styles.avatarLarge}>
-              {showAdminAvatar ? (
-                <img
-                  src={adminAvatarUrl}
-                  alt=""
-                  width={40}
-                  height={40}
-                  onError={() => setAdminAvatarFailed(true)}
-                />
-              ) : (
-                adminInitial
-              )}
-            </span>
-            <div className={styles.accountMeta}>
-              <p className={styles.accountName}>{adminDisplayName}</p>
-              <p className={styles.accountEmail}>{adminUser.email}</p>
-              <p className={styles.accountRole}>{adminRoleLabel}</p>
-            </div>
-          </div>
-
-          <nav className={styles.accountMenu}>
-            {showCmsAdminLink ? (
-              <a
-                href="/dashboard"
-                className={styles.menuItem}
-                role="menuitem"
-                onClick={(event) => {
-                  event.preventDefault();
-                  close();
-                  window.location.assign("/dashboard");
-                }}
-              >
-                <i className="fa-solid fa-layer-group" aria-hidden="true" />
-                CMS Admin
-              </a>
-            ) : null}
-          </nav>
-
-          <button type="button" className={styles.signOutItem} role="menuitem" onClick={signOutAdmin}>
-            Sign out
-          </button>
-        </FloatingPanel>
-      </div>
-    );
+    return null;
   }
 
   if (isMenuTile) {
@@ -292,21 +194,10 @@ function GuestSignInPanel({ onClose }: { onClose: () => void }) {
         ×
       </button>
 
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Administrator</h3>
-        <p className={styles.sectionText}>WebFocus staff can sign in to manage website content in the CMS.</p>
-        <div className={styles.adminLinks}>
-          <Link href="/?redirect=/dashboard" className={styles.adminLink} onClick={onClose}>
-            <i className="fa-solid fa-layer-group" aria-hidden="true" />
-            CMS Admin Sign In
-          </Link>
-        </div>
-      </section>
-
       <section className={styles.quickLinks}>
         <p className={styles.quickLabel}>Quick Links</p>
         <div className={styles.quickRow}>
-          <Link href="/public/contact-us" className={styles.quickLink} onClick={onClose}>
+          <Link href="/contact-us" className={styles.quickLink} onClick={onClose}>
             Contact Support
           </Link>
         </div>

@@ -1,0 +1,116 @@
+.wrap {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(280px, 42vh, 420px);
+  background: #050505;
+}
+
+.slides {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.slideActive {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slideImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  animation: subBannerKen 14s ease-out forwards;
+}
+
+@keyframes subBannerKen {
+  to {
+    transform: scale(1);
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.35) 0%, rgba(5, 5, 5, 0.82) 100%);
+  z-index: 2;
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  min-height: clamp(280px, 42vh, 420px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.5rem 1.25rem;
+  color: #fff;
+}
+
+.kicker {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: fadeUp 0.7s ease both;
+}
+
+.title {
+  margin: 0 0 0.65rem;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  animation: fadeUp 0.7s ease 0.08s both;
+}
+
+.lead {
+  margin: 0;
+  max-width: 640px;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #e2e8f0;
+  animation: fadeUp 0.7s ease 0.16s both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fallback {
+  min-height: clamp(280px, 42vh, 420px);
+  display: grid;
+  place-items: center;
+  background: #050505;
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+}
+
+.fallback h1 {
+  margin: 0;
+  font-family: 'Outfit', system-ui, sans-serif;
+}

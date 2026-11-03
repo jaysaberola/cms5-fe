@@ -1,0 +1,199 @@
+/* Executra site footer — always loaded on public pages (footer renders outside Grapes canvas) */
+
+.public-site-footer-host {
+  width: 100%;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.public-site-footer-host .exec-footer,
+.public-site-footer-host .biz-footer {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  background: #050505;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: "Outfit", system-ui, sans-serif;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 2.5rem) 0;
+}
+
+.public-site-footer-host .exec-footer-inner,
+.public-site-footer-host .biz-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.public-site-footer-host .exec-footer-top,
+.public-site-footer-host .biz-footer-grid {
+  display: grid;
+  gap: 2.5rem 2rem;
+  grid-template-columns: 1fr;
+  padding-bottom: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .public-site-footer-host .exec-footer-top,
+  .public-site-footer-host .biz-footer-grid {
+    grid-template-columns: minmax(0, 1.35fr) repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.public-site-footer-host .exec-footer-brand {
+  max-width: 22rem;
+}
+
+.public-site-footer-host .exec-footer-logo,
+.public-site-footer-host .biz-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  color: #fff !important;
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.public-site-footer-host .exec-footer-logo mark,
+.public-site-footer-host .biz-footer-logo mark {
+  background: transparent !important;
+  color: #eb5124 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: inherit;
+  font-weight: 500;
+}
+
+.public-site-footer-host .exec-footer-tagline {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.public-site-footer-host .exec-footer-col h5,
+.public-site-footer-host .biz-footer h5 {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.public-site-footer-host .exec-footer-col ul,
+.public-site-footer-host .biz-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.public-site-footer-host .exec-footer-col li,
+.public-site-footer-host .biz-footer li {
+  margin: 0 0 0.55rem;
+}
+
+.public-site-footer-host .exec-footer-col a,
+.public-site-footer-host .biz-footer a {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+
+.public-site-footer-host .exec-footer-col a:hover,
+.public-site-footer-host .biz-footer a:hover {
+  color: #eb5124;
+}
+
+.public-site-footer-host .exec-footer-col p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.public-site-footer-host .exec-footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.public-site-footer-host .exec-footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.public-site-footer-host .exec-footer-social a:hover {
+  border-color: rgba(235, 81, 36, 0.55);
+  color: #fff !important;
+}
+
+.public-site-footer-host .exec-footer-bar,
+.public-site-footer-host .biz-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding: 1.25rem 0 clamp(1.25rem, 3vw, 1.75rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.public-site-footer-host .exec-footer-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.public-site-footer-host .exec-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.15rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.public-site-footer-host .exec-btn--primary {
+  background: #eb5124;
+  color: #fff !important;
+}
+
+.public-site-footer-host .exec-btn--primary:hover {
+  background: #d9481c;
+}
+
+.public-site-footer-host .exec-btn--line {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff !important;
+}
+
+.public-site-footer-host .exec-btn--line:hover {
+  border-color: #eb5124;
+  color: #eb5124 !important;
+}

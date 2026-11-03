@@ -87,7 +87,7 @@ body,
 }
 
 .public-site-main.pt-0 {
-  min-height: calc(100dvh - 80px);
+  min-height: 0;
 }
 
 .public-site-footer-host--placeholder {
@@ -119,11 +119,8 @@ body,
   background: rgba(37, 99, 235, 0.1);
 }
 
-/* Home CMS scroll reveal — opacity only to avoid layout shift */
+/* Home CMS scroll reveal — armed via public-boot.css (`html.biz-anim-armed`) */
 .public-page-content .wsi-reveal {
-  opacity: 0;
-  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--wsi-reveal-delay, 0ms);
   transform: none !important;
 }
 
@@ -136,7 +133,7 @@ body,
   transform: none !important;
 }
 
-.public-page-content .wsi-reveal.is-visible {
+html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
   opacity: 1 !important;
 }
 
@@ -1065,4 +1062,65 @@ body,
     transform: none !important;
     animation: none !important;
   }
+}
+
+/* Executra public chrome — https://executra.webflow.io/ */
+.public-site-shell--executra {
+  background: #050505;
+}
+
+.public-site-shell--executra .public-site-header {
+  background: rgba(5, 5, 5, 0.55);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  font-family: "Outfit", "Poppins", sans-serif;
+}
+
+.public-site-shell--executra .public-site-header-scrolled {
+  background: rgba(5, 5, 5, 0.92);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.public-site-shell--executra [class*="headerAccent"] {
+  display: none;
+}
+
+/* Footer chrome: see executra-cms-theme.css (.exec-footer) */
+
+.public-site-shell--executra a[class*="contactLink"] {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.public-site-shell--executra .nav-list :global(.menu-link) {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.public-site-shell--executra .nav-list :global(.menu-link:hover),
+.public-site-shell--executra .nav-list :global(.menu-item--active > .menu-row > .menu-link),
+.public-site-shell--executra .nav-list :global(.menu-item.current > .menu-row > .menu-link) {
+  color: #fff !important;
+}
+
+.public-site-shell .menu-item.current > .menu-link,
+.public-site-shell .menu-item.current > .menu-row > .menu-link {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.public-site-shell .menu-link__dot {
+  display: none !important;
+}
+
+.public-site-shell--executra .public-demo-cta,
+.public-site-shell--executra a[class*="demo-btn"] {
+  background: #eb5124 !important;
+  border-radius: 2px !important;
+  font-size: 0.6875rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+html:not(.exec-anim-armed) .exec-tpl .exec-reveal {
+  opacity: 1 !important;
+  transform: none !important;
 }

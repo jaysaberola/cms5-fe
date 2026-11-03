@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { clearStoredAuthToken } from "@/lib/authToken";
 import { notifyCurrentUserUpdated, storeCurrentUser } from "@/lib/currentUser";
+import { ADMIN_LOGIN_PATH } from "@/lib/publicPaths";
+import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL + "/api";
 
@@ -48,22 +50,25 @@ axiosInstance.interceptors.response.use(
         const headerVal: any = (error.config as any)?.headers?.["X-No-Auth-Redirect"] ?? (error.config as any)?.headers?.["x-no-auth-redirect"];
         const noRedirect = headerVal === true || headerVal === "true" || headerVal === 1 || headerVal === "1";
         const path = window.location?.pathname || "";
-        const isPublicPage = path.startsWith("/public");
+        const isPublicPage = isPublicSiteRoute(path);
+        const isAuthPage =
+          path === ADMIN_LOGIN_PATH ||
+          path === "/forgot-password" ||
+          path.startsWith("/reset-password");
 
-        // On public pages, a 401 can happen if an endpoint is protected.
-        // Do not force-navigate to login (/) unless we're in the admin area.
-        if (!noRedirect && !isPublicPage) {
+        if (!noRedirect && !isPublicPage && !isAuthPage) {
             clearStoredAuthToken();
             storeCurrentUser(null);
             notifyCurrentUserUpdated();
-          window.location.href = "/";
+          const redirect = encodeURIComponent(`${path}${window.location.search || ""}`);
+          window.location.href = `${ADMIN_LOGIN_PATH}?redirect=${redirect}`;
         }
       }
     }
 
     // Log helpful debug information for 5xx/4xx responses
     try {
-      if (error.response?.status !== 429) {
+      if (error.response?.status !== 429 && error.response?.status !== 401) {
         console.error("Axios error:", {
           url: error.config?.url,
           method: error.config?.method,

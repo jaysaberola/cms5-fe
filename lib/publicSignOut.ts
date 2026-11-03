@@ -1,20 +1,19 @@
 import { logout as adminLogout } from "@/services/authService";
 import { customerLogout } from "@/services/publicCustomerService";
+import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
 
-const PROTECTED_PUBLIC_PATHS = [
-  "/public/checkout",
-];
+const PROTECTED_PUBLIC_PATHS = ["/checkout"];
 
 export function getPublicSignOutRedirect(): string {
-  if (typeof window === "undefined") return "/public/home";
+  if (typeof window === "undefined") return "/";
 
   const { pathname, search } = window.location;
   const isProtected = PROTECTED_PUBLIC_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
 
-  if (isProtected || !pathname.startsWith("/public/")) {
-    return "/public/home";
+  if (isProtected || !isPublicSiteRoute(pathname)) {
+    return "/";
   }
 
   return `${pathname}${search}`;

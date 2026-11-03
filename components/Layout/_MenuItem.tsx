@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import type { PublicMenuItem } from "@/services/publicPageService";
 import { resolvePublicMenuHref } from "@/lib/publicMenuLinks";
+import { publicNewsPath } from "@/lib/publicPaths";
 import { prefetchPublicRoute } from "@/lib/prefetchPublicRoute";
+import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
 
 export default function MenuItem({
   item,
@@ -30,8 +32,21 @@ export default function MenuItem({
     };
   }, [router]);
 
+  const normalizePath = (url: string) => {
+    try {
+      return new URL(url, "http://local").pathname;
+    } catch {
+      return url;
+    }
+  };
+
   const href = resolvePublicMenuHref(item);
-  const isInternal = item.type === "page";
+  const hrefPath = normalizePath(href);
+  const navHref = hrefPath === "/about" ? "/about-us" : href;
+  const isExternalAbsoluteHref = /^https?:\/\//i.test(String(href || "").trim());
+  const isInternal =
+    item.type === "page" ||
+    (!isExternalAbsoluteHref && isPublicSiteRoute(hrefPath));
   const rawNewTabValue =
     item.openInNewTab ??
     item.open_in_new_tab ??
@@ -53,20 +68,22 @@ export default function MenuItem({
     isExternalCustomUrl;
   const hasChildren = item.children && item.children.length > 0;
 
-  const normalizePath = (url: string) => {
-    try {
-      return new URL(url, "http://local").pathname;
-    } catch {
-      return url;
-    }
-  };
+  const pathNow = currentPath.split("?")[0];
 
-  const hrefPath = normalizePath(href);
+  const isNewsMenuLink =
+    hrefPath === "/articles" ||
+    hrefPath.startsWith("/articles/") ||
+    hrefPath === "/news" ||
+    hrefPath.startsWith("/public/news");
+  const isOnNewsSection =
+    pathNow === publicNewsPath() || pathNow.startsWith(`${publicNewsPath()}/`);
+
   const isCurrent =
     isInternal &&
-    (currentPath === hrefPath ||
-      currentPath.startsWith(hrefPath + "/") ||
-      (hrefPath !== "/" && currentPath.split("?")[0] === hrefPath));
+    (pathNow === hrefPath ||
+      pathNow === navHref ||
+      (hrefPath !== "/" && pathNow.startsWith(`${hrefPath}/`)) ||
+      (isNewsMenuLink && isOnNewsSection));
 
   const handleLinkClick = () => {
     setPressed(true);
@@ -74,7 +91,7 @@ export default function MenuItem({
   };
 
   const handlePrefetch = () => {
-    if (isInternal) prefetchPublicRoute(router, href);
+    if (isInternal) prefetchPublicRoute(router, navHref);
   };
 
   const handleToggleClick = (e: React.MouseEvent) => {
@@ -82,6 +99,8 @@ export default function MenuItem({
     e.stopPropagation();
     setOpen((prev) => !prev);
   };
+
+  const linkClassName = "menu-link";
 
   return (
     <li
@@ -92,32 +111,26 @@ export default function MenuItem({
       <div className="menu-row">
         {isInternal ? (
           <Link
-            href={href}
-            className="menu-link"
+            href={navHref}
+            className={linkClassName}
             prefetch
-            scroll
+            scroll={false}
             onClick={handleLinkClick}
             onMouseEnter={handlePrefetch}
             onFocus={handlePrefetch}
             onTouchStart={handlePrefetch}
           >
             <span>{item.label}</span>
-            {item.label.toLowerCase().includes("news") && (
-              <span className="menu-link__dot" aria-hidden="true" />
-            )}
           </Link>
         ) : (
           <a
             href={href}
-            className="menu-link"
+            className={linkClassName}
             target={opensInNewTab ? "_blank" : undefined}
             rel={opensInNewTab ? "noopener noreferrer" : undefined}
             onClick={handleLinkClick}
           >
             <span>{item.label}</span>
-            {item.label.toLowerCase().includes("news") && (
-              <span className="menu-link__dot" aria-hidden="true" />
-            )}
           </a>
         )}
 

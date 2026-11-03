@@ -193,11 +193,11 @@ function LegacyContactUsPage({ recaptchaSiteKey = "" }: { recaptchaSiteKey?: str
 
           <div className={styles.introBody}>
             <div className={styles.introCopy}>
-              <span className={styles.introBadge}>WebFocus Solutions, Inc.</span>
-              <h1 className={styles.introTitle}>Contact Us</h1>
+              <span className={styles.introBadge}>Contact</span>
+              <h1 className={styles.introTitle}>Book a call or send a message</h1>
               <p className={styles.introText}>
-                Reach our Pasig office for sales inquiries, customer support, partnerships, or
-                general questions. Our team will respond as soon as possible.
+                Reach our Pasig team for sales, support, or partnerships. We typically respond within
+                one business day.
               </p>
             </div>
           </div>
@@ -272,7 +272,7 @@ function LegacyContactUsPage({ recaptchaSiteKey = "" }: { recaptchaSiteKey?: str
             </section>
 
             <section className={styles.formCard}>
-              <h2 className={styles.formTitle}>Send Us a Message</h2>
+              <h2 className={styles.formTitle}>Send a message</h2>
               <p className={styles.formHint}>
                 Fill out the form below and our team will get back to you shortly.
               </p>

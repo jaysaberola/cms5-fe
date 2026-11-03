@@ -1,4 +1,5 @@
 import { axiosInstance } from "./axios";
+import { publicNewsPath, publicPagePath } from "@/lib/publicPaths";
 
 export interface SearchResultItem {
   id?: number | string;
@@ -113,9 +114,9 @@ export const searchSite = async (q: string): Promise<SearchSiteResponse> => {
           try {
             const content = extractText(r);
             const score = ((r.title || r.name || '').toLowerCase().includes(lcq) ? 20 : 0) + (content.toLowerCase().split(lcq).length - 1) * 2;
-            pages.push({ id: r.id, title: r.name || r.title, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, excerptHtml: makeSnippet(content, q), url: r.slug ? `/public/${r.slug}` : undefined, type: 'page', raw: r, score });
+            pages.push({ id: r.id, title: r.name || r.title, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, excerptHtml: makeSnippet(content, q), url: r.slug ? publicPagePath(r.slug) : undefined, type: 'page', raw: r, score });
           } catch (e) {
-            pages.push({ id: r.id, title: r.name || r.title, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, url: r.slug ? `/public/${r.slug}` : undefined, type: 'page', raw: r });
+            pages.push({ id: r.id, title: r.name || r.title, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, url: r.slug ? publicPagePath(r.slug) : undefined, type: 'page', raw: r });
           }
         });
     }
@@ -130,9 +131,9 @@ export const searchSite = async (q: string): Promise<SearchSiteResponse> => {
           try {
             const content = extractText(r);
             const score = ((r.title || '').toLowerCase().includes(lcq) ? 15 : 0) + (content.toLowerCase().split(lcq).length - 1) * 2;
-            articles.push({ id: r.id, title: r.title || r.name, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, excerptHtml: makeSnippet(content, q), url: r.slug ? `/public/news/${r.slug}` : undefined, type: 'article', raw: r, score });
+            articles.push({ id: r.id, title: r.title || r.name, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, excerptHtml: makeSnippet(content, q), url: r.slug ? publicNewsPath(r.slug) : undefined, type: 'article', raw: r, score });
           } catch (e) {
-            articles.push({ id: r.id, title: r.title || r.name, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, url: r.slug ? `/public/news/${r.slug}` : undefined, type: 'article', raw: r });
+            articles.push({ id: r.id, title: r.title || r.name, slug: r.slug, excerpt: r.teaser || r.excerpt || undefined, url: r.slug ? publicNewsPath(r.slug) : undefined, type: 'article', raw: r });
           }
         });
     }
@@ -180,7 +181,7 @@ export const searchSite = async (q: string): Promise<SearchSiteResponse> => {
             // avoid duplicates: only add if not already present
             if (!pages.find(p => String(p.id) === String(r.id))) {
               const score = ((r.title || r.name || '').toLowerCase().includes(lcq) ? 30 : 0) + (content.toLowerCase().split(lcq).length - 1) * 4;
-              pages.push({ id: r.id, title: r.name || r.title, slug: r.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: r.slug ? `/public/${r.slug}` : undefined, type: 'page', raw: r, score });
+              pages.push({ id: r.id, title: r.name || r.title, slug: r.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: r.slug ? publicPagePath(r.slug) : undefined, type: 'page', raw: r, score });
             }
           }
         });
@@ -196,7 +197,7 @@ export const searchSite = async (q: string): Promise<SearchSiteResponse> => {
           if (content.toLowerCase().includes(lcq) || (r.title || '').toLowerCase().includes(lcq)) {
             if (!articles.find(a => String(a.id) === String(r.id))) {
               const score = ((r.title || '').toLowerCase().includes(lcq) ? 25 : 0) + (content.toLowerCase().split(lcq).length - 1) * 3;
-              articles.push({ id: r.id, title: r.title || r.name, slug: r.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: r.slug ? `/public/news/${r.slug}` : undefined, type: 'article', raw: r, score });
+              articles.push({ id: r.id, title: r.title || r.name, slug: r.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: r.slug ? publicNewsPath(r.slug) : undefined, type: 'article', raw: r, score });
             }
           }
         });
@@ -241,7 +242,7 @@ export const searchSite = async (q: string): Promise<SearchSiteResponse> => {
       if (content.toLowerCase().includes(lcq) || (detail.title || detail.name || '').toLowerCase().includes(lcq)) {
         if (!pages.find(p => String(p.id) === String(detail.id))) {
           const score = ((detail.title || detail.name || '').toLowerCase().includes(lcq) ? 60 : 0) + (content.toLowerCase().split(lcq).length - 1) * 5;
-          pages.push({ id: detail.id, title: detail.name || detail.title, slug: detail.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: detail.slug ? `/public/${detail.slug}` : undefined, type: 'page', raw: detail, score });
+          pages.push({ id: detail.id, title: detail.name || detail.title, slug: detail.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: detail.slug ? publicPagePath(detail.slug) : undefined, type: 'page', raw: detail, score });
         }
       }
     });
@@ -286,7 +287,7 @@ export const searchSite = async (q: string): Promise<SearchSiteResponse> => {
         if (content.toLowerCase().includes(lcq) || (p.title || p.name || '').toLowerCase().includes(lcq)) {
           if (!pages.find(x => String(x.slug) === String(p.slug))) {
             const score = ((p.title || p.name || '').toLowerCase().includes(lcq) ? 40 : 0) + (content.toLowerCase().split(lcq).length - 1) * 4;
-            pages.push({ id: p.id, title: p.title || p.name, slug: p.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: p.slug ? `/public/${p.slug}` : undefined, type: 'page', raw: p, score });
+            pages.push({ id: p.id, title: p.title || p.name, slug: p.slug, excerpt: content.slice(0, 200), excerptHtml: makeSnippet(content, q), url: p.slug ? publicPagePath(p.slug) : undefined, type: 'page', raw: p, score });
           }
         }
       });

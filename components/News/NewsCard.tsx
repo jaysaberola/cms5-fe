@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { publicNewsPath } from "@/lib/publicPaths";
 
 export default function NewsCard({ article }: any) {
   const date = new Date(article.date);
@@ -9,7 +10,7 @@ export default function NewsCard({ article }: any) {
   return (
     <div className="blo4 p-b-63">
       <div className="pic-blo4 hov-img-zoom bo-rad-10 pos-relative">
-        <Link href={`/public/news/${article.slug}`}>
+        <Link href={`${publicNewsPath(article.slug)}`}>
           <img
             src={
               article.thumbnail_url
@@ -33,7 +34,7 @@ export default function NewsCard({ article }: any) {
 
       <div className="text-blo4 p-t-33">
         <h4 className="p-b-16">
-          <Link href={`/public/news/${article.slug}`} className="tit9">
+          <Link href={`${publicNewsPath(article.slug)}`} className="tit9">
             {article.name}
           </Link>
         </h4>
@@ -57,7 +58,7 @@ export default function NewsCard({ article }: any) {
         <p>{article.teaser}</p>
 
         <Link
-          href={`/public/news/${article.slug}`}
+          href={`${publicNewsPath(article.slug)}`}
           className="dis-block txt4 m-t-30"
         >
           Continue Reading

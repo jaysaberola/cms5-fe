@@ -28,6 +28,15 @@
   white-space: nowrap;
 }
 
+.public-site-shell .menu-link {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.public-site-shell .menu-item.current > .menu-link {
+  color: #ffffff;
+  font-weight: 700;
+}
+
 .menu-item.current > .menu-link {
   font-weight: 600;
   color: #0d6efd;

@@ -8,6 +8,7 @@ import {
   resolveBannerSlideInterval,
   resolveBannerTransitionClass,
 } from "@/lib/bannerTransitions";
+import styles from "@/styles/pageBanner.module.css";
 
 interface PageBannerProps {
   title?: string;
@@ -164,13 +165,7 @@ export default function PageBanner({
   // 🖼 Banner with images
   if (banners.length > 0) {
     return (
-      <section
-        style={{
-          position: "relative",
-          minHeight: 420,
-          overflow: "hidden",
-        }}
-      >
+      <section className={styles.wrap}>
         {/* Background Images */}
         {banners.map((banner, index) => {
           const isActive = index === current;
@@ -189,7 +184,7 @@ export default function PageBanner({
               style={{
                 position: "absolute",
                 inset: 0,
-                ...(isVideoBanner(banner) ? {} : { backgroundImage: `url(${resolveStorageAssetUrl(banner.image_url || banner.image_path) || ""})` }),
+                ...(isVideoBanner(banner) ? {} : { backgroundImage: `url(${resolveStorageAssetUrl(banner.image_path || banner.image_url) || ""})` }),
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 opacity: isActive || isExiting ? 1 : 0,
@@ -200,7 +195,7 @@ export default function PageBanner({
             >
               {isVideoBanner(banner) && (
                 <video
-                  src={resolveStorageAssetUrl(banner.image_url || banner.image_path) || ""}
+                  src={resolveStorageAssetUrl(banner.image_path || banner.image_url) || ""}
                   autoPlay
                   loop
                   muted
@@ -213,107 +208,32 @@ export default function PageBanner({
           );
         })}
 
-        {/* Gradient Overlay */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35), rgba(0,0,0,0.55))",
-            zIndex: 1,
-          }}
-        />
+        <div className={styles.overlay} aria-hidden="true" />
 
-        {/* Content */}
-        <div
-          className="container text-center text-white"
-          style={{
-            position: "relative",
-            zIndex: 2,
-            minHeight: 420,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            paddingTop: 40,
-            paddingBottom: 40,
-          }}
-        >
-          {bannerTitle && (
-            <div
-              className="mb-3"
-              style={{
-                textShadow: "0 3px 16px rgba(0,0,0,0.58)",
-                ...(titleStyle || {}),
-              }}
-            >
+        <div className={styles.content}>
+          {bannerTitle ? (
+            <span className={styles.kicker} style={titleStyle}>
               {bannerTitle}
-            </div>
-          )}
+            </span>
+          ) : null}
 
-          <h1
-            className="fw-bold mb-3"
-            style={{
-              textShadow: "0 4px 20px rgba(0,0,0,0.6)",
-            }}
-          >
-            {title}
-          </h1>
+          <h1 className={styles.title}>{title}</h1>
 
-          {subtitle && (
-            <p
-              className="lead mb-3"
-              style={{
-                maxWidth: 720,
-                margin: "0 auto",
-                opacity: 0.95,
-                textShadow: "0 2px 10px rgba(0,0,0,0.5)",
-              }}
-            >
-              {subtitle}
-            </p>
-          )}
+          {subtitle ? <p className={styles.lead}>{subtitle}</p> : null}
 
-          {bannerDescription && (
-            <p
-              className="lead mb-0"
-              style={{
-                maxWidth: 720,
-                margin: "0 auto",
-                opacity: 0.95,
-                textShadow: "0 2px 10px rgba(0,0,0,0.5)",
-                ...(subtitleStyle || {}),
-              }}
-            >
+          {!subtitle && bannerDescription ? (
+            <p className={styles.lead} style={subtitleStyle}>
               {bannerDescription}
             </p>
-          )}
+          ) : null}
         </div>
       </section>
     );
   }
 
-  // 🔁 Fallback (no images)
   return (
-    <section
-      className="text-white"
-      style={{
-        background:
-          "linear-gradient(135deg, #000000 0%, #102f5f 100%)",
-      }}
-    >
-      <div
-          className="container text-center text-white"
-          style={{
-            position: "relative",
-            zIndex: 2,
-            minHeight: 420,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-        <h1 className="fw-bold">{title}</h1>
-      </div>
+    <section className={styles.fallback}>
+      <h1>{title}</h1>
     </section>
   );
 }

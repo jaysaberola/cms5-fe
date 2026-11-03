@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CMS_HELP_GUIDES, CMS_HELP_GUIDE_MAP, CmsHelpGuide } from "@/lib/cmsHelp/guides";
 import { downloadUserGuidePptx } from "@/lib/cmsHelp/downloadUserGuidePptx";
 import {
-  CMS_GUIDE_NAME,
   CMS_GUIDE_ROLE,
   spokenGuideIntro,
   spokenStepCue,
@@ -195,11 +194,11 @@ export default function CmsHelpAssistant({
 
   if (variant === "dock") {
     return (
-      <div className="cms-help-dock" aria-label={`${CMS_GUIDE_NAME} live guide`}>
+      <div className="cms-help-dock" aria-label={`${CMS_GUIDE_ROLE} live guide`}>
         <div className="cms-help-dock__head">
           <CmsHelpGuideAvatar size="sm" speaking={talking && voiceOn} />
           <div>
-            <strong>{CMS_GUIDE_NAME} is guiding you</strong>
+            <strong>{CMS_GUIDE_ROLE} is guiding you</strong>
             <span>
               {guide.title} · Step {stepIndex + 1} of {totalSteps}
               {!voiceOn ? " · voice off" : talking ? " · speaking" : ""}
@@ -267,9 +266,7 @@ export default function CmsHelpAssistant({
           <div className="cms-help-assistant__header-copy">
             <CmsHelpGuideAvatar size="md" speaking={talking && voiceOn} />
             <div>
-              <p className="cms-help-assistant__kicker">
-                {CMS_GUIDE_NAME} · {CMS_GUIDE_ROLE}
-              </p>
+              <p className="cms-help-assistant__kicker">{CMS_GUIDE_ROLE}</p>
               <h2>CMS Guide Library</h2>
               <p>Talk through every module with a live walkthrough</p>
             </div>
@@ -310,9 +307,9 @@ export default function CmsHelpAssistant({
         <div className="cms-help-assistant__body">
           <aside className="cms-help-assistant__topics">
             <div className="cms-help-assistant__persona">
-              <CmsHelpGuideAvatar size="lg" speaking={talking} />
+              <CmsHelpGuideAvatar size="md" speaking={talking} />
               <div>
-                <strong>{CMS_GUIDE_NAME}</strong>
+                <strong>{CMS_GUIDE_ROLE}</strong>
                 <span>
                   {talking && voiceOn
                     ? "Speaking · follow the words"
@@ -371,7 +368,7 @@ export default function CmsHelpAssistant({
                 <article className="cms-help-assistant__message cms-help-assistant__message--bot cms-help-assistant__message--live">
                   <CmsHelpGuideAvatar size="sm" speaking={talking && spoken.length < introStart} />
                   <div className="cms-help-assistant__bubble">
-                    <span className="cms-help-assistant__speaker">{CMS_GUIDE_NAME}</span>
+                    <span className="cms-help-assistant__speaker">{CMS_GUIDE_ROLE}</span>
                     <p>
                       <CmsHelpKaraoke
                         text={welcome}
@@ -387,7 +384,7 @@ export default function CmsHelpAssistant({
                 <article className="cms-help-assistant__message cms-help-assistant__message--bot cms-help-assistant__message--live">
                   <CmsHelpGuideAvatar size="sm" speaking={talking && spoken.length >= introStart && spoken.length < stepStart} />
                   <div className="cms-help-assistant__bubble cms-help-assistant__bubble--guide">
-                    <span className="cms-help-assistant__speaker">{CMS_GUIDE_NAME}</span>
+                    <span className="cms-help-assistant__speaker">{CMS_GUIDE_ROLE}</span>
                     <div className="cms-help-assistant__guide-head">
                       <i className={guide.icon} aria-hidden="true" />
                       <div className="cms-help-assistant__guide-text">
@@ -412,7 +409,7 @@ export default function CmsHelpAssistant({
                     <span className="cms-help-assistant__dot" />
                     <span className="cms-help-assistant__dot" />
                     <span className="cms-help-assistant__dot" />
-                    <em>Aria is about to speak…</em>
+                    <em>Guide is about to speak…</em>
                   </div>
                 </article>
               ) : null}
@@ -421,7 +418,7 @@ export default function CmsHelpAssistant({
                 <article className="cms-help-assistant__message cms-help-assistant__message--bot cms-help-assistant__message--live">
                   <CmsHelpGuideAvatar size="sm" speaking={talking && spoken.length >= stepStart} />
                   <div className="cms-help-assistant__bubble cms-help-assistant__bubble--step">
-                    <span className="cms-help-assistant__speaker">{CMS_GUIDE_NAME}</span>
+                    <span className="cms-help-assistant__speaker">{CMS_GUIDE_ROLE}</span>
                     <div className="cms-help-assistant__step-meta">
                       Step {stepIndex + 1} of {totalSteps} · look here
                     </div>

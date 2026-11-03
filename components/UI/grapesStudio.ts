@@ -3,11 +3,11 @@ import { CMS_TEMPLATES_CATEGORY } from "./grapesWebsiteTemplates";
 
 export const CMS_STUDIO_BLOCK_COUNT = 30;
 
-export const cmsStudioCanvasCss = `
-  @import url("/css/cms-studio-buttons.css");
+const INAZUMA_PRESET = "Inazuma (MIT)";
 
+export const cmsStudioCanvasCss = `
   :root {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   * {
@@ -24,14 +24,14 @@ export const cmsStudioCanvasCss = `
     margin: 0;
     width: 100% !important;
     min-width: 100%;
-    background: #ffffff;
+    background: #050505;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   :where(html, body) {
-    color: #0f172a;
-    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: rgba(255, 255, 255, 0.78);
+    font-family: "Outfit", "Segoe UI", system-ui, sans-serif;
   }
 
   body {
@@ -170,6 +170,16 @@ export const cmsStudioCanvasCss = `
     filter: brightness(1.05);
   }
 
+  .exec-tpl :where(a):not(.exec-btn) {
+    color: #eb5124;
+    text-decoration: none;
+  }
+
+  .exec-tpl :where(h1, h2, h3, h4, h5, h6) {
+    font-size: unset;
+    font-weight: unset;
+  }
+
   [data-anim="fade"] { animation: cms-fade-in .7s ease both; }
   [data-anim="slide"] { animation: cms-slide-up .7s ease both; }
   [data-anim="slide-left"] { animation: cms-slide-left .7s ease both; }
@@ -221,7 +231,7 @@ export const cmsStudioCanvasCss = `
     color: #0f172a;
   }
 
-  button:not(.wsi-portfolio-zoom):not(.wsi-slider-btn):not(.wsi-portfolio-modal-prev):not(.wsi-portfolio-modal-next):not(.wsi-portfolio-modal-close),
+  button:not(.wsi-portfolio-zoom):not(.wsi-slider-btn):not(.wsi-portfolio-modal-prev):not(.wsi-portfolio-modal-next):not(.wsi-portfolio-modal-close):not(.exec-tab):not(.exec-pill),
   input[type="submit"],
   input[type="button"] {
     display: inline-flex;
@@ -238,6 +248,15 @@ export const cmsStudioCanvasCss = `
     line-height: 1.2;
     white-space: nowrap;
     cursor: pointer;
+  }
+
+  .exec-tpl button:not(.exec-tab):not(.exec-pill),
+  .exec-tpl input[type="submit"] {
+    background: #eb5124;
+    border-radius: 2px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
   .wsi-portfolio-zoom {
@@ -373,6 +392,7 @@ export const configureStudioCategories = (editor: any) => {
 
   const order = [
     CMS_TEMPLATES_CATEGORY,
+    "Inazuma (MIT)",
     CMS_ELEMENTS_CATEGORY,
     CMS_BUTTONS_CATEGORY,
     CMS_LAYOUT_CATEGORY,
@@ -402,7 +422,7 @@ export const configureStudioCategories = (editor: any) => {
       ? FORMS_BLOCKS_CATEGORY.label
       : normalizeStudioCategory(rawId || rawLabel);
     category?.set?.("open", false);
-    if (label === CMS_TEMPLATES_CATEGORY || label === CMS_PRESETS_CATEGORY || label === CMS_SECTIONS_CATEGORY || label === CMS_ELEMENTS_CATEGORY || label === CMS_BUTTONS_CATEGORY || label === CMS_LAYOUT_CATEGORY) {
+    if (label === CMS_TEMPLATES_CATEGORY || label === INAZUMA_PRESET || label === CMS_PRESETS_CATEGORY || label === CMS_SECTIONS_CATEGORY || label === CMS_ELEMENTS_CATEGORY || label === CMS_BUTTONS_CATEGORY || label === CMS_LAYOUT_CATEGORY) {
       category?.set?.("id", label);
       category?.set?.("label", label);
     }
@@ -417,6 +437,66 @@ export const configureStudioCategories = (editor: any) => {
   if (typeof categories.forEach === "function") {
     categories.forEach(apply);
   }
+};
+
+export const registerInazumaTemplateBlocks = (editor: any) => {
+  addBlock(editor, "inazuma-services-6", {
+    label: "Inazuma Services (6)",
+    category: INAZUMA_PRESET,
+    attributes: { class: "fa fa-th-list" },
+    content: `
+      <section class="biz-section biz-tpl" style="background:#00005506;padding:5rem 1.25rem;">
+        <div class="biz-container" style="max-width:1140px;margin:0 auto;">
+          <div class="biz-section-head biz-fade" style="text-align:center;max-width:640px;margin:0 auto 3rem;">
+            <span class="biz-kicker" style="color:#3d63dd;font-weight:600;font-size:0.875rem;">Services</span>
+            <h2 style="margin:0 0 0.75rem;color:#1e1f24;font-size:2rem;font-weight:700;">Our best services</h2>
+            <p style="margin:0;line-height:1.7;color:#62636c;">Edit cards in the canvas—duplicate this block for other pages.</p>
+          </div>
+          <div class="biz-grid-3" style="display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+            <article class="biz-service-card biz-fade" style="padding:2rem 1.5rem;background:#fcfcfd;border:1px solid #d8d9e0;border-radius:0.5rem;text-align:center;"><div class="biz-icon" style="width:3.25rem;height:3.25rem;margin:0 auto 1rem;border-radius:0.75rem;display:grid;place-items:center;background:rgba(61,99,221,0.1);color:#3d63dd;font-weight:700;">01</div><h3 style="margin:0 0 0.5rem;color:#1e1f24;">Service one</h3><p style="margin:0;font-size:0.9375rem;line-height:1.65;color:#62636c;">Short description.</p></article>
+            <article class="biz-service-card biz-fade" style="padding:2rem 1.5rem;background:#fcfcfd;border:1px solid #d8d9e0;border-radius:0.5rem;text-align:center;"><div class="biz-icon" style="width:3.25rem;height:3.25rem;margin:0 auto 1rem;border-radius:0.75rem;display:grid;place-items:center;background:rgba(61,99,221,0.1);color:#3d63dd;font-weight:700;">02</div><h3 style="margin:0 0 0.5rem;color:#1e1f24;">Service two</h3><p style="margin:0;font-size:0.9375rem;line-height:1.65;color:#62636c;">Short description.</p></article>
+            <article class="biz-service-card biz-fade" style="padding:2rem 1.5rem;background:#fcfcfd;border:1px solid #d8d9e0;border-radius:0.5rem;text-align:center;"><div class="biz-icon" style="width:3.25rem;height:3.25rem;margin:0 auto 1rem;border-radius:0.75rem;display:grid;place-items:center;background:rgba(61,99,221,0.1);color:#3d63dd;font-weight:700;">03</div><h3 style="margin:0 0 0.5rem;color:#1e1f24;">Service three</h3><p style="margin:0;font-size:0.9375rem;line-height:1.65;color:#62636c;">Short description.</p></article>
+          </div>
+        </div>
+      </section>
+    `,
+  });
+
+  addBlock(editor, "inazuma-pricing-3", {
+    label: "Inazuma Pricing (3)",
+    category: INAZUMA_PRESET,
+    attributes: { class: "fa fa-tags" },
+    content: `
+      <section class="biz-section biz-tpl" style="padding:5rem 1.25rem;">
+        <div class="biz-container" style="max-width:1140px;margin:0 auto;">
+          <div class="biz-section-head biz-fade" style="text-align:center;max-width:640px;margin:0 auto 3rem;">
+            <span class="biz-kicker" style="color:#3d63dd;font-weight:600;">Pricing</span>
+            <h2 style="margin:0;color:#1e1f24;font-size:2rem;font-weight:700;">Choose your plan</h2>
+          </div>
+          <div class="biz-pricing-grid" style="display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+            <article class="biz-price-card biz-fade" style="padding:2rem 1.5rem;border:1px solid #d8d9e0;border-radius:0.5rem;text-align:center;background:#fcfcfd;"><h3>Starter</h3><p class="biz-price-amount" style="font-size:2.25rem;font-weight:700;color:#3d63dd;">₱0 <span style="font-size:0.875rem;color:#8b8d98;">/ mo</span></p><a class="biz-btn biz-btn-primary" href="#" style="display:inline-flex;padding:0.85rem 1.75rem;border-radius:0.375rem;background:#3d63dd;color:#fff;font-weight:600;text-decoration:none;">Start</a></article>
+            <article class="biz-price-card biz-price-card--featured biz-fade" style="padding:2rem 1.5rem;border:1px solid #3d63dd;border-radius:0.5rem;text-align:center;background:#fcfcfd;box-shadow:0 20px 48px rgba(61,99,221,0.22);"><h3>Pro</h3><p class="biz-price-amount" style="font-size:2.25rem;font-weight:700;color:#3d63dd;">₱99 <span style="font-size:0.875rem;color:#8b8d98;">/ mo</span></p><a class="biz-btn biz-btn-primary" href="#" style="display:inline-flex;padding:0.85rem 1.75rem;border-radius:0.375rem;background:#3d63dd;color:#fff;font-weight:600;text-decoration:none;">Get started</a></article>
+            <article class="biz-price-card biz-fade" style="padding:2rem 1.5rem;border:1px solid #d8d9e0;border-radius:0.5rem;text-align:center;background:#fcfcfd;"><h3>Premium</h3><p class="biz-price-amount" style="font-size:2.25rem;font-weight:700;color:#3d63dd;">₱150 <span style="font-size:0.875rem;color:#8b8d98;">/ mo</span></p><a class="biz-btn" href="#" style="display:inline-flex;padding:0.85rem 1.75rem;border-radius:0.375rem;background:#fff;color:#3d63dd;font-weight:600;text-decoration:none;border:1px solid #d8d9e0;">Contact</a></article>
+          </div>
+        </div>
+      </section>
+    `,
+  });
+
+  addBlock(editor, "inazuma-cta", {
+    label: "Inazuma CTA band",
+    category: INAZUMA_PRESET,
+    attributes: { class: "fa fa-bullhorn" },
+    content: `
+      <section class="biz-section biz-tpl" style="padding:5rem 1.25rem;">
+        <div class="biz-container biz-cta biz-fade" style="max-width:1140px;margin:0 auto;background:#3d63dd;color:#fff;border-radius:0.75rem;padding:3rem 1.5rem;text-align:center;">
+          <h2 style="margin:0 0 0.75rem;font-size:2rem;font-weight:700;">Ready to Get Started</h2>
+          <p style="margin:0 auto 1.25rem;max-width:520px;opacity:0.92;line-height:1.65;">Call-to-action from the Inazuma corporate template.</p>
+          <a class="biz-btn" href="#" style="display:inline-flex;padding:0.85rem 1.75rem;border-radius:0.375rem;background:#fff;color:#3d63dd;font-weight:600;text-decoration:none;">Contact us</a>
+        </div>
+      </section>
+    `,
+  });
 };
 
 export const registerAdvancedCmsBlocks = (editor: any) => {
@@ -616,34 +696,49 @@ export const registerAdvancedCmsBlocks = (editor: any) => {
   });
 
   addBlock(editor, "cms-contact-split", {
-    label: "Contact Split",
+    label: "Contact Split (Executra)",
     category: "CMS Forms",
     attributes: { class: "fa fa-envelope-o" },
     content: `
-      <section style="padding:64px 24px;background:#ffffff;">
-        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;align-items:stretch;">
-          <div style="padding:28px;border-radius:28px;background:linear-gradient(180deg,#0f172a,#1e293b);color:#fff;box-shadow:0 28px 60px rgba(15,23,42,.22);">
-            <p style="margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;font-weight:800;">Contact</p>
-            <h2 style="margin:0 0 14px;font-size:38px;line-height:1.08;">Make it easy for visitors to reach out.</h2>
-            <p style="margin:0 0 22px;color:#cbd5e1;line-height:1.8;">Use this split layout for inquiries, bookings, service requests, or general contact pages.</p>
-            <div style="display:grid;gap:14px;">
-              <div style="padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.06);"><strong style="display:block;margin-bottom:6px;">Email</strong><span style="color:#cbd5e1;">hello@yourbrand.com</span></div>
-              <div style="padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.06);"><strong style="display:block;margin-bottom:6px;">Phone</strong><span style="color:#cbd5e1;">+63 900 123 4567</span></div>
-              <div style="padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.06);"><strong style="display:block;margin-bottom:6px;">Office</strong><span style="color:#cbd5e1;">Makati City, Metro Manila</span></div>
+      <div class="exec-tpl exec-contact">
+        <section class="exec-section">
+          <div class="exec-container exec-contact-layout">
+            <aside class="exec-contact-stack exec-reveal">
+              <div class="exec-card">
+                <h3>Get in touch</h3>
+                <div class="exec-contact-info">
+                  <span class="exec-contact-info-icon" aria-hidden="true">✉</span>
+                  <div>
+                    <span class="exec-contact-info-label">Email</span>
+                    <p><a href="mailto:hello@yourbrand.com">hello@yourbrand.com</a></p>
+                  </div>
+                </div>
+              </div>
+              <div class="exec-card">
+                <div class="exec-contact-info">
+                  <span class="exec-contact-info-icon" aria-hidden="true">☎</span>
+                  <div>
+                    <span class="exec-contact-info-label">Phone</span>
+                    <p>+63 900 000 0000</p>
+                  </div>
+                </div>
+              </div>
+              <div class="exec-contact-hours">
+                <strong>Business hours</strong>
+                <p>Mon – Fri, 9:00 AM – 6:00 PM</p>
+              </div>
+            </aside>
+            <div class="exec-contact-form-panel exec-reveal">
+              <p class="exec-form-hint" style="margin:0 0 1rem;">Drop the <strong>WebFocus Contact Form</strong> block here, or paste the live CMS form markup.</p>
+              <div class="exec-field exec-field--full">
+                <label class="exec-label">Preview field</label>
+                <input class="exec-input" type="text" placeholder="Your form renders on the live site" disabled />
+              </div>
+              <span class="exec-btn exec-btn--primary exec-btn--no-arrow" style="opacity:.55;pointer-events:none;">Send message</span>
             </div>
           </div>
-          <form style="padding:28px;border-radius:28px;background:#f8fafc;border:1px solid #e2e8f0;display:grid;gap:14px;box-shadow:0 20px 44px rgba(15,23,42,.08);">
-            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
-              <input type="text" placeholder="First name" style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid #cbd5e1;background:#fff;" />
-              <input type="text" placeholder="Last name" style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid #cbd5e1;background:#fff;" />
-            </div>
-            <input type="email" placeholder="Email address" style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid #cbd5e1;background:#fff;" />
-            <input type="text" placeholder="Subject" style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid #cbd5e1;background:#fff;" />
-            <textarea placeholder="Tell us about your project" rows="6" style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid #cbd5e1;background:#fff;resize:vertical;"></textarea>
-            <button type="submit" style="display:inline-flex;align-items:center;justify-content:center;padding:14px 22px;border-radius:999px;border:0;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;">Send inquiry</button>
-          </form>
-        </div>
-      </section>
+        </section>
+      </div>
     `,
   });
 

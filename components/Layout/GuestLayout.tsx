@@ -7,10 +7,16 @@ import ToastHost from "@/components/UI/ToastHost";
 import PrivacyConsentBanner from "@/components/Layout/PrivacyConsentBanner";
 import PublicRouteProgress from "@/components/Layout/PublicRouteProgress";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { revealAppDocument } from "@/lib/revealDocument";
+import { armPublicScrollReveal } from "@/lib/publicScrollReveal";
+import { useRouter } from "next/router";
 import { getHeroPreloadImage } from "@/lib/heroBanner";
 import { getWebsiteSettingsCached, readStoredWebsiteSettings, subscribeWebsiteSettingsUpdated } from "@/lib/websiteSettings";
 import SiteFavicon from "@/components/Layout/SiteFavicon";
+import { usePublicRouteTransition } from "@/lib/usePublicRouteTransition";
+import { usePublicInternalLinkCapture } from "@/lib/usePublicInternalLinkCapture";
+import transitionStyles from "@/styles/publicPageTransition.module.css";
 
 interface LandingPageLayoutProps {
   children: React.ReactNode;
@@ -36,11 +42,22 @@ export default function LandingPageLayout({
   pageData,
   layout,
 }: LandingPageLayoutProps) {
+  const router = useRouter();
+  const isRouteTransitioning = usePublicRouteTransition();
+  usePublicInternalLinkCapture(true);
   const contentWrapperClassName = layout?.fullWidth
     ? "container-fluid px-0"
     : "container";
 
   const [companyName, setCompanyName] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    revealAppDocument();
+    const root =
+      (document.querySelector(".public-page-content") as HTMLElement | null) ||
+      (document.querySelector(".public-site-main") as HTMLElement | null);
+    return armPublicScrollReveal(root);
+  }, [router.asPath, pageData?.slug]);
 
   useEffect(() => {
     let alive = true;
@@ -73,17 +90,11 @@ export default function LandingPageLayout({
   const metaKeywords = pageData?.meta?.keywords || null;
 
   const isHomeHero = pageData?.album?.type === "main_banner";
-  const hideBanner =
-    layout?.hideBanner ||
-    pageData?.slug === "about" ||
-    pageData?.slug === "about-us" ||
-    pageData?.slug === "contact-us" ||
-    pageData?.slug === "news" ||
-    pageData?.slug === "services";
-  const heroPreloadImage = isHomeHero ? getHeroPreloadImage(pageData?.album) : null;
+  const showMainHeroBanner = isHomeHero && layout?.hideBanner !== true;
+  const heroPreloadImage = showMainHeroBanner ? getHeroPreloadImage(pageData?.album) : null;
 
   return (
-    <div className="d-flex flex-column min-vh-100 public-site-shell">
+    <div className="d-flex flex-column min-vh-100 public-site-shell public-site-shell--executra">
       <Head>
         <title>{tabTitle}</title>
         {metaDescription && <meta name="description" content={metaDescription} />}
@@ -97,14 +108,25 @@ export default function LandingPageLayout({
       <PublicRouteProgress />
       <LandingTopbar />
 
-      {!hideBanner && (
-        <Banner
-          title={pageData?.title}
-          album={pageData?.album}
-        />
-      )}
+      <div
+        className={transitionStyles.heroSlot}
+        data-public-hero-slot={showMainHeroBanner ? "visible" : "hidden"}
+        aria-hidden={!showMainHeroBanner}
+      >
+        {showMainHeroBanner ? (
+          <Banner title={pageData?.title} album={pageData?.album} />
+        ) : null}
+      </div>
 
-      <main className={`flex-grow-1 public-site-main ${isHomeHero || hideBanner ? "pt-0" : "pt-5"}`}>
+      <main
+        className={[
+          "flex-grow-1 public-site-main pt-0",
+          transitionStyles.main,
+          isRouteTransitioning ? transitionStyles.mainTransitioning : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <div className={contentWrapperClassName}>{children}</div>
       </main>
 

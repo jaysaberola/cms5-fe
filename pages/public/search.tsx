@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import LandingPageLayout from "@/components/Layout/GuestLayout";
+import { publicPagePath } from "@/lib/publicPaths";
 import { searchSite, SearchSiteResponse } from "@/services/searchService";
 
 export default function PublicSearchPage() {
@@ -44,8 +45,9 @@ export default function PublicSearchPage() {
   }, [q]);
 
   return (
-    <div className="container my-4">
-      <h3>Search results</h3>
+    <div className="executra-public-shell" style={{ maxWidth: 960, margin: "0 auto", padding: "2.5rem 1.25rem 4rem" }}>
+      <p style={{ margin: "0 0 0.5rem", fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>Search</p>
+      <h1 style={{ margin: "0 0 1.5rem", fontFamily: "Outfit, system-ui, sans-serif", fontWeight: 400, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "#fff" }}>Search results</h1>
 
       {!q || q.toString().trim() === "" ? (
         <div className="alert alert-info">Enter a search query in the topbar.</div>
@@ -65,7 +67,7 @@ export default function PublicSearchPage() {
                 ) : (
                   <ul className="list-group">
                     {results.pages.map((p) => {
-                      const href = p.url || (p.slug ? `/public/${p.slug}` : "#");
+                      const href = p.url || (p.slug ? publicPagePath(p.slug) : "#");
                       const fullHref = href.startsWith("http") || !origin ? href : `${origin}${href.startsWith("/") ? "" : "/"}${href}`;
                       return (
                         <li key={p.id ?? p.slug} className="list-group-item">
@@ -122,3 +124,12 @@ export default function PublicSearchPage() {
 }
 
 PublicSearchPage.Layout = LandingPageLayout;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      pageData: { slug: "search", title: "Search" },
+      layout: { fullWidth: true, hideBanner: true },
+    },
+  };
+}

@@ -1,4 +1,5 @@
 import type { NextRouter } from "next/router";
+import { publicNewsPath, publicPagePath } from "@/lib/publicPaths";
 
 const prefetched = new Set<string>();
 
@@ -21,9 +22,9 @@ export function prefetchPublicRoutes(router: NextRouter, hrefs: string[]) {
 }
 
 export const CORE_PUBLIC_ROUTES = [
-  "/public/home",
-  "/public/about-us",
-  "/public/services",
-  "/public/news",
-  "/public/contact-us",
+  "/",
+  publicPagePath("about-us"),
+  publicPagePath("services"),
+  publicNewsPath(),
+  publicPagePath("contact-us"),
 ];

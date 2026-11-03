@@ -1,8 +1,7 @@
-"use client";
-
 import AdminLayout from "@/components/Layout/AdminLayout";
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+import NewsEditorMetaFields from "@/components/News/NewsEditorMetaFields";
+import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
+import { resolveStorageAssetUrl } from "@/lib/storageAssets";
 import { toast } from "@/lib/toast";
 import {
   updateArticle,
@@ -10,125 +9,282 @@ import {
   fetchArticleCategories,
   ArticleCategory,
 } from "@/services/articleService";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { syncAuthTokenCookieFromStorage } from "@/lib/authToken";
 
-const TinyEditor = dynamic(() => import("@/components/UI/Editor"), {
+const GrapesEditor = dynamic(() => import("@/components/UI/GrapesEditor"), {
   ssr: false,
-  loading: () => <div className="p-4 text-muted">Loading editor...</div>,
+  loading: () => <div className="page-editor__editor-placeholder">Loading visual builder...</div>,
 });
+
+type NewsSnapshot = {
+  title: string;
+  date: string;
+  category: string;
+  grapesContent: string;
+  teaser: string;
+  isPublished: boolean;
+  isFeatured: boolean;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
+};
 
 export default function EditNews() {
   const router = useRouter();
   const { id } = router.query;
+  const articleId = Number(id);
 
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
+  const [grapesContent, setGrapesContent] = useState("");
+  const [teaser, setTeaser] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [content, setContent] = useState("");
-  const [teaser, setTeaser] = useState("");
-
   const [isPublished, setIsPublished] = useState(true);
   const [isFeatured, setIsFeatured] = useState(false);
-
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [seoKeywords, setSeoKeywords] = useState("");
-
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-
   const [categories, setCategories] = useState<ArticleCategory[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [savedSnapshot, setSavedSnapshot] = useState<NewsSnapshot | null>(null);
+  const serverBannerPreviewRef = useRef<string | null>(null);
+  const serverThumbnailPreviewRef = useRef<string | null>(null);
 
-  /* ======================
-   * Load Article + Categories
-   * ====================== */
+  const buildSnapshot = useCallback(
+    (): NewsSnapshot => ({
+      title,
+      date,
+      category,
+      grapesContent,
+      teaser,
+      isPublished,
+      isFeatured,
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+    }),
+    [
+      title,
+      date,
+      category,
+      grapesContent,
+      teaser,
+      isPublished,
+      isFeatured,
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+    ],
+  );
+
+  const isDirty = useMemo(() => {
+    if (!savedSnapshot) return false;
+    return JSON.stringify(savedSnapshot) !== JSON.stringify(buildSnapshot()) || Boolean(banner || thumbnail);
+  }, [savedSnapshot, buildSnapshot, banner, thumbnail]);
+
   useEffect(() => {
-    if (!id) return;
+    if (!id || !Number.isFinite(articleId)) return;
 
-    Promise.all([
-      getArticle(Number(id)),
-      fetchArticleCategories(),
-    ])
+    setInitialLoading(true);
+    Promise.all([getArticle(articleId), fetchArticleCategories()])
       .then(([article, cats]) => {
-        setTitle(article.name);
-        setDate(article.date); // ✅ correct day
-        setCategory(article.category_id.toString());
-        setContent(article.contents);
-        setTeaser(article.teaser);
+        const composedContent = composeContentFromGrapes({
+          grapes_html: article.contents || "",
+          grapes_css: "",
+          grapes_js: "",
+        });
 
-        setIsPublished(article.status === "published");
-        setIsFeatured(!!article.is_featured);
+        const nextTitle = article.name;
+        const nextDate = article.date;
+        const nextCategory = article.category_id.toString();
+        const nextTeaser = article.teaser;
+        const nextPublished = article.status === "published";
+        const nextFeatured = !!article.is_featured;
+        const nextSeoTitle = article.meta_title ?? "";
+        const nextSeoDescription = article.meta_description ?? "";
+        const nextSeoKeywords = article.meta_keyword ?? "";
 
-        setSeoTitle(article.meta_title ?? "");
-        setSeoDescription(article.meta_description ?? "");
-        setSeoKeywords(article.meta_keyword ?? "");
-
-        if (article.image_url) {
-          setBannerPreview(
-            `${process.env.NEXT_PUBLIC_API_URL}/storage/${article.image_url}`
-          );
-        }
-
-        if (article.thumbnail_url) {
-          setThumbnailPreview(
-            `${process.env.NEXT_PUBLIC_API_URL}/storage/${article.thumbnail_url}`
-          );
-        }
-
+        setTitle(nextTitle);
+        setDate(nextDate);
+        setCategory(nextCategory);
+        setGrapesContent(composedContent);
+        setTeaser(nextTeaser);
+        setIsPublished(nextPublished);
+        setIsFeatured(nextFeatured);
+        setSeoTitle(nextSeoTitle);
+        setSeoDescription(nextSeoDescription);
+        setSeoKeywords(nextSeoKeywords);
         setCategories(cats);
+
+        const bannerUrl = resolveStorageAssetUrl(article.image_url) || null;
+        const thumbUrl = resolveStorageAssetUrl(article.thumbnail_url) || null;
+        serverBannerPreviewRef.current = bannerUrl;
+        serverThumbnailPreviewRef.current = thumbUrl;
+        setBannerPreview(bannerUrl);
+        setThumbnailPreview(thumbUrl);
+
+        setSavedSnapshot({
+          title: nextTitle,
+          date: nextDate,
+          category: nextCategory,
+          grapesContent: composedContent,
+          teaser: nextTeaser,
+          isPublished: nextPublished,
+          isFeatured: nextFeatured,
+          seoTitle: nextSeoTitle,
+          seoDescription: nextSeoDescription,
+          seoKeywords: nextSeoKeywords,
+        });
       })
       .catch(() => toast.error("Failed to load article"))
       .finally(() => {
-        setLoading(false);
+        setInitialLoading(false);
         setLoadingCategories(false);
       });
-  }, [id]);
+  }, [id, articleId]);
 
   useEffect(() => {
     return () => {
-      if (bannerPreview?.startsWith("blob:"))
-        URL.revokeObjectURL(bannerPreview);
-      if (thumbnailPreview?.startsWith("blob:"))
-        URL.revokeObjectURL(thumbnailPreview);
+      if (bannerPreview?.startsWith("blob:")) URL.revokeObjectURL(bannerPreview);
+      if (thumbnailPreview?.startsWith("blob:")) URL.revokeObjectURL(thumbnailPreview);
     };
   }, [bannerPreview, thumbnailPreview]);
 
-  const handleSubmit = async () => {
-    if (!title || !date || !content || !teaser || !category) {
-      toast.error("Please fill in all required fields");
+  useEffect(() => {
+    if (!isDirty) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [isDirty]);
+
+  const articleHasBody = (content: string) => {
+    const parts = extractGrapesParts(content);
+    return Boolean(parts.grapes_html?.trim() || content.trim());
+  };
+
+  const handleSave = async (opts?: { publish?: boolean }) => {
+    if (!title.trim() || !date || !category || !teaser.trim()) {
+      toast.error("Please fill in all required fields in News Details");
+      setSettingsOpen(true);
+      return;
+    }
+    if (!articleHasBody(grapesContent)) {
+      toast.error("Article content is required");
       return;
     }
 
     try {
-      await updateArticle(Number(id), {
+      setLoading(true);
+      const nextPublished = opts?.publish ? true : isPublished;
+
+      await updateArticle(articleId, {
         title,
         date,
         category_id: Number(category),
-        content,
+        content: grapesContent,
         teaser,
         banner,
         thumbnail,
-        status: isPublished ? "published" : "private",
+        status: nextPublished ? "published" : "private",
         is_featured: isFeatured,
         meta_title: seoTitle,
         meta_keyword: seoKeywords,
         meta_description: seoDescription,
       });
 
-      toast.success("News updated successfully");
-      router.push("/news");
+      if (opts?.publish) setIsPublished(true);
+      setBanner(null);
+      setThumbnail(null);
+      setSavedSnapshot({
+        ...buildSnapshot(),
+        isPublished: nextPublished,
+      });
+      toast.success(opts?.publish ? "News published" : "News updated successfully");
     } catch (err) {
       toast.error("Failed to update news");
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
+  const handleSaveRef = useRef(handleSave);
+  handleSaveRef.current = handleSave;
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        void handleSaveRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const handleBannerChange = (file: File | null) => {
+    setBanner(file);
+    if (file) {
+      setBannerPreview(URL.createObjectURL(file));
+      return;
+    }
+    setBannerPreview(serverBannerPreviewRef.current);
+  };
+
+  const handleThumbnailChange = (file: File | null) => {
+    setThumbnail(file);
+    if (file) {
+      setThumbnailPreview(URL.createObjectURL(file));
+      return;
+    }
+    setThumbnailPreview(serverThumbnailPreviewRef.current);
+  };
+
+  const metaFields = (
+    <NewsEditorMetaFields
+      mode="edit"
+      title={title}
+      onTitleChange={setTitle}
+      date={date}
+      onDateChange={setDate}
+      category={category}
+      onCategoryChange={setCategory}
+      categories={categories}
+      loadingCategories={loadingCategories}
+      teaser={teaser}
+      onTeaserChange={setTeaser}
+      isPublished={isPublished}
+      onIsPublishedChange={setIsPublished}
+      isFeatured={isFeatured}
+      onIsFeaturedChange={setIsFeatured}
+      bannerPreview={bannerPreview}
+      onBannerChange={handleBannerChange}
+      thumbnailPreview={thumbnailPreview}
+      onThumbnailChange={handleThumbnailChange}
+      seoTitle={seoTitle}
+      onSeoTitleChange={setSeoTitle}
+      seoDescription={seoDescription}
+      onSeoDescriptionChange={setSeoDescription}
+      seoKeywords={seoKeywords}
+      onSeoKeywordsChange={setSeoKeywords}
+    />
+  );
+
+  if (initialLoading) {
     return (
       <div className="container-fluid px-4 pt-3">
         <p>Loading article...</p>
@@ -137,217 +293,34 @@ export default function EditNews() {
   }
 
   return (
-    <div className="container-fluid px-4 pt-3">
-      <h3 className="mb-4">Edit News</h3>
-
-      {/* ================= News Details ================= */}
-      <div className="card mb-4">
-        <div className="card-header fw-bold">News Details</div>
-        <div className="card-body">
-          {/* Title */}
-          <div className="mb-3">
-            <label className="form-label">
-              Title <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-
-          {/* Date */}
-          <div className="mb-3">
-            <label className="form-label">
-              Date <span className="text-danger">*</span>
-            </label>
-            <input
-              type="date"
-              className="form-control"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </div>
-
-          {/* Category */}
-          <div className="mb-3">
-            <label className="form-label">
-              Category <span className="text-danger">*</span>
-            </label>
-            <select
-              className="form-select"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              disabled={loadingCategories}
-            >
-              <option value="">
-                {loadingCategories
-                  ? "Loading categories..."
-                  : "-- Select Category --"}
-              </option>
-
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Banner */}
-          <div className="mb-3">
-            <label className="form-label">Article Banner</label>
-            <input
-              type="file"
-              className="form-control"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                setBanner(file);
-                setBannerPreview(
-                  file ? URL.createObjectURL(file) : bannerPreview
-                );
-              }}
-            />
-
-            {bannerPreview && (
-              <img
-                src={bannerPreview}
-                className="img-fluid rounded border mt-2"
-                style={{ maxHeight: 200 }}
-              />
-            )}
-          </div>
-
-          {/* Thumbnail */}
-          <div className="mb-3">
-            <label className="form-label">Article Thumbnail</label>
-            <input
-              type="file"
-              className="form-control"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                setThumbnail(file);
-                setThumbnailPreview(
-                  file ? URL.createObjectURL(file) : thumbnailPreview
-                );
-              }}
-            />
-
-            {thumbnailPreview && (
-              <img
-                src={thumbnailPreview}
-                className="img-fluid rounded border mt-2"
-                style={{ maxHeight: 150 }}
-              />
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="mb-3">
-            <label className="form-label">
-              Content <span className="text-danger">*</span>
-            </label>
-            <TinyEditor value={content} onChange={setContent} />
-          </div>
-
-          {/* Teaser */}
-          <div className="mb-3">
-            <label className="form-label">
-              Teaser <span className="text-danger">*</span>
-            </label>
-            <textarea
-              className="form-control"
-              rows={3}
-              value={teaser}
-              onChange={(e) => setTeaser(e.target.value)}
-            />
-          </div>
-
-          {/* Visibility */}
-          <div className="mb-3">
-            <label className="form-label">Page Visibility</label>
-            <div className="form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                checked={isPublished}
-                onChange={() => setIsPublished(!isPublished)}
-              />
-              <label className="form-check-label">
-                {isPublished ? "Published" : "Private"}
-              </label>
-            </div>
-          </div>
-
-          {/* Featured */}
-          <div className="mb-3">
-            <label className="form-label">Display (Max Featured: 3)</label>
-            <div className="form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                checked={isFeatured}
-                onChange={() => setIsFeatured(!isFeatured)}
-              />
-              <label className="form-check-label">Featured</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= SEO ================= */}
-      <div className="card mb-4">
-        <div className="card-header fw-bold">News SEO</div>
-        <div className="card-body">
-          <div className="mb-3">
-            <label className="form-label">SEO Title</label>
-            <input
-              type="text"
-              className="form-control"
-              value={seoTitle}
-              onChange={(e) => setSeoTitle(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">SEO Description</label>
-            <textarea
-              className="form-control"
-              rows={4}
-              value={seoDescription}
-              onChange={(e) => setSeoDescription(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">SEO Keywords</label>
-            <input
-              type="text"
-              className="form-control"
-              value={seoKeywords}
-              onChange={(e) => setSeoKeywords(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="btn-group">
-        <button className="btn btn-primary" onClick={handleSubmit}>
-          Update News
-        </button>
-        <button
-          className="btn btn-outline-secondary"
-          onClick={() => router.push("/news")}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    <GrapesEditor
+      fullScreen
+      value={grapesContent}
+      onChange={setGrapesContent}
+      pageTitle={title || "Edit News"}
+      saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
+      isPageLoading={initialLoading}
+      onBack={() => {
+        if (isDirty && !window.confirm("You have unsaved changes. Leave this article anyway?")) return;
+        router.push("/news");
+      }}
+      onSave={() => void handleSave()}
+      onPublish={() => void handleSave({ publish: true })}
+      onPreviewPublic={() => {
+        syncAuthTokenCookieFromStorage();
+        window.open(`/news/preview/${articleId}`, "_blank", "noopener,noreferrer");
+      }}
+      onOpenSettings={() => setSettingsOpen(true)}
+      onCloseSettings={() => setSettingsOpen(false)}
+      settingsOpen={settingsOpen}
+      settingsPanel={metaFields}
+      settingsTitle="News settings"
+    />
   );
 }
 
 EditNews.Layout = AdminLayout;
+
+export async function getServerSideProps() {
+  return { props: {} };
+}

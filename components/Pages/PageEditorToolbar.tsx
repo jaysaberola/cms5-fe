@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { publicPagePath } from "@/lib/publicPaths";
 import PageSwitcher from "./PageSwitcher";
 import { useCmsHelp } from "@/lib/cmsHelp/CmsHelpContext";
 import { syncAuthTokenCookieFromStorage } from "@/lib/authToken";
@@ -117,7 +118,7 @@ export default function PageEditorToolbar({
 
         {!isCreate && pageSlug ? (
           <a
-            href={`/public/${pageSlug.replace(/^\/+/, "").replace(/^public\//, "")}`}
+            href={publicPagePath(pageSlug)}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-sm btn-outline-secondary page-editor-toolbar__btn d-none d-lg-inline-flex"

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { buildPublicNextRewrites } from "./lib/publicNextRewrites";
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@ray-solutions/react-file-manager'],
@@ -28,11 +29,29 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ["pptxgenjs", "grapesjs", "tesseract.js"],
 	devIndicators: false,
+  async rewrites() {
+    return buildPublicNextRewrites();
+  },
   async redirects() {
     return [
       {
+        source: "/public/home",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/home",
+        destination: "/",
+        permanent: false,
+      },
+      {
         source: "/public/about",
-        destination: "/public/about-us",
+        destination: "/about-us",
+        permanent: false,
+      },
+      {
+        source: "/about",
+        destination: "/about-us",
         permanent: false,
       },
     ];

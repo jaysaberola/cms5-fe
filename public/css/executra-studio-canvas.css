@@ -1,0 +1,91 @@
+/* Visual Builder canvas — pixel-match public Executra pages */
+
+html,
+body {
+  background: #050505 !important;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+[data-gjs-type="wrapper"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100%;
+  background: #050505;
+}
+
+/* Same design tokens as .public-site-shell--executra on the live site */
+.exec-tpl {
+  --exec-bg: #050505;
+  --exec-surface: #111111;
+  --exec-surface-2: #161616;
+  --exec-border: rgba(255, 255, 255, 0.1);
+  --exec-text: rgba(255, 255, 255, 0.72);
+  --exec-heading: #ffffff;
+  --exec-orange: #eb5124;
+  --exec-orange-hover: #d9481c;
+  --exec-muted: rgba(255, 255, 255, 0.45);
+  --exec-font: "Outfit", system-ui, sans-serif;
+  --exec-max: 1200px;
+  --exec-gutter: clamp(1.25rem, 4vw, 2.5rem);
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Undo studio generic typography inside Executra blocks */
+.exec-tpl :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--exec-font);
+  color: var(--exec-heading);
+}
+
+.exec-tpl .exec-h2 {
+  font-size: clamp(2rem, 4.5vw, 3rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.exec-tpl a.exec-btn,
+.exec-tpl .exec-btn {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.exec-tpl a.exec-btn--ghost {
+  color: #fff !important;
+}
+
+.exec-tpl a:not([class*="exec-btn"]) {
+  color: var(--exec-orange);
+}
+
+/* Public site: only one service panel visible (JS sets .is-active) */
+.exec-tpl .exec-service-panel {
+  display: none;
+}
+
+.exec-tpl .exec-service-panel.is-active {
+  display: grid;
+}
+
+/* Reveal sections visible while editing (matches after JS boot) */
+.exec-tpl .exec-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Contact page blocks in canvas */
+.exec-tpl.exec-contact .exec-contact-form-panel,
+.exec-tpl .exec-contact-form-panel {
+  min-width: 0;
+}
+
+.exec-tpl .exec-input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.exec-tpl .cms-wsi-contact-form select,
+.exec-tpl .cms-wsi-contact-form input,
+.exec-tpl .cms-wsi-contact-form textarea {
+  color-scheme: dark;
+}

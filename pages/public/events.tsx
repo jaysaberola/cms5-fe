@@ -336,7 +336,12 @@ EventsPage.Layout = LandingPageLayout;
 export async function getServerSideProps() {
   try {
     const res = await getPublicPageBySlug("events");
-    return { props: { pageData: res.data } };
+    return {
+      props: {
+        pageData: res.data,
+        layout: { fullWidth: true, hideBanner: true },
+      },
+    };
   } catch {
     return { notFound: true };
   }

@@ -64,7 +64,7 @@ function SearchIcon() {
 
 function DomainActionButton({ result }: { result: DomainCheckResult }) {
   if (result.available === true) {
-    const contactHref = `/public/contact-us?domain=${encodeURIComponent(result.domain)}`;
+    const contactHref = `/contact-us?domain=${encodeURIComponent(result.domain)}`;
     return (
       <Link href={contactHref} className={styles.addBtn}>
         Contact us

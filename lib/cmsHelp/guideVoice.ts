@@ -1,4 +1,3 @@
-export const CMS_GUIDE_NAME = "Aria";
 export const CMS_GUIDE_ROLE = "CMS Guide";
 
 const STEP_CUES = [
@@ -10,7 +9,7 @@ const STEP_CUES = [
 ];
 
 export function spokenWelcome(guideTitle: string) {
-  return `Hi, I’m ${CMS_GUIDE_NAME}. I’ll walk you through ${guideTitle} like we’re sitting together. Watch the highlighted area, then do each step I call out.`;
+  return `Hi, I’m your ${CMS_GUIDE_ROLE.toLowerCase()}. I’ll walk you through ${guideTitle} like we’re sitting together. Watch the highlighted area, then do each step I call out.`;
 }
 
 export function spokenGuideIntro(title: string, summary: string) {

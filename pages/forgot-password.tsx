@@ -35,7 +35,7 @@ function ForgotPasswordPage() {
           Send Reset Link
         </button>
 
-        <a href="/" className={styles.secondaryLink}>
+        <a href="/login" className={styles.secondaryLink}>
           Back to Sign In
         </a>
       </div>

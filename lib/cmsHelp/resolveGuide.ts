@@ -35,7 +35,7 @@ export function resolveGuideIdFromPath(pathname: string): string {
   if (path.startsWith("/account-management/roles")) return "roles";
   if (path.startsWith("/account-management")) return "roles";
 
-  if (path.startsWith("/dashboard") || path === "/") return "dashboard";
+  if (path.startsWith("/admin-panel") || path.startsWith("/dashboard")) return "dashboard";
 
   return "dashboard";
 }

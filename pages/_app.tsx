@@ -9,8 +9,9 @@ import Head from "next/head";
 import Script from "next/script";
 import { useRouter } from "next/router";
 import { ADMIN_FONT_HREF, ADMIN_STYLESHEETS, isAdminSiteRoute, isAuthRoute } from "@/lib/adminRoute";
-import { isLightweightPublicPage } from "@/lib/publicLegacyScripts";
 import { revealAppDocument } from "@/lib/revealDocument";
+import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
+import { PUBLIC_SHELL_STYLE_IMPORTS } from "@/lib/publicShellStyleSideEffects";
 
 type AppPropsWithLayout = AppProps & {
   Component: AppProps["Component"] & {
@@ -22,7 +23,9 @@ function isEditorRoute(pathname: string) {
   return (
     pathname === "/settings/website" ||
     pathname === "/pages/create" ||
-    /^\/pages\/edit\//.test(pathname)
+    /^\/pages\/edit\//.test(pathname) ||
+    pathname === "/news/create" ||
+    /^\/news\/edit\//.test(pathname)
   );
 }
 
@@ -30,20 +33,29 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
   const Layout = Component.Layout || React.Fragment;
   const enableCfAnalytics = process.env.NEXT_PUBLIC_ENABLE_CF_ANALYTICS === "true";
-  const lightweightPublic = isLightweightPublicPage(router.pathname);
+  const publicPath = (router.asPath || "/").split("?")[0];
+  const isPublic =
+    isPublicSiteRoute(publicPath) ||
+    isPublicSiteRoute(router.pathname || "/");
   const isAdmin = isAdminSiteRoute(router.pathname);
   const isAuth = isAuthRoute(router.pathname);
-  const loadPublicLegacyScripts = !isAdmin && !isAuth && !lightweightPublic;
+  /** Same script bundle on every public page — avoids jarring changes when leaving Home/About. */
+  const loadPublicLegacyScripts = !isAdmin && !isAuth && !isPublic;
+
+  // Keep public layout CSS modules in the main client bundle (see publicShellStyleSideEffects.ts).
+  void PUBLIC_SHELL_STYLE_IMPORTS;
 
   React.useEffect(() => {
     revealAppDocument();
     const frame = window.requestAnimationFrame(revealAppDocument);
     const fallback = window.setTimeout(revealAppDocument, 300);
+    const hardFallback = window.setTimeout(revealAppDocument, 3000);
     return () => {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(fallback);
+      window.clearTimeout(hardFallback);
     };
-  }, [router.asPath]);
+  }, []);
 
   React.useEffect(() => {
     if (!isAdmin) return;
@@ -69,6 +81,11 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       import("@/styles/visualBuilderStudio.css"),
     ]);
   }, [router.pathname]);
+
+  React.useEffect(() => {
+    if (!isPublic) return;
+    document.body.classList.remove("cms-visual-studio-open");
+  }, [isPublic, router.asPath]);
 
   React.useEffect(() => {
     if (!isAdmin) return;

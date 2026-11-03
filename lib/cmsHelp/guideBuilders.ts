@@ -20,7 +20,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "This area sets context before you manage content.",
         ],
         target: tour.dashboardHero,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "bottom",
       },
       {
@@ -32,7 +32,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Files — opens the File Manager for uploads.",
         ],
         target: tour.dashboardActions,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "left",
       },
       {
@@ -46,7 +46,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Each card is a clickable shortcut to Manage Pages, Manage Albums, or Manage News.",
         ],
         target: tour.dashboardStats,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "bottom",
       },
       {
@@ -59,7 +59,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Team & users — manage admin user accounts.",
         ],
         target: tour.dashboardQuicklinks,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "bottom",
       },
       {
@@ -70,7 +70,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Use this before planning content updates.",
         ],
         target: tour.dashboardActivity,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "top",
       },
       {
@@ -82,7 +82,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "For the full log, open Settings → Manage Audit Trail.",
         ],
         target: tour.dashboardActivity,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "top",
       },
       {
@@ -93,7 +93,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Avatar matches the top-right account button.",
         ],
         target: tour.sidebarUser,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "right",
       },
       {
@@ -105,7 +105,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "The active page is highlighted in purple.",
         ],
         target: tour.sidebar,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "right",
       },
       {
@@ -116,7 +116,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Compare CMS edits with what visitors see.",
         ],
         target: tour.sidebarViewSite,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "right",
         tip: "Bookmark the public URL for quick checks after every publish.",
       },
@@ -128,7 +128,7 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
           "Use the sidebar toggle to hide/show the sidebar on desktop.",
         ],
         target: tour.topbarAvatar,
-        route: "/dashboard",
+        route: "/admin-panel",
         placement: "bottom",
       },
     ],
@@ -562,12 +562,12 @@ export const CMS_HELP_GUIDES: CmsHelpGuide[] = [
         placement: "center",
       },
       {
-        title: "Content section — rich text editor",
-        body: "Write the full story with formatting.",
+        title: "Visual Builder — article body",
+        body: "Build the full story with blocks, sections, images, and typography in the Visual Builder.",
         details: [
-          "Bold, italic, headings, lists, and links.",
-          "Paste from Word may need cleanup.",
-          "Add images inline if the editor supports it.",
+          "Use the settings gear for title, date, category, teaser, media, and SEO.",
+          "Save or Publish from the studio toolbar.",
+          "Preview opens the public article layout in a new tab after the article exists.",
         ],
         route: "/news/create",
         placement: "center",

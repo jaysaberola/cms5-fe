@@ -35,6 +35,19 @@ export function normalizeGrapesPageData<T extends GrapesPageLike>(page: T): T {
   };
 }
 
+/** Grapes sometimes saves full document fragments; strip wrappers that break public layout. */
+export function sanitizeGrapesPublicHtml(html: string): string {
+  let out = normalizeLineEndings((html || "").trim());
+  if (!out) return out;
+
+  out = out.replace(/<!DOCTYPE[^>]*>/gi, "");
+  out = out.replace(/<\/?html[^>]*>/gi, "");
+  out = out.replace(/<\/?head[^>]*>[\s\S]*?(<\/head>|$)/gi, "");
+  out = out.replace(/<\/?body[^>]*>/gi, "");
+
+  return out.trim();
+}
+
 export function buildPublicPageHtml(pageData: GrapesPageLike): string {
   const hasGrapesFields = Boolean(pageData?.grapes_html || pageData?.grapes_css || pageData?.grapes_js);
   const isGrapes = pageData?.content_type === "grapes" || hasGrapesFields;
@@ -42,7 +55,9 @@ export function buildPublicPageHtml(pageData: GrapesPageLike): string {
   if (!isGrapes) return normalizeLineEndings(pageData?.content || "");
 
   const parsed = extractGrapesParts(pageData?.content || "");
-  const grapesHtml = normalizeLineEndings((pageData?.grapes_html || "").trim() || parsed.grapes_html);
+  const grapesHtml = sanitizeGrapesPublicHtml(
+    normalizeLineEndings((pageData?.grapes_html || "").trim() || parsed.grapes_html),
+  );
   const grapesCss = normalizeLineEndings((pageData?.grapes_css || "").trim() || parsed.grapes_css);
   const grapesJs = normalizeLineEndings((pageData?.grapes_js || "").trim() || parsed.grapes_js);
 

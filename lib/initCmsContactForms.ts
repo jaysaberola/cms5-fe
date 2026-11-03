@@ -45,16 +45,17 @@ function loadRecaptchaScript(): Promise<void> {
 function showAlert(form: HTMLFormElement, kind: "success" | "error", message: string) {
   const alert = form.querySelector("[data-cms-contact-alert]") as HTMLElement | null;
   if (!alert) return;
+  alert.classList.remove("is-success", "is-error");
+  alert.classList.add(kind === "success" ? "is-success" : "is-error");
   alert.style.display = "block";
-  alert.style.background = kind === "success" ? "#ecfdf5" : "#fef2f2";
-  alert.style.color = kind === "success" ? "#047857" : "#b91c1c";
-  alert.style.border = kind === "success" ? "1px solid #a7f3d0" : "1px solid #fecaca";
   alert.textContent = message;
 }
 
 function hideAlert(form: HTMLFormElement) {
   const alert = form.querySelector("[data-cms-contact-alert]") as HTMLElement | null;
-  if (alert) alert.style.display = "none";
+  if (!alert) return;
+  alert.classList.remove("is-success", "is-error");
+  alert.style.display = "none";
 }
 
 function resetForm(form: HTMLFormElement, state: FormState) {
