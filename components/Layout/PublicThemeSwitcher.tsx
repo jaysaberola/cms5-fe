@@ -14,6 +14,15 @@ type Props = {
   onNavigate?: () => void;
 };
 
+function ThemeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  );
+}
+
 export default function PublicThemeSwitcher({ variant = "header", onNavigate }: Props) {
   const [theme, setTheme] = useState<PublicSiteThemeId>("dark");
   const [open, setOpen] = useState(false);
@@ -73,21 +82,29 @@ export default function PublicThemeSwitcher({ variant = "header", onNavigate }: 
     );
   }
 
+  const activeTheme = PUBLIC_SITE_THEMES.find((item) => item.id === theme);
+  const themeLabel = activeTheme?.label ?? "Theme";
+
   return (
-    <div className={`${styles.wrap} ${styles.wrapDesktop}`} ref={wrapRef}>
+    <div className={`${styles.wrap} ${styles.wrapDesktop} public-theme-switcher`} ref={wrapRef}>
       <button
         type="button"
-        className={styles.toggle}
-        aria-label="Change site color theme"
+        className={`${styles.toggle} public-theme-switcher-toggle`}
+        aria-label={`Color theme: ${themeLabel}. Click to change.`}
         aria-expanded={open}
         aria-haspopup="listbox"
-        title="Color theme"
+        title={`Theme: ${themeLabel}`}
         onClick={() => setOpen((v) => !v)}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-        </svg>
+        <span className={styles.toggleIcon}>
+          <ThemeIcon />
+        </span>
+        <span className={styles.toggleLabel}>Theme</span>
+        <span className={styles.toggleChevron} aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </span>
       </button>
 
       {open ? (

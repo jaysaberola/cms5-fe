@@ -247,9 +247,13 @@ html[data-public-theme] .public-site-header .public-header-search-toggle:hover {
   color: var(--exec-orange) !important;
 }
 
-html[data-public-theme] .public-site-header [class*="toggle"]:not([class*="mobile-toggle"]) {
+html[data-public-theme] .public-site-header .public-theme-switcher-toggle {
   border-color: var(--pub-header-icon-border) !important;
   background: var(--pub-header-icon-bg) !important;
+  color: var(--pub-nav-link-active) !important;
+}
+
+html[data-public-theme="light"] .public-site-header .public-theme-switcher-toggle [class*="toggleLabel"] {
   color: var(--pub-nav-link-active) !important;
 }
 
