@@ -1,0 +1,83 @@
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
+}
+
+.title {
+  margin: 0 0 1.25rem;
+  font-family: "Outfit", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: var(--exec-heading, #fff);
+}
+
+.form {
+  margin: 0 0 1.5rem;
+}
+
+.label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.formRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.15)) !important;
+  background: var(--exec-surface-2, #161616) !important;
+  color: var(--exec-heading, #fff) !important;
+  font-size: 1rem;
+  font-family: inherit;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+}
+
+.input::placeholder {
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
+}
+
+.submit {
+  flex-shrink: 0;
+  height: 48px;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--exec-orange, #eb5124);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hint {
+  margin: 0;
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
+  font-size: 0.9375rem;
+}

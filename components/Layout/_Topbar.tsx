@@ -16,6 +16,7 @@ export default function LandingTopbar() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { adminUser } = useStoredPublicAuthState();
   const isStaffLoggedIn = Boolean(adminUser);
   const [logoFailed, setLogoFailed] = useState(false);
@@ -33,7 +34,10 @@ export default function LandingTopbar() {
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth > 991) setMobileOpen(false);
+      if (window.innerWidth > 991) {
+        setMobileOpen(false);
+        setMobileSearchOpen(false);
+      }
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -67,6 +71,11 @@ export default function LandingTopbar() {
   }, [mobileOpen]);
 
   const closeMobileMenu = () => setMobileOpen(false);
+
+  const openMobileSearch = () => {
+    closeMobileMenu();
+    setMobileSearchOpen(true);
+  };
 
   return (
     <header
@@ -108,16 +117,27 @@ export default function LandingTopbar() {
           aria-label="Main navigation"
         >
           <div className={styles["mobile-utilities"]}>
-            <Link href="/search" className={styles["mobile-utility-link"]} onClick={closeMobileMenu} prefetch scroll={false}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-3.5-3.5" />
-              </svg>
-              Search
+            <Link
+              href="/contact-us"
+              className={`${styles["mobile-utility-link"]} ${styles["mobile-utility-cta"]}`}
+              onClick={closeMobileMenu}
+              prefetch
+              scroll={false}
+            >
+              Book a call
             </Link>
-            {!isStaffLoggedIn ? (
-              <SignInDropdown variant="menuTile" onNavigate={closeMobileMenu} />
-            ) : null}
+            <div className={styles["mobile-utility-row"]}>
+              <button type="button" className={styles["mobile-utility-link"]} onClick={openMobileSearch}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M20 20l-3.5-3.5" />
+                </svg>
+                Search
+              </button>
+              {!isStaffLoggedIn ? (
+                <SignInDropdown variant="menuTile" onNavigate={closeMobileMenu} />
+              ) : null}
+            </div>
           </div>
           <ul className={styles["nav-list"]}>
             <Menu isMobile={mobileOpen} onNavigate={closeMobileMenu} />
@@ -126,47 +146,46 @@ export default function LandingTopbar() {
         </nav>
 
         <div className={styles.actions}>
-          <HeaderSearch />
+          <div className={styles.actionsDesktop}>
+            <HeaderSearch />
 
-          <Link href="/contact-us" className={`${styles["demo-btn"]} public-demo-cta`} prefetch scroll={false}>
-            Book a call
-          </Link>
+            <Link href="/contact-us" className={`${styles["demo-btn"]} public-demo-cta`} prefetch scroll={false}>
+              Book a call
+            </Link>
 
-          <PublicThemeSwitcher />
+            <PublicThemeSwitcher />
 
-          {!isStaffLoggedIn ? (
-            <>
-              <div className={styles.actionsDivider} aria-hidden="true" />
-              <div className={styles["icon-group"]}>
-                <div className={styles.headerAccount}>
-                  <SignInDropdown
-                    buttonClassName={styles["portal-btn"]}
-                    chevronClassName={styles["portal-chevron"]}
-                  />
+            {!isStaffLoggedIn ? (
+              <>
+                <div className={styles.actionsDivider} aria-hidden="true" />
+                <div className={styles["icon-group"]}>
+                  <div className={styles.headerAccount}>
+                    <SignInDropdown
+                      buttonClassName={styles["portal-btn"]}
+                      chevronClassName={styles["portal-chevron"]}
+                    />
+                  </div>
                 </div>
-              </div>
-            </>
-          ) : null}
+              </>
+            ) : null}
+          </div>
 
-          <Link href="/search" className={styles["search-mobile-btn"]} aria-label="Search" title="Search" prefetch scroll={false}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M20 20l-3.5-3.5" />
-            </svg>
-          </Link>
+          <div className={styles.actionsMobile}>
+            <HeaderSearch variant="mobile" open={mobileSearchOpen} onOpenChange={setMobileSearchOpen} />
 
-          <button
-            type="button"
-            className={styles["mobile-toggle"]}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-            aria-controls="landing-topbar-nav"
-            onClick={() => setMobileOpen((v) => !v)}
-          >
-            <span className={styles["mobile-toggle-bar"]} />
-            <span className={styles["mobile-toggle-bar"]} />
-            <span className={styles["mobile-toggle-bar"]} />
-          </button>
+            <button
+              type="button"
+              className={styles["mobile-toggle"]}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+              aria-controls="landing-topbar-nav"
+              onClick={() => setMobileOpen((v) => !v)}
+            >
+              <span className={styles["mobile-toggle-bar"]} />
+              <span className={styles["mobile-toggle-bar"]} />
+              <span className={styles["mobile-toggle-bar"]} />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -200,12 +200,14 @@ html[data-public-theme] .public-site-header[class*="scrolled"] {
 }
 
 html[data-public-theme] .public-site-header .menu-link,
-html[data-public-theme] .public-site-header a.menu-link {
+html[data-public-theme] .public-site-header a.menu-link,
+html[data-public-theme] .public-site-header [class*="menu-link"] {
   color: var(--pub-nav-link) !important;
 }
 
 html[data-public-theme] .public-site-header .menu-item.current > .menu-row > .menu-link,
-html[data-public-theme] .public-site-header .menu-item.current > .menu-link {
+html[data-public-theme] .public-site-header .menu-item.current > .menu-link,
+html[data-public-theme] .public-site-header .menu-item.current [class*="menu-link"] {
   color: var(--pub-nav-link-active) !important;
 }
 
@@ -704,4 +706,110 @@ html[data-public-theme] .public-site-shell--executra [data-cms-contact-submit].e
 html[data-public-theme] .public-site-shell--executra .public-demo-cta,
 html[data-public-theme] .public-site-shell--executra a[class*="demo-btn"] {
   color: #fff !important;
+}
+
+/* Mobile nav drawer — match light/dark theme (panel + links + utilities) */
+@media (max-width: 991px) {
+  html[data-public-theme] .public-site-header .public-site-nav,
+  html[data-public-theme] .public-site-header nav[class*="nav-wrap"] {
+    background: var(--exec-surface) !important;
+    color: var(--exec-text);
+    border-bottom-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header .public-site-nav [class*="nav-list"] :is(.menu-link, [class*="menu-link"]) {
+    color: var(--exec-heading) !important;
+    border-bottom-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header .public-site-nav [class*="nav-list"] :is(.menu-link, [class*="menu-link"]):hover,
+  html[data-public-theme] .public-site-header .public-site-nav [class*="nav-list"] :is(.menu-link, [class*="menu-link"]):focus {
+    color: var(--exec-heading) !important;
+    background: var(--exec-surface-2) !important;
+  }
+
+  html[data-public-theme] .public-site-header .public-site-nav .menu-item.current :is(.menu-link, [class*="menu-link"]) {
+    color: var(--exec-orange) !important;
+    background: color-mix(in srgb, var(--exec-orange) 12%, var(--exec-surface)) !important;
+  }
+
+  html[data-public-theme] .public-site-header nav[class*="nav-wrap-open"] [class*="mobile-utilities"] {
+    background: var(--exec-surface-2) !important;
+    border-bottom-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobile-utility-link"]:not([class*="mobile-utility-cta"]) {
+    background: var(--exec-surface) !important;
+    border-color: var(--exec-border) !important;
+    color: var(--exec-heading) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobile-toggle"] {
+    border-color: var(--pub-header-icon-border) !important;
+    background: var(--pub-header-icon-bg) !important;
+    color: var(--pub-nav-link-active) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobile-toggle-bar"] {
+    background: currentColor !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="backdrop"] {
+    background: color-mix(in srgb, var(--exec-heading) 40%, transparent) !important;
+  }
+
+  html[data-public-theme="light"] .public-site-header [class*="backdrop"] {
+    background: rgba(15, 23, 42, 0.35) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobileOnly"] {
+    background: var(--exec-surface);
+    border-top-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobileOnly"] [class*="panelTitle"] {
+    color: var(--exec-muted) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobileChip"] {
+    color: var(--exec-heading) !important;
+    border-color: var(--exec-border) !important;
+    background: var(--exec-surface) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="mobileChipActive"] {
+    border-color: var(--exec-orange) !important;
+    background: color-mix(in srgb, var(--exec-orange) 14%, var(--exec-surface)) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="sub-menu-container"] {
+    background: var(--exec-surface-2) !important;
+    border-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="sub-menu-container"] :is(.menu-link, [class*="menu-link"]) {
+    color: var(--exec-text) !important;
+    border-bottom-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="submenu-toggle"] {
+    color: var(--exec-heading) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="searchMobilePanel"] {
+    background: var(--exec-surface) !important;
+    border-bottom-color: var(--exec-border) !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="searchMobileField"] {
+    background: var(--exec-surface-2) !important;
+    border-color: var(--exec-border) !important;
+    color: var(--exec-heading) !important;
+    pointer-events: auto !important;
+  }
+
+  html[data-public-theme] .public-site-header [class*="searchMobileClose"] {
+    color: var(--exec-heading) !important;
+    border-color: var(--exec-border) !important;
+  }
 }

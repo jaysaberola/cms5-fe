@@ -438,14 +438,17 @@ button.menuItem {
     max-width: none !important;
     height: auto !important;
     min-height: 0 !important;
-    padding: 10px 6px !important;
+    padding: 11px 12px !important;
     border-radius: 10px;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 6px;
-    background: #ffffff;
-    border: 1px solid rgba(15, 23, 42, 0.1);
+    gap: 8px;
+    background: var(--exec-surface, #ffffff);
+    border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.12));
+    color: var(--exec-heading, #0f172a);
+    font-size: 0.8125rem;
+    font-weight: 600;
   }
 
   .menuTile .avatar {

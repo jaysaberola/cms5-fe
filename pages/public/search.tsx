@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import LandingPageLayout from "@/components/Layout/GuestLayout";
 import { publicPagePath } from "@/lib/publicPaths";
 import { searchSite, SearchSiteResponse } from "@/services/searchService";
+import styles from "@/styles/publicSearchPage.module.css";
 
 export default function PublicSearchPage() {
   const router = useRouter();
   const qRaw = router.query.q;
   const q = Array.isArray(qRaw) ? qRaw.join(" ") : (qRaw || "");
 
+  const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<SearchSiteResponse | null>(null);
   const [origin, setOrigin] = useState<string>("");
+
+  useEffect(() => {
+    setDraft(typeof q === "string" ? q : "");
+  }, [q]);
 
   useEffect(() => {
     if (typeof window !== "undefined") setOrigin(window.location.origin);
@@ -44,13 +50,41 @@ export default function PublicSearchPage() {
     };
   }, [q]);
 
+  const submitSearch = (event: FormEvent) => {
+    event.preventDefault();
+    const value = draft.trim();
+    if (!value) return;
+    router.push(`/search?q=${encodeURIComponent(value)}`);
+  };
+
   return (
-    <div className="executra-public-shell" style={{ maxWidth: 960, margin: "0 auto", padding: "2.5rem 1.25rem 4rem" }}>
-      <p style={{ margin: "0 0 0.5rem", fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>Search</p>
-      <h1 style={{ margin: "0 0 1.5rem", fontFamily: "Outfit, system-ui, sans-serif", fontWeight: 400, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: "#fff" }}>Search results</h1>
+    <div className={`executra-public-shell ${styles.shell}`}>
+      <p className={styles.eyebrow}>Search</p>
+      <h1 className={styles.title}>Search the site</h1>
+
+      <form className={styles.form} onSubmit={submitSearch} role="search">
+        <label className={styles.label} htmlFor="public-site-search-page">
+          Search query
+        </label>
+        <div className={styles.formRow}>
+          <input
+            id="public-site-search-page"
+            type="search"
+            enterKeyHint="search"
+            autoComplete="off"
+            className={styles.input}
+            placeholder="Pages, news, topics…"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+          />
+          <button type="submit" className={styles.submit}>
+            Search
+          </button>
+        </div>
+      </form>
 
       {!q || q.toString().trim() === "" ? (
-        <div className="alert alert-info">Enter a search query in the topbar.</div>
+        <p className={styles.hint}>Type a keyword above to find pages and news articles.</p>
       ) : (
         <>
           <p className="text-muted">Results for <strong>{q}</strong></p>

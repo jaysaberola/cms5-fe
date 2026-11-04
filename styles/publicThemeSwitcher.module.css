@@ -143,13 +143,17 @@
   line-height: 1.3;
 }
 
+.mobileOnly {
+  padding: 12px 14px 16px;
+  border-top: 1px solid var(--exec-border, rgba(255, 255, 255, 0.08));
+}
+
 .mobileRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 12px 0 4px;
-  border-top: 1px solid var(--exec-border, rgba(255, 255, 255, 0.1));
-  margin-top: 8px;
+  padding: 8px 0 0;
+  margin: 0;
 }
 
 .mobileChip {

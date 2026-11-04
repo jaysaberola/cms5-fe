@@ -1118,18 +1118,18 @@ html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
 }
 
 .public-site-shell--executra .nav-list :global(.menu-link) {
-  color: rgba(255, 255, 255, 0.78) !important;
+  color: var(--pub-nav-link, rgba(255, 255, 255, 0.78)) !important;
 }
 
 .public-site-shell--executra .nav-list :global(.menu-link:hover),
 .public-site-shell--executra .nav-list :global(.menu-item--active > .menu-row > .menu-link),
 .public-site-shell--executra .nav-list :global(.menu-item.current > .menu-row > .menu-link) {
-  color: #fff !important;
+  color: var(--pub-nav-link-active, #fff) !important;
 }
 
 .public-site-shell .menu-item.current > .menu-link,
 .public-site-shell .menu-item.current > .menu-row > .menu-link {
-  color: rgba(255, 255, 255, 0.95) !important;
+  color: var(--pub-nav-link-active, rgba(255, 255, 255, 0.95)) !important;
 }
 
 .public-site-shell .menu-link__dot {
