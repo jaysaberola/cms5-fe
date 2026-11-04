@@ -489,7 +489,7 @@ export default function MainBanner({ album }: MainBannerProps) {
             {isInternalHref(resolvedPrimaryUrl) ? (
               <Link
                 href={resolvedPrimaryUrl}
-                className={styles.ctaPrimary}
+                className={`${styles.ctaPrimary} public-hero-cta-primary`}
                 style={primaryButtonStyle}
                 scroll={false}
                 prefetch
@@ -498,7 +498,7 @@ export default function MainBanner({ album }: MainBannerProps) {
                 <span aria-hidden="true">→</span>
               </Link>
             ) : (
-              <a href={resolvedPrimaryUrl} className={styles.ctaPrimary} style={primaryButtonStyle}>
+              <a href={resolvedPrimaryUrl} className={`${styles.ctaPrimary} public-hero-cta-primary`} style={primaryButtonStyle}>
                 {resolvedPrimaryText}
                 <span aria-hidden="true">→</span>
               </a>
@@ -507,7 +507,7 @@ export default function MainBanner({ album }: MainBannerProps) {
             {isInternalHref(resolvedSecondaryUrl) ? (
               <Link
                 href={resolvedSecondaryUrl}
-                className={styles.ctaSecondary}
+                className={`${styles.ctaSecondary} public-hero-cta-secondary`}
                 style={secondaryButtonStyle}
                 scroll={false}
                 prefetch
@@ -517,7 +517,7 @@ export default function MainBanner({ album }: MainBannerProps) {
             ) : (
               <a
                 href={resolvedSecondaryUrl}
-                className={styles.ctaSecondary}
+                className={`${styles.ctaSecondary} public-hero-cta-secondary`}
                 style={secondaryButtonStyle}
               >
                 {resolvedSecondaryText}

@@ -669,3 +669,35 @@ html[data-public-theme] .public-site-shell--executra .public-site-header .menu-i
 html[data-public-theme] .public-site-shell--executra .public-site-header .menu-item.current > .menu-link {
   color: var(--pub-nav-link-active) !important;
 }
+
+/* ——— Buttons (hero + CMS) — beat `a { color: inherit }` in light mode ——— */
+html[data-public-theme] [data-public-hero] .public-hero-cta-primary,
+html[data-public-theme] [data-public-hero] a[class*="ctaPrimary"] {
+  color: #fff !important;
+  background: var(--exec-orange, #eb5124) !important;
+  border-color: var(--exec-orange, #eb5124) !important;
+}
+
+html[data-public-theme] [data-public-hero] .public-hero-cta-primary span,
+html[data-public-theme] [data-public-hero] a[class*="ctaPrimary"] span {
+  color: inherit !important;
+}
+
+html[data-public-theme] [data-public-hero] .public-hero-cta-secondary,
+html[data-public-theme] [data-public-hero] a[class*="ctaSecondary"] {
+  color: #fff !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .exec-btn--primary,
+html[data-public-theme] .public-site-shell--executra a.exec-btn--primary,
+html[data-public-theme] .public-site-shell--executra button.exec-btn--primary,
+html[data-public-theme] .public-site-shell--executra [data-cms-contact-submit].exec-btn--primary {
+  color: #fff !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-demo-cta,
+html[data-public-theme] .public-site-shell--executra a[class*="demo-btn"] {
+  color: #fff !important;
+}

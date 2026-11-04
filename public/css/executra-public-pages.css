@@ -264,7 +264,7 @@
   border-color: var(--exec-orange, #eb5124) !important;
 }
 
-.public-site-shell--executra a {
+.public-site-shell--executra a:not([class*="ctaPrimary"]):not([class*="ctaSecondary"]):not(.exec-btn):not(.public-demo-cta):not([class*="demo-btn"]) {
   color: inherit;
 }
 
