@@ -1,3 +1,4 @@
+import { appendUploadFile, multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 
 /* =======================
@@ -38,13 +39,11 @@ export const accountService = {
     formData.append("fname", payload.fname);
     formData.append("lname", payload.lname);
 
-    if (payload.avatar) {
-      formData.append("avatar", payload.avatar);
+    if (payload.avatar instanceof File) {
+      appendUploadFile(formData, "avatar", payload.avatar, "avatar.jpg");
     }
 
-    const { data } = await axiosInstance.post("/user/profile", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const { data } = await axiosInstance.post("/user/profile", formData, multipartUploadConfig);
 
     return data;
   },

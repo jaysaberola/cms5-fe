@@ -11,6 +11,14 @@ import { resolveStaffLoginRedirect } from "@/lib/userRoles";
 import styles from "@/styles/adminAuth.module.css";
 
 const getLoginErrorMessage = (error: any) => {
+  if (error?.code === "ERR_NETWORK" || error?.message === "Network Error") {
+    const api = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+    if (!api) {
+      return "API URL is not configured. Set NEXT_PUBLIC_API_URL on Vercel and redeploy.";
+    }
+    return `Cannot reach the API at ${api}. Check the URL, server CORS (cms5-fe.vercel.app), and that MySQL/API is up.`;
+  }
+
   const data = error?.response?.data;
   const firstValidationError = data?.errors
     ? Object.values(data.errors).flat().find(Boolean)

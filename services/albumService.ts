@@ -1,3 +1,4 @@
+import { appendUploadFile, multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "./axios";
 
 
@@ -60,13 +61,13 @@ export const getAlbum = (id: number) => {
 
 export const createAlbum = (payload: AlbumPayload) => {
   const formData = buildAlbumFormData(payload);
-  return axiosInstance.post("/albums", formData);
+  return axiosInstance.post("/albums", formData, multipartUploadConfig);
 };
 
 export const updateAlbum = (id: number, payload: AlbumPayload) => {
   const formData = buildAlbumFormData(payload);
   formData.append("_method", "PUT"); // Laravel PUT via POST
-  return axiosInstance.post(`/albums/${id}`, formData);
+  return axiosInstance.post(`/albums/${id}`, formData, multipartUploadConfig);
 };
 
 export const updateAlbumMeta = (id: number, payload: Partial<AlbumPayload>) => {
@@ -161,8 +162,14 @@ const buildAlbumFormData = (payload: AlbumPayload) => {
     formData.append(`banners[${index}][url]`, banner.url ?? "");
     formData.append(`banners[${index}][order]`, String(banner.order ?? index));
 
+    if (banner.media_type) {
+      formData.append(`banners[${index}][media_type]`, banner.media_type);
+    }
+
     if (banner.image instanceof File) {
-      formData.append(`banners[${index}][image]`, banner.image);
+      const fallback =
+        banner.media_type === "video" ? `banner-${index}.mp4` : `banner-${index}.jpg`;
+      appendUploadFile(formData, `banners[${index}][image]`, banner.image, fallback);
     }
   });
 

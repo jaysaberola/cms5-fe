@@ -1,3 +1,4 @@
+import { appendUploadFile, multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 
 export interface CreateArticleCategoryPayload {
@@ -152,15 +153,17 @@ export const createArticle = async (payload: CreateArticlePayload) => {
   formData.append("status", payload.status);
   formData.append("is_featured", payload.is_featured ? "1" : "0");
 
-  if (payload.banner) formData.append("banner", payload.banner);
-  if (payload.thumbnail) formData.append("thumbnail", payload.thumbnail);
+  if (payload.banner instanceof File) appendUploadFile(formData, "banner", payload.banner, "banner.jpg");
+  if (payload.thumbnail instanceof File) {
+    appendUploadFile(formData, "thumbnail", payload.thumbnail, "thumbnail.jpg");
+  }
 
   if (payload.meta_title) formData.append("meta_title", payload.meta_title);
   if (payload.meta_keyword) formData.append("meta_keyword", payload.meta_keyword);
   if (payload.meta_description)
     formData.append("meta_description", payload.meta_description);
 
-  const res = await axiosInstance.post("/articles", formData);
+  const res = await axiosInstance.post("/articles", formData, multipartUploadConfig);
 
   return res.data;
 };
@@ -215,13 +218,13 @@ export const updateArticleStatus = async (id: number, status: "published" | "pri
   const postForm = () => {
     const fd = new FormData();
     fd.append("status", status);
-    return axiosInstance.post(`/articles/${id}`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+    return axiosInstance.post(`/articles/${id}`, fd, multipartUploadConfig);
   };
   const postFormMethodPut = () => {
     const fd = new FormData();
     fd.append("_method", "PUT");
     fd.append("status", status);
-    return axiosInstance.post(`/articles/${id}`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+    return axiosInstance.post(`/articles/${id}`, fd, multipartUploadConfig);
   };
 
   const attempts: Array<() => Promise<any>> = [postJson, postJsonMethodPut, postForm, postFormMethodPut];
@@ -345,8 +348,10 @@ export const updateArticle = async (
   formData.append("status", payload.status);
   formData.append("is_featured", payload.is_featured ? "1" : "0");
 
-  if (payload.banner) formData.append("banner", payload.banner);
-  if (payload.thumbnail) formData.append("thumbnail", payload.thumbnail);
+  if (payload.banner instanceof File) appendUploadFile(formData, "banner", payload.banner, "banner.jpg");
+  if (payload.thumbnail instanceof File) {
+    appendUploadFile(formData, "thumbnail", payload.thumbnail, "thumbnail.jpg");
+  }
 
   if (payload.meta_title)
     formData.append("meta_title", payload.meta_title);
@@ -355,11 +360,7 @@ export const updateArticle = async (
   if (payload.meta_description)
     formData.append("meta_description", payload.meta_description);
 
-  const res = await axiosInstance.post(
-    `/articles/${id}`,
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
-  );
+  const res = await axiosInstance.post(`/articles/${id}`, formData, multipartUploadConfig);
 
   return res.data;
 };

@@ -26,7 +26,16 @@ function isAllowedUrl(rawUrl: string) {
   try {
     const url = new URL(rawUrl);
     const allowed = new URL(ALLOWED_ORIGIN);
-    return normalizeOrigin(url.origin) === normalizeOrigin(allowed.origin);
+    if (normalizeOrigin(url.origin) !== normalizeOrigin(allowed.origin)) {
+      return false;
+    }
+
+    const allowedPath = allowed.pathname.replace(/\/$/, "");
+    if (allowedPath && allowedPath !== "/") {
+      return url.pathname.startsWith(allowedPath);
+    }
+
+    return true;
   } catch {
     return false;
   }

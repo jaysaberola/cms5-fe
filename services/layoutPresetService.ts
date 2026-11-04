@@ -1,3 +1,4 @@
+import { multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 
 export type LayoutPreset = {
@@ -28,19 +29,14 @@ export const layoutPresetService = {
   },
 
   create(data: FormData) {
-    return axiosInstance.post("/layout-presets", data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return axiosInstance.post("/layout-presets", data, multipartUploadConfig);
   },
 
   update(id: number, data: FormData) {
-    return axiosInstance.post(`/layout-presets/${id}?_method=PUT`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    if (!data.has("_method")) {
+      data.append("_method", "PUT");
+    }
+    return axiosInstance.post(`/layout-presets/${id}`, data, multipartUploadConfig);
   },
 
   delete(id: number) {

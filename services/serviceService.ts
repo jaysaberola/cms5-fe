@@ -1,11 +1,12 @@
 import axios from "axios";
+import { multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 
 // ── CRUD ─────────────────────────────────────────────────────────────────────
 
 export const createService = async (form: FormData) => {
   try {
-    const res = await axiosInstance.post("/services", form);
+    const res = await axiosInstance.post("/services", form, multipartUploadConfig);
     return res.data;
   } catch (err: any) {
     const status = err?.response?.status;
@@ -43,7 +44,7 @@ export const createService = async (form: FormData) => {
               }
               if (val) fd.append(key, val);
             }
-            const r = await axiosInstance.post(ep, fd);
+            const r = await axiosInstance.post(ep, fd, multipartUploadConfig);
             return r.data;
           } catch (e: any) {
             continue;
@@ -114,7 +115,7 @@ export const updateService = async (id: string | number, data: any) => {
       }
     }
     fd.append("_method", "PUT");
-    const res = await axiosInstance.post(`/services/${id}`, fd);
+    const res = await axiosInstance.post(`/services/${id}`, fd, multipartUploadConfig);
     return res.data;
   }
 

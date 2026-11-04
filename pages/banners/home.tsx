@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import AdminLayout from "@/components/Layout/AdminLayout";
 import { BannerForm as BaseBannerForm } from "@/schemas/banner";
 import { OptionItem, getOptions } from "@/services/optionService";
+import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import {
   getAlbum,
@@ -1156,11 +1157,11 @@ function HomeBanner() {
         toast.error(`Banner file is too large for the server. Use a file under ${BANNER_MEDIA_MAX_MB} MB.`);
         return;
       }
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to save home banner. Please try again.";
-      toast.error(message);
+      toast.error(
+        firstApiValidationMessage(err) ||
+          err?.message ||
+          "Failed to save home banner. Please try again."
+      );
     }
   };
 

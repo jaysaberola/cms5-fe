@@ -4,6 +4,7 @@ import AdminLayout from "@/components/Layout/AdminLayout";
 import { BannerForm } from "@/schemas/banner";
 import { OptionItem, getOptions } from "@/services/optionService";
 import { getAlbum, updateAlbum } from "@/services/albumService";
+import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import { axiosInstance } from "@/services/axios";
 import { resolveStorageAssetUrl } from "@/lib/storageAssets";
@@ -657,9 +658,8 @@ function EditAlbum() {
       await updateAlbum(Number(id), payload);
       toast.success("Album updated successfully!");
       router.push("/banners");
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err?.response?.data?.message || "Failed to update album");
+    } catch (err: unknown) {
+      toast.error(firstApiValidationMessage(err) || "Failed to update album.");
     }
   };
 

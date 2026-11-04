@@ -1,3 +1,4 @@
+import { multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 
 export const websiteService = {
@@ -57,7 +58,7 @@ export const websiteService = {
      WEBSITE TAB
   ====================== */
   async updateWebsite(payload: FormData) {
-    return axiosInstance.post("/website-settings/website", payload);
+    return axiosInstance.post("/website-settings/website", payload, multipartUploadConfig);
   },
 
   /* ======================

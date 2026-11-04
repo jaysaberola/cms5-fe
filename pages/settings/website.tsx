@@ -3,6 +3,7 @@ import AdminLayout from "@/components/Layout/AdminLayout";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { websiteService } from "@/services/websiteService";
+import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
 import {
@@ -209,7 +210,7 @@ function WebsiteSettingsPage() {
       console.error("Failed to save website settings", err);
 
       toast.error(
-        err?.response?.data?.message ||
+        firstApiValidationMessage(err) ||
           "Failed to save website settings. Please try again."
       );
     }

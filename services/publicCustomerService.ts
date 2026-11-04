@@ -1,3 +1,4 @@
+import { appendUploadFile, multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 import { readStoredAuthToken, storeAuthToken, clearStoredAuthToken } from "@/lib/authToken";
 import { storeCurrentUser } from "@/lib/currentUser";
@@ -214,10 +215,9 @@ export const updateCustomerProfile = async (payload: {
       formData.append("address_province", payload.address_province ?? "");
     }
     if (payload.address_zip != null) formData.append("address_zip", payload.address_zip ?? "");
-    formData.append("avatar", payload.avatar);
+    appendUploadFile(formData, "avatar", payload.avatar, "avatar.jpg");
 
-    // Let the browser set multipart boundary — do not force Content-Type.
-    const res = await axiosInstance.post("/user/profile", formData);
+    const res = await axiosInstance.post("/user/profile", formData, multipartUploadConfig);
     user = (res.data?.user ?? res.data) as PublicCustomer;
   } else {
     const res = await axiosInstance.post("/user/profile", {

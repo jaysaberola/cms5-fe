@@ -4,6 +4,7 @@ import AdminLayout from "@/components/Layout/AdminLayout";
 import { BannerForm } from "@/schemas/banner";
 import { OptionItem, getOptions } from "@/services/optionService";
 import { createAlbum } from "@/services/albumService";
+import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import CmsModuleShell from "@/components/Modules/CmsModuleShell";
 import {
@@ -175,9 +176,13 @@ function CreateAlbum() {
       })),
     };
 
-    await createAlbum(payload);
-    toast.success("Album created successfully!");
-    router.push("/banners");
+    try {
+      await createAlbum(payload);
+      toast.success("Album created successfully!");
+      router.push("/banners");
+    } catch (err: unknown) {
+      toast.error(firstApiValidationMessage(err) || "Failed to create album.");
+    }
   };
 
   /* ======================

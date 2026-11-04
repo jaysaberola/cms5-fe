@@ -2,6 +2,7 @@
 
 import AdminLayout from '@/components/Layout/AdminLayout';
 import api from '@/lib/axios';
+import { multipartUploadConfig } from '@/lib/multipartUpload';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import CmsModuleShell from '@/components/Modules/CmsModuleShell';
@@ -335,7 +336,7 @@ export default function FileManagerPage() {
       formData.append('overwrite', '0');
       Array.from(fileList).forEach((f) => formData.append('files[]', f));
       await api.post('/file-manager/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        ...multipartUploadConfig,
         onUploadProgress: (e) => {
           if (e.total) setUploadProgress(Math.round((e.loaded / e.total) * 100));
         },

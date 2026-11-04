@@ -4,10 +4,12 @@ import { notifyCurrentUserUpdated, storeCurrentUser } from "@/lib/currentUser";
 import { ADMIN_LOGIN_PATH } from "@/lib/publicPaths";
 import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL + "/api";
+const apiRoot = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+const API_URL = apiRoot ? `${apiRoot}/api` : "/api";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_URL,
+  timeout: 30000,
   headers: {
     Accept: "application/json",
     "Cache-Control": "no-cache",
@@ -19,6 +21,20 @@ const axiosInstance: AxiosInstance = axios.create({
  */
 axiosInstance.interceptors.request.use((config) => {
   // Global loading overlay disabled: do not call loading.start()
+
+  if (config.data instanceof FormData && config.headers) {
+    const headers = config.headers as Record<string, unknown> & {
+      set?: (key: string, value?: string) => void;
+      delete?: (key: string) => void;
+    };
+    if (typeof headers.set === "function") {
+      headers.set("Content-Type", undefined as unknown as string);
+      headers.set("content-type", undefined as unknown as string);
+    } else {
+      delete headers["Content-Type"];
+      delete headers["content-type"];
+    }
+  }
 
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("auth_token");
