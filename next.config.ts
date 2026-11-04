@@ -56,8 +56,13 @@ const nextConfig: NextConfig = {
       },
       { source: "/pages", destination: "/manage-pages", permanent: false },
       { source: "/pages/:path*", destination: "/manage-pages/:path*", permanent: false },
-      { source: "/news", destination: "/manage-news", permanent: false },
-      { source: "/news/:path*", destination: "/manage-news/:path*", permanent: false },
+      // Legacy CMS news admin URLs only — do not redirect public /news (site News page).
+      { source: "/news/create", destination: "/manage-news/create", permanent: false },
+      { source: "/news/category_index", destination: "/manage-news/category_index", permanent: false },
+      { source: "/news/category_create", destination: "/manage-news/category_create", permanent: false },
+      { source: "/news/edit/:path*", destination: "/manage-news/edit/:path*", permanent: false },
+      { source: "/news/edit_category/:path*", destination: "/manage-news/edit_category/:path*", permanent: false },
+      { source: "/news/preview/:path*", destination: "/manage-news/preview/:path*", permanent: false },
     ];
   },
 };
