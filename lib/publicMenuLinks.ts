@@ -6,8 +6,24 @@ const KNOWN_PUBLIC_HOSTS = new Set([
   "localhost",
   "127.0.0.1",
   "cms4-nextjs.vercel.app",
+  "cms5-fe.vercel.app",
   "webfocus-fe.vercel.app",
 ]);
+
+function isSameDeploymentHost(hostname: string): boolean {
+  return KNOWN_PUBLIC_HOSTS.has(hostname.toLowerCase());
+}
+
+/** True for full http(s) links to sites outside this CMS deployment. */
+export function isExternalWebsiteHref(href: string): boolean {
+  const raw = String(href ?? "").trim();
+  if (!/^https?:\/\//i.test(raw)) return false;
+  try {
+    return !isSameDeploymentHost(new URL(raw).hostname);
+  } catch {
+    return false;
+  }
+}
 
 const SKIP_HREF_PREFIX =
   /^(#|mailto:|tel:|sms:|javascript:|data:|blob:)/i;
@@ -19,6 +35,7 @@ export function normalizePublicHref(href: string): string {
   const target = String(href ?? "").trim();
   if (!target) return "#";
   if (SKIP_HREF_PREFIX.test(target)) return target;
+  if (isExternalWebsiteHref(target)) return target;
 
   if (target.startsWith("/") && !target.startsWith("//")) {
     const pathOnly = target.split("?")[0];
@@ -82,20 +99,13 @@ function normalizePublicPath(path: string): string {
 
 function normalizeParsedUrl(url: URL, fallback: string): string {
   const host = url.hostname.toLowerCase();
-  const isKnownHost = KNOWN_PUBLIC_HOSTS.has(host);
-  const isPublicPath =
-    url.pathname === "/" ||
-    url.pathname.startsWith("/public/") ||
-    url.pathname.startsWith("/news") ||
-    url.pathname.startsWith("/articles");
 
-  if (isKnownHost || isPublicPath) {
-    const normalized = normalizePublicHref(`${url.pathname}${url.search}${url.hash}`);
-    return normalized;
-  }
-
-  if (/^https?:$/i.test(url.protocol)) {
-    return fallback.startsWith("http") ? fallback : url.toString();
+  // External sites (Google, Calendly, etc.) — keep the full URL.
+  if (!isSameDeploymentHost(host)) {
+    if (/^https?:$/i.test(url.protocol)) {
+      return fallback.startsWith("http") ? fallback : url.toString();
+    }
+    return normalizePublicHref(`${url.pathname}${url.search}${url.hash}`);
   }
 
   return normalizePublicHref(`${url.pathname}${url.search}${url.hash}`);

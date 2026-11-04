@@ -41,7 +41,7 @@ import {
   runStudioRteAction,
 } from "./grapesStudioRteToolbar";
 import GrapesRteDocBar from "./GrapesRteDocBar";
-import { normalizePublicHref } from "@/lib/publicMenuLinks";
+import { isExternalWebsiteHref, normalizePublicHref } from "@/lib/publicMenuLinks";
 import { registerDesignedStudioBlocks } from "./grapesDesignedBlocks";
 import { CMS_BUTTON_STYLE_TRAITS, isCmsButtonComponent, registerCmsButtonType } from "./grapesButtonPresets";
 import { loadCmsMediaIntoAssetManager } from "@/lib/cmsMediaAssets";
@@ -2618,7 +2618,7 @@ export default function GrapesEditor({
             type: "text",
             name: "href",
             label: "URL",
-            placeholder: "/public/about-us",
+            placeholder: "https://example.com or /contact-us",
           },
           {
             type: "select",
@@ -2648,7 +2648,7 @@ export default function GrapesEditor({
             type: "text",
             name: "data-url",
             label: "URL",
-            placeholder: "/public/contact-us",
+            placeholder: "https://example.com or /contact-us",
           },
           {
             type: "select",
@@ -2763,7 +2763,7 @@ export default function GrapesEditor({
         return;
       }
 
-      const normalizedUrl = normalizePublicHref(url);
+      const normalizedUrl = isExternalWebsiteHref(url) ? url : normalizePublicHref(url);
       if (normalizedUrl !== url) {
         component.addAttributes({ "data-url": normalizedUrl });
       }
@@ -2784,6 +2784,7 @@ export default function GrapesEditor({
       const attrs = component.getAttributes?.() || {};
       const href = String(attrs.href || "").trim();
       if (!href) return;
+      if (isExternalWebsiteHref(href)) return;
 
       const normalized = normalizePublicHref(href);
       if (normalized !== href) {
