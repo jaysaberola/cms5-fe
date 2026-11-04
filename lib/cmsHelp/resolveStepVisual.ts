@@ -122,7 +122,7 @@ export function resolveStepVisual(step: CmsHelpStep): HelpVisualConfig {
     highlight = "nav";
   } else if (matchTarget(target, "cms-topbar")) {
     highlight = "topbar";
-  } else if (step.route?.includes("/pages/")) {
+  } else if (step.route?.includes("/manage-pages/")) {
     layout = "page-editor";
     highlight = "canvas";
   } else if (step.route?.includes("/admin-panel") || step.route?.includes("/dashboard")) {
@@ -140,7 +140,7 @@ export function resolveStepVisual(step: CmsHelpStep): HelpVisualConfig {
     highlight === "center" &&
     (matchTarget(target, "page-editor") ||
       matchTarget(target, "grapes-") ||
-      step.route?.includes("/pages/"))
+      step.route?.includes("/manage-pages/"))
   ) {
     layout = "page-editor";
     highlight = "canvas";
@@ -155,7 +155,7 @@ export function resolveStepVisual(step: CmsHelpStep): HelpVisualConfig {
     layout === "page-editor" ||
     matchTarget(target, "page-editor") ||
     matchTarget(target, "grapes-") ||
-    step.route?.includes("/pages/")
+    step.route?.includes("/manage-pages/")
   ) {
     layout = "page-editor";
   }

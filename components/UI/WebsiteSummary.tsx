@@ -386,7 +386,7 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
               )}
             </strong>
             {!compact && (
-              <Link href="/pages" className="text-muted small text-decoration-none">
+              <Link href="/manage-pages" className="text-muted small text-decoration-none">
                 View all
                 <Tooltip text="Open the full content management section." />
               </Link>
@@ -395,7 +395,7 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
 
           {compact ? (
             <div className="cms-summary-stat-grid">
-              <Link href="/pages" className="cms-summary-stat-tile cms-summary-stat-tile--pages">
+              <Link href="/manage-pages" className="cms-summary-stat-tile cms-summary-stat-tile--pages">
                 <span className="cms-summary-stat-tile__row">
                   <i className="fas fa-layer-group" />
                   <span>Pages</span>
@@ -411,7 +411,7 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
                 <strong>{contentStats.albums ?? "—"}</strong>
                 <i className="fas fa-arrow-right cms-summary-stat-tile__arrow" />
               </Link>
-              <Link href="/news" className="cms-summary-stat-tile cms-summary-stat-tile--news">
+              <Link href="/manage-news" className="cms-summary-stat-tile cms-summary-stat-tile--news">
                 <span className="cms-summary-stat-tile__row">
                   <i className="far fa-newspaper" />
                   <span>News</span>
@@ -431,7 +431,7 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
           ) : (
           <>
           <div className="d-grid gap-2">
-            <ExpandRow k="pages" label="Pages" value={contentStats.pages} icon="fas fa-layer-group" href="/pages">
+            <ExpandRow k="pages" label="Pages" value={contentStats.pages} icon="fas fa-layer-group" href="/manage-pages">
               <div className="d-flex flex-wrap gap-2 mb-2">
                 <CountPill label="Published" value={breakdown.pages?.published} tone="text-bg-success" />
                 <CountPill label="Private" value={breakdown.pages?.private} tone="text-bg-secondary" />
@@ -439,7 +439,7 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
                 <CountPill label="Deleted" value={breakdown.pages?.deleted} tone="text-bg-danger" />
               </div>
               <div className="d-grid gap-2">
-                <Link href="/pages/create" className="btn btn-sm btn-outline-secondary">
+                <Link href="/manage-pages/create" className="btn btn-sm btn-outline-secondary">
                   <i className="fas fa-plus me-2" />
                   Create Page
                 </Link>
@@ -459,7 +459,7 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
               </div>
             </ExpandRow>
 
-            <ExpandRow k="news" label="News Articles" value={contentStats.news} icon="far fa-newspaper" href="/news">
+            <ExpandRow k="news" label="News Articles" value={contentStats.news} icon="far fa-newspaper" href="/manage-news">
               <div className="d-flex flex-wrap gap-2 mb-2">
                 <CountPill label="Published" value={breakdown.news?.published} tone="text-bg-success" />
                 <CountPill label="Private" value={breakdown.news?.private} tone="text-bg-secondary" />
@@ -467,11 +467,11 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
                 <CountPill label="Deleted" value={breakdown.news?.deleted} tone="text-bg-danger" />
               </div>
               <div className="d-grid gap-2">
-                <Link href="/news/create" className="btn btn-sm btn-outline-secondary">
+                <Link href="/manage-news/create" className="btn btn-sm btn-outline-secondary">
                   <i className="fas fa-plus me-2" />
                   Create News
                 </Link>
-                <Link href="/news/category_index" className="btn btn-sm btn-outline-secondary">
+                <Link href="/manage-news/category_index" className="btn btn-sm btn-outline-secondary">
                   <i className="fas fa-tags me-2" />
                   Categories
                 </Link>

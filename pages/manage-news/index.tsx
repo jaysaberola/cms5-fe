@@ -81,7 +81,7 @@ function ManageNews() {
     if (status === "published" && row.slug) {
       return publicNewsPath(row.slug);
     }
-    return `/news/preview/${row.id}`;
+    return `/manage-news/preview/${row.id}`;
   };
 
   const sortRowsClientSide = (rows: any[], sortByKey: string, order: string) => {
@@ -317,7 +317,7 @@ function ManageNews() {
         setOpen(false);
         if (newId) {
           toast.success("Duplicated — opening editor");
-          router.push(`/news/edit/${newId}`);
+          router.push(`/manage-news/edit/${newId}`);
         } else {
           toast.success("Duplicated successfully");
           fetchArticles();
@@ -491,7 +491,7 @@ function ManageNews() {
               <button
                 className="btn btn-link p-0 me-2 text-secondary"
                 title="Edit"
-                onClick={() => router.push(`/news/edit/${row.id}`)}
+                onClick={() => router.push(`/manage-news/edit/${row.id}`)}
                 type="button"
               >
                 <i className="fas fa-edit" />
@@ -526,7 +526,7 @@ function ManageNews() {
             <i className={`fa-solid ${showDeleted ? "fa-list" : "fa-trash-can"} me-2`} aria-hidden="true" />
             {showDeleted ? "Back to News" : "View Trash"}
           </button>
-          <CmsModuleCreateButton href="/news/create" label="Create News" />
+          <CmsModuleCreateButton href="/manage-news/create" label="Create News" />
         </>
       )}
       stats={showDeleted ? undefined : [

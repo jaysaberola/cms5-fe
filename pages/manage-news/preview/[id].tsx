@@ -191,7 +191,7 @@ export default function AdminNewsPreview({ ssrAllowed }: Props) {
         <div className={styles.page}>
           <NewsArticleView
             article={article}
-            backHref="/news"
+            backHref="/manage-news"
             backLabel="Back to admin"
             previewBanner={
               <div className="alert alert-warning mb-4">This article may not be published yet.</div>

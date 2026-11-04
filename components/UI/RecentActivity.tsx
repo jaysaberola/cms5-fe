@@ -84,8 +84,8 @@ const entityHref = (row: AuditRow) => {
   const id = row.auditable_id;
   if (!id) return null;
 
-  if (t === "page") return `/pages/edit/${id}`;
-  if (t === "article") return `/news/edit/${id}`;
+  if (t === "page") return `/manage-pages/edit/${id}`;
+  if (t === "article") return `/manage-news/edit/${id}`;
   if (t === "album") return `/banners/edit/${id}`;
   if (t === "menu") return `/menu/edit/${id}`;
   if (t === "user") return `/users/edit/${id}`;

@@ -55,7 +55,7 @@ function EditNewsCategory() {
       });
 
       toast.success("Category updated successfully");
-      router.push("/news/category_index");
+      router.push("/manage-news/category_index");
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || "Failed to update category"

@@ -18,6 +18,7 @@ import {
 } from "@/services/articleService";
 import CmsModuleShell, { CmsModuleTrashBanner, CmsModuleAdvancedSearchButton } from "@/components/Modules/CmsModuleShell";
 import CmsFormModal from "@/components/Modules/CmsFormModal";
+import { publicNewsPath } from "@/lib/publicPaths";
 import { CmsSettingsField, CmsSettingsGrid } from "@/components/Modules/CmsSettingsForm";
 import {
   CmsModuleRowActions,
@@ -400,7 +401,7 @@ function ManageCategories() {
       render: (row) => (
         <CmsModuleTitleCell
           title={row.name}
-          subtitle={`/news/${row.slug}`}
+          subtitle={publicNewsPath(row.slug)}
           muted={showDeleted}
         />
       ),
@@ -436,7 +437,7 @@ function ManageCategories() {
                 className="btn btn-link p-0 text-secondary"
                 title="Edit"
                 onClick={() =>
-                  router.push(`/news/edit_category/${row.id}`)
+                  router.push(`/manage-news/edit_category/${row.id}`)
                 }
               >
                 <i className="fas fa-edit" />

@@ -7,7 +7,7 @@ import { toast } from "@/lib/toast";
 import { extractGrapesParts } from "@/lib/grapesContent";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
-import { prefetchPagesSwitcherList } from "@/lib/pagesListCache";
+import { prefetchPagesSwitcherList } from "@/lib/manage-pagesListCache";
 import { beginStudioPageSwitch } from "@/lib/studioPageSwitch";
 
 const GrapesEditor = dynamic(() => import("@/components/UI/GrapesEditor"), {
@@ -159,9 +159,9 @@ export default function CreatePage() {
       toast.success("Page created successfully");
 
       if (Number.isFinite(newPageId) && newPageId > 0) {
-        router.push(`/pages/edit/${newPageId}`);
+        router.push(`/manage-pages/edit/${newPageId}`);
       } else {
-        router.push("/pages");
+        router.push("/manage-pages");
       }
     } catch (error: any) {
       console.error(error);
@@ -173,14 +173,14 @@ export default function CreatePage() {
 
   const handleCancel = () => {
     if (isDirty && !window.confirm("Discard this new page and go back?")) return;
-    router.push("/pages");
+    router.push("/manage-pages");
   };
 
   const handlePageSelect = (nextId: number) => {
     if (!nextId) return;
     if (isDirty && !window.confirm("You have unsaved changes on this new page. Switch without saving?")) return;
     beginStudioPageSwitch(true);
-    router.push(`/pages/edit/${nextId}`);
+    router.push(`/manage-pages/edit/${nextId}`);
   };
 
   const metaFields = (

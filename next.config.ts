@@ -54,6 +54,10 @@ const nextConfig: NextConfig = {
         destination: "/about-us",
         permanent: false,
       },
+      { source: "/pages", destination: "/manage-pages", permanent: false },
+      { source: "/pages/:path*", destination: "/manage-pages/:path*", permanent: false },
+      { source: "/news", destination: "/manage-news", permanent: false },
+      { source: "/news/:path*", destination: "/manage-news/:path*", permanent: false },
     ];
   },
 };

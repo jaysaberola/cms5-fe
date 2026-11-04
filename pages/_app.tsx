@@ -22,10 +22,10 @@ type AppPropsWithLayout = AppProps & {
 function isEditorRoute(pathname: string) {
   return (
     pathname === "/settings/website" ||
-    pathname === "/pages/create" ||
-    /^\/pages\/edit\//.test(pathname) ||
-    pathname === "/news/create" ||
-    /^\/news\/edit\//.test(pathname)
+    pathname === "/manage-pages/create" ||
+    /^\/manage-pages\/edit\//.test(pathname) ||
+    pathname === "/manage-news/create" ||
+    /^\/manage-news\/edit\//.test(pathname)
   );
 }
 

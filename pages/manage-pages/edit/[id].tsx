@@ -8,7 +8,7 @@ import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesConten
 import { isDefaultProtectedPage } from "@/lib/defaultPages";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
-import { prefetchPagesSwitcherList, invalidatePagesSwitcherListCache } from "@/lib/pagesListCache";
+import { prefetchPagesSwitcherList, invalidatePagesSwitcherListCache } from "@/lib/manage-pagesListCache";
 import { syncAuthTokenCookieFromStorage } from "@/lib/authToken";
 import { beginStudioPageSwitch, consumeStudioPageSwitch } from "@/lib/studioPageSwitch";
 
@@ -267,7 +267,7 @@ function EditPage() {
     beginStudioPageSwitch(true);
     setPageSwitching(true);
     pendingStudioSwitchRef.current = { active: true, fromGrapes: true };
-    router.push(`/pages/edit/${nextId}`);
+    router.push(`/manage-pages/edit/${nextId}`);
   };
 
   const metaFields = (
@@ -309,17 +309,17 @@ function EditPage() {
       onPageSelect={handlePageSelect}
       onCreatePage={() => {
         if (isDirty && !window.confirm("You have unsaved changes on this page. Switch without saving?")) return;
-        router.push("/pages/create");
+        router.push("/manage-pages/create");
       }}
       onBack={() => {
         if (isDirty && !window.confirm("You have unsaved changes. Leave this page anyway?")) return;
-        router.push("/pages");
+        router.push("/manage-pages");
       }}
       onSave={() => void handleSave()}
       onPublish={() => void handleSave({ publish: true })}
       onPreviewPublic={() => {
         syncAuthTokenCookieFromStorage();
-        window.open(`/pages/preview/${pageId}`, "_blank", "noopener,noreferrer");
+        window.open(`/manage-pages/preview/${pageId}`, "_blank", "noopener,noreferrer");
       }}
       onOpenSettings={() => setSettingsOpen(true)}
       onCloseSettings={() => setSettingsOpen(false)}

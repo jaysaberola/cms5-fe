@@ -4,7 +4,12 @@ export function isPublicSiteRoute(pathname: string) {
   const path = (pathname || "/").split("?")[0];
 
   if (path.startsWith("/public")) return true;
-  if (path.startsWith("/news/preview") || path.startsWith("/pages/preview")) return true;
+  if (
+    path.startsWith("/manage-news/preview") ||
+    path.startsWith("/manage-pages/preview")
+  ) {
+    return true;
+  }
 
   if (path === "/") return true;
   if (PUBLIC_FIXED_PATHS[path]) return true;

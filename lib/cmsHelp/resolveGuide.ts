@@ -1,10 +1,10 @@
 export function resolveGuideIdFromPath(pathname: string): string {
   const path = pathname.split("?")[0].replace(/\/$/, "") || "/";
 
-  if (path.startsWith("/pages/create")) return "pages-create";
-  if (path.startsWith("/pages/edit")) return "pages-edit";
-  if (path.startsWith("/pages/presets")) return "pages";
-  if (path.startsWith("/pages")) return "pages";
+  if (path.startsWith("/manage-pages/create")) return "pages-create";
+  if (path.startsWith("/manage-pages/edit")) return "pages-edit";
+  if (path.startsWith("/manage-pages/presets")) return "pages";
+  if (path.startsWith("/manage-pages")) return "pages";
 
   if (path.startsWith("/banners/home")) return "banners-home";
   if (path.startsWith("/banners/create")) return "banners-create";
@@ -17,10 +17,10 @@ export function resolveGuideIdFromPath(pathname: string): string {
   if (path.startsWith("/menu/edit")) return "menu";
   if (path.startsWith("/menu")) return "menu";
 
-  if (path.startsWith("/news/create")) return "news-create";
-  if (path.startsWith("/news/category")) return "news-categories";
-  if (path.startsWith("/news/edit")) return "news";
-  if (path.startsWith("/news")) return "news";
+  if (path.startsWith("/manage-news/create")) return "news-create";
+  if (path.startsWith("/manage-news/category")) return "news-categories";
+  if (path.startsWith("/manage-news/edit")) return "news";
+  if (path.startsWith("/manage-news")) return "news";
 
   if (path.startsWith("/settings/account")) return "settings-account";
   if (path.startsWith("/settings/website")) return "settings-website";

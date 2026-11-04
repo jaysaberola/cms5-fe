@@ -2,7 +2,7 @@ import type { CmsHelpGuide, CmsHelpStep } from "@/lib/cmsHelp/types";
 import { tour } from "@/lib/cmsHelp/tourSelectors";
 
 function buildSteps(mode: "create" | "edit"): CmsHelpStep[] {
-  const route = mode === "create" ? "/pages/create" : "/pages/edit";
+  const route = mode === "create" ? "/manage-pages/create" : "/manage-pages/edit";
   const isCreate = mode === "create";
 
   const steps: CmsHelpStep[] = [

@@ -302,13 +302,13 @@ export default function EditNews() {
       isPageLoading={initialLoading}
       onBack={() => {
         if (isDirty && !window.confirm("You have unsaved changes. Leave this article anyway?")) return;
-        router.push("/news");
+        router.push("/manage-news");
       }}
       onSave={() => void handleSave()}
       onPublish={() => void handleSave({ publish: true })}
       onPreviewPublic={() => {
         syncAuthTokenCookieFromStorage();
-        window.open(`/news/preview/${articleId}`, "_blank", "noopener,noreferrer");
+        window.open(`/manage-news/preview/${articleId}`, "_blank", "noopener,noreferrer");
       }}
       onOpenSettings={() => setSettingsOpen(true)}
       onCloseSettings={() => setSettingsOpen(false)}

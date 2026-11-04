@@ -19,7 +19,12 @@ export type CmsNavItem = {
 
 export const CMS_NAV_ITEMS: CmsNavItem[] = [
   { label: "Dashboard", icon: "fa-solid fa-house", href: "/admin-panel", collapseMenus: true, permissions: ["dashboard.view"] },
-  { label: "Pages", icon: "fa-solid fa-file-lines", href: "/pages", permissions: ["pages.view"] },
+  {
+    label: "Pages",
+    icon: "fa-solid fa-file-lines",
+    href: "/manage-pages",
+    permissions: ["pages.view"],
+  },
   {
     label: "Banners",
     icon: "fa-solid fa-images",
@@ -36,11 +41,15 @@ export const CMS_NAV_ITEMS: CmsNavItem[] = [
   {
     label: "News",
     icon: "fa-solid fa-newspaper",
-    href: "/news",
+    href: "/manage-news",
     permissions: ["news.view"],
     children: [
-      { label: "Manage News", href: "/news", permissions: ["news.view"] },
-      { label: "Manage News Categories", href: "/news/category_index", permissions: ["news_categories.view"] },
+      { label: "Manage News", href: "/manage-news", permissions: ["news.view"] },
+      {
+        label: "Manage News Categories",
+        href: "/manage-news/category_index",
+        permissions: ["news_categories.view"],
+      },
     ],
   },
   {

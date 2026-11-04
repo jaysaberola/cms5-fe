@@ -115,7 +115,7 @@ export default function ManagePages() {
     if (status === "published" && row.slug) {
       return buildPublicPageMenuTarget(row.slug);
     }
-    return `/pages/preview/${row.id}`;
+    return `/manage-pages/preview/${row.id}`;
   };
 
   const getPageViewHint = (row: PageRow) => {
@@ -618,7 +618,7 @@ export default function ManagePages() {
 
               <button
                 className="btn btn-link p-0 text-secondary"
-                onClick={() => router.push(`/pages/edit/${row.id}`)}
+                onClick={() => router.push(`/manage-pages/edit/${row.id}`)}
                 title="Edit"
                 type="button"
               >
@@ -731,7 +731,7 @@ export default function ManagePages() {
             <i className={`fa-solid ${showDeleted ? "fa-list" : "fa-trash-can"} me-2`} aria-hidden="true" />
             {showDeleted ? "Back to Pages" : "View Trash"}
           </button>
-          <CmsModuleCreateButton href="/pages/create" label="Create Page" />
+          <CmsModuleCreateButton href="/manage-pages/create" label="Create Page" />
         </>
       )}
       stats={showDeleted ? undefined : [

@@ -3056,7 +3056,9 @@ export default function GrapesEditor({
   }, [editorReady]);
 
   const openStudioGuide = () => {
-    const guideId = router.pathname.includes("/pages/create") ? "pages-create" : "pages-edit";
+    const guideId = router.pathname.includes("/manage-pages/create")
+      ? "pages-create"
+      : "pages-edit";
     openHelp(guideId);
   };
 

@@ -22,7 +22,7 @@ export default function StatsCards({
     <section className="cms-stats mb-4">
       <div className="row g-3">
         <div className="col-12 col-md-4">
-          <Link href="/pages" className="cms-stat cms-stat--pages" aria-label="Open pages">
+          <Link href="/manage-pages" className="cms-stat cms-stat--pages" aria-label="Open pages">
             <div className="cms-stat__icon">
               <i className="fas fa-layer-group" />
             </div>
@@ -48,7 +48,7 @@ export default function StatsCards({
         </div>
 
         <div className="col-12 col-md-4">
-          <Link href="/news" className="cms-stat cms-stat--news" aria-label="Open news">
+          <Link href="/manage-news" className="cms-stat cms-stat--news" aria-label="Open news">
             <div className="cms-stat__icon">
               <i className="far fa-newspaper" />
             </div>

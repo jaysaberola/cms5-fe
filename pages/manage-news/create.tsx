@@ -178,9 +178,9 @@ function CreateNews() {
       toast.success("News saved successfully");
 
       if (Number.isFinite(newId) && newId > 0) {
-        router.push(`/news/edit/${newId}`);
+        router.push(`/manage-news/edit/${newId}`);
       } else {
-        router.push("/news");
+        router.push("/manage-news");
       }
     } catch (err) {
       toast.error("Failed to save news");
@@ -255,7 +255,7 @@ function CreateNews() {
       saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
       onBack={() => {
         if (isDirty && !window.confirm("Discard this article and go back?")) return;
-        router.push("/news");
+        router.push("/manage-news");
       }}
       onSave={() => void handleSave()}
       onPublish={() => void handleSave({ publish: true })}

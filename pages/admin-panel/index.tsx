@@ -92,10 +92,10 @@ export default function AdminPanelIndex() {
               <p className="cms-dashboard__subtitle mb-0">{todayLabel || "\u00A0"}</p>
             </div>
             <div className="cms-dashboard__actions">
-              <Link href="/pages/create" className="btn btn-sm btn-light">
+              <Link href="/manage-pages/create" className="btn btn-sm btn-light">
                 <i className="fas fa-plus me-1" /> New Page
               </Link>
-              <Link href="/news/create" className="btn btn-sm btn-outline-light">
+              <Link href="/manage-news/create" className="btn btn-sm btn-outline-light">
                 <i className="far fa-newspaper me-1" /> News
               </Link>
               <Link href="/files" className="btn btn-sm btn-outline-light">
@@ -107,7 +107,7 @@ export default function AdminPanelIndex() {
       </header>
 
       <section className="cms-dashboard__metrics" aria-label="Content overview">
-        <Link href="/pages" className="cms-metric-card cms-metric-card--pages">
+        <Link href="/manage-pages" className="cms-metric-card cms-metric-card--pages">
           <span className="cms-metric-card__icon"><i className="fas fa-layer-group" /></span>
           <span className="cms-metric-card__body">
             <span className="cms-metric-card__label">Pages</span>
@@ -125,7 +125,7 @@ export default function AdminPanelIndex() {
           </span>
           <i className="fas fa-arrow-right cms-metric-card__arrow" />
         </Link>
-        <Link href="/news" className="cms-metric-card cms-metric-card--news">
+        <Link href="/manage-news" className="cms-metric-card cms-metric-card--news">
           <span className="cms-metric-card__icon"><i className="far fa-newspaper" /></span>
           <span className="cms-metric-card__body">
             <span className="cms-metric-card__label">News</span>
@@ -137,7 +137,7 @@ export default function AdminPanelIndex() {
       </section>
 
       <section className="cms-dashboard__quicklinks" aria-label="Quick links">
-        <Link href="/pages/create" className="cms-quicklink">
+        <Link href="/manage-pages/create" className="cms-quicklink">
           <i className="fas fa-wand-magic-sparkles" />
           <span>Visual page builder</span>
           <i className="fas fa-chevron-right cms-quicklink__chevron" />

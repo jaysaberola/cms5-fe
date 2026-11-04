@@ -25,7 +25,7 @@ function CreateNewsCategory() {
       });
 
       toast.success("Category created successfully");
-      router.push("/news/category_index"); // adjust if needed
+      router.push("/manage-news/category_index"); // adjust if needed
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || "Failed to create category"

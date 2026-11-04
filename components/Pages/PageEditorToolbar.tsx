@@ -37,7 +37,7 @@ export default function PageEditorToolbar({
     <div className="page-editor-toolbar" data-cms-tour="page-editor-toolbar">
       <div className="page-editor-toolbar__left">
         <nav className="page-editor-toolbar__breadcrumb" aria-label="Breadcrumb" data-cms-tour="page-editor-breadcrumb">
-          <Link href="/pages" className="page-editor-toolbar__crumb">
+          <Link href="/manage-pages" className="page-editor-toolbar__crumb">
             <i className="fa-solid fa-table-list" aria-hidden="true" />
             Manage Pages
           </Link>
@@ -96,7 +96,7 @@ export default function PageEditorToolbar({
         </button>
 
         {!isCreate ? (
-          <Link href="/pages/create" className="btn btn-sm btn-outline-primary page-editor-toolbar__btn">
+          <Link href="/manage-pages/create" className="btn btn-sm btn-outline-primary page-editor-toolbar__btn">
             <i className="fa-solid fa-plus" aria-hidden="true" />
             New Page
           </Link>
@@ -104,7 +104,7 @@ export default function PageEditorToolbar({
 
         {!isCreate && pageId ? (
           <a
-            href={`/pages/preview/${pageId}`}
+            href={`/manage-pages/preview/${pageId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-sm btn-outline-secondary page-editor-toolbar__btn"
