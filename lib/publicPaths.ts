@@ -44,6 +44,14 @@ export const PUBLIC_FIXED_PATHS: Record<string, string> = {
   "/blog": "/public/blog",
 };
 
+function isCmsDeploymentHost(hostname: string): boolean {
+  const host = hostname.toLowerCase();
+  if (host === "localhost" || host === "127.0.0.1") return true;
+  if (host.endsWith(".vercel.app")) return true;
+  if (host.includes("webfocusprod.wsiph2.com")) return true;
+  return false;
+}
+
 /** Public URL for a CMS page slug (no `/public` prefix). */
 export function publicPagePath(slugOrPath: string): string {
   const raw = String(slugOrPath ?? "").trim();
@@ -52,7 +60,10 @@ export function publicPagePath(slugOrPath: string): string {
   if (/^https?:\/\//i.test(raw) || raw.startsWith("//")) {
     try {
       const url = new URL(raw.startsWith("//") ? `https:${raw}` : raw);
-      return publicPagePath(url.pathname);
+      if (!isCmsDeploymentHost(url.hostname)) {
+        return url.toString();
+      }
+      return publicPagePath(`${url.pathname}${url.search}${url.hash}`);
     } catch {
       return "/";
     }

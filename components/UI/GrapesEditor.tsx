@@ -41,7 +41,6 @@ import {
   runStudioRteAction,
 } from "./grapesStudioRteToolbar";
 import GrapesRteDocBar from "./GrapesRteDocBar";
-import { isExternalWebsiteHref, normalizePublicHref } from "@/lib/publicMenuLinks";
 import { registerDesignedStudioBlocks } from "./grapesDesignedBlocks";
 import { CMS_BUTTON_STYLE_TRAITS, isCmsButtonComponent, registerCmsButtonType } from "./grapesButtonPresets";
 import { loadCmsMediaIntoAssetManager } from "@/lib/cmsMediaAssets";
@@ -252,6 +251,26 @@ function commitOpenTraitInputs(root: HTMLElement | null) {
   if (active instanceof HTMLInputElement || active instanceof HTMLSelectElement || active instanceof HTMLTextAreaElement) {
     active.dispatchEvent(new Event("change", { bubbles: true }));
     active.blur();
+  }
+}
+
+/** Push Properties panel URL fields into the selected link before save. */
+function syncSelectedLinkTraitsToModel(editor: any) {
+  const selected = editor?.getSelected?.();
+  if (!selected) return;
+
+  const tagName = String(selected.get?.("tagName") || "").toLowerCase();
+  if (tagName === "a") {
+    const hrefTrait = selected.getTrait?.("href");
+    const href = String(hrefTrait?.get?.("value") ?? selected.getAttributes?.()?.href ?? "").trim();
+    if (href) selected.addAttributes({ href });
+    return;
+  }
+
+  if (tagName === "button") {
+    const urlTrait = selected.getTrait?.("data-url");
+    const url = String(urlTrait?.get?.("value") ?? selected.getAttributes?.()?.["data-url"] ?? "").trim();
+    if (url) selected.addAttributes({ "data-url": url });
   }
 }
 
@@ -1004,6 +1023,10 @@ export default function GrapesEditor({
 
   const flushPendingContent = useCallback(() => {
     commitOpenTraitInputs(rightTraitsRef.current);
+    const editorForTraits = editorRef.current;
+    if (editorForTraits && canUseGrapesEditor(editorForTraits)) {
+      syncSelectedLinkTraitsToModel(editorForTraits);
+    }
     if (emitTimerRef.current !== null) {
       window.clearTimeout(emitTimerRef.current);
       emitTimerRef.current = null;
@@ -2808,13 +2831,8 @@ export default function GrapesEditor({
         return;
       }
 
-      const normalizedUrl = isExternalWebsiteHref(url) ? url : normalizePublicHref(url);
-      if (normalizedUrl !== url) {
-        component.addAttributes({ "data-url": normalizedUrl });
-      }
-
       const target = String(attrs["data-target"] || "").trim();
-      const escaped = JSON.stringify(normalizedUrl);
+      const escaped = JSON.stringify(url);
       const onClick = target === "_blank"
         ? `window.open(${escaped}, '_blank');`
         : `window.location.href=${escaped};`;
@@ -2828,13 +2846,9 @@ export default function GrapesEditor({
 
       const attrs = component.getAttributes?.() || {};
       const href = String(attrs.href || "").trim();
-      if (!href) return;
-      if (isExternalWebsiteHref(href)) return;
-
-      const normalized = normalizePublicHref(href);
-      if (normalized !== href) {
-        component.addAttributes({ href: normalized });
-      }
+      if (!href || href === attrs.href) return;
+      // Keep the exact URL in the editor; public pages normalize on render only.
+      component.addAttributes({ href });
     });
 
     editor.on("component:update:attributes:data-target", (component: any) => {
