@@ -2,7 +2,7 @@ import Head from "next/head";
 import LandingPageLayout from "@/components/Layout/GuestLayout";
 import { ensureClientPreviewAccess, requireAdminPreviewAccess } from "@/lib/adminPreviewAccess";
 import { CANVAS7_CANVAS_STYLES, htmlNeedsCanvas7Assets } from "@/lib/canvasTemplateCatalog";
-import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
+import { buildRenderedPublicPageHtml, normalizeGrapesPageData } from "@/lib/grapesContent";
 import CmsPublicContactForms from "@/components/Public/CmsPublicContactForms";
 import { activateCmsPageAnimations } from "@/lib/publicPageScripts";
 import { getPageById } from "@/services/pageService";
@@ -112,21 +112,16 @@ export default function AdminPagePreview({ ssrAllowed }: Props) {
   const htmlContent = useMemo(() => {
     if (!pageData) return "";
 
-    const hasGrapesFields = Boolean(pageData.grapes_html || pageData.grapes_css || pageData.grapes_js);
-    const isGrapes = pageData.content_type === "grapes" || hasGrapesFields;
-
-    if (!isGrapes) return pageData.content || "";
-
-    const parsed = extractGrapesParts(pageData.content || "");
-    const grapesHtml = (pageData.grapes_html || "").trim() || parsed.grapes_html;
-    const grapesCss = (pageData.grapes_css || "").trim() || parsed.grapes_css;
-    const grapesJs = (pageData.grapes_js || "").trim() || parsed.grapes_js;
-
-    return composeContentFromGrapes({
-      grapes_html: grapesHtml,
-      grapes_css: grapesCss,
-      grapes_js: grapesJs,
-    });
+    return buildRenderedPublicPageHtml(
+      normalizeGrapesPageData({
+        content: pageData.content,
+        contents: pageData.content,
+        content_type: pageData.content_type,
+        grapes_html: pageData.grapes_html,
+        grapes_css: pageData.grapes_css,
+        grapes_js: pageData.grapes_js,
+      }),
+    );
   }, [pageData]);
 
   const usesCanvas7 = htmlNeedsCanvas7Assets(htmlContent);

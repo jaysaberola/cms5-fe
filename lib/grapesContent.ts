@@ -3,6 +3,7 @@ import {
   getCanvas7StylesheetMarkup,
   htmlNeedsCanvas7Assets,
 } from "@/lib/canvasTemplateCatalog";
+import { rewritePublicHtmlHrefs } from "@/lib/publicMenuLinks";
 
 export type EditorContentType = "tiny" | "grapes";
 
@@ -32,11 +33,14 @@ export function pageEditorPayload(page: Pick<GrapesPageLike, "content" | "conten
  * Stale `grapes_*` columns on production must not override fresh link URLs in `contents`.
  */
 export function resolveGrapesPartsFromPage(page: GrapesPageLike): GrapesParts {
-  const parsed = extractGrapesParts(pageEditorPayload(page));
+  const payload = pageEditorPayload(page);
+  const parsed = extractGrapesParts(payload);
+  const fromPayload = Boolean(payload);
+
   return {
-    grapes_html: parsed.grapes_html || String(page.grapes_html ?? "").trim(),
-    grapes_css: parsed.grapes_css || String(page.grapes_css ?? "").trim(),
-    grapes_js: parsed.grapes_js || String(page.grapes_js ?? "").trim(),
+    grapes_html: (fromPayload ? parsed.grapes_html : "") || String(page.grapes_html ?? "").trim(),
+    grapes_css: (fromPayload ? parsed.grapes_css : "") || String(page.grapes_css ?? "").trim(),
+    grapes_js: (fromPayload ? parsed.grapes_js : "") || String(page.grapes_js ?? "").trim(),
   };
 }
 
@@ -68,6 +72,11 @@ export function sanitizeGrapesPublicHtml(html: string): string {
   out = out.replace(/<\/?body[^>]*>/gi, "");
 
   return out.trim();
+}
+
+/** Same HTML pipeline as live public pages (home, /about-us, etc.). */
+export function buildRenderedPublicPageHtml(pageData: GrapesPageLike): string {
+  return rewritePublicHtmlHrefs(buildPublicPageHtml(pageData) ?? "");
 }
 
 export function buildPublicPageHtml(pageData: GrapesPageLike): string {

@@ -1,6 +1,5 @@
 import { getPublicPageBySlug } from "@/services/publicPageService";
-import { buildPublicPageHtml, normalizeGrapesPageData } from "@/lib/grapesContent";
-import { rewritePublicHtmlHrefs } from "@/lib/publicMenuLinks";
+import { buildRenderedPublicPageHtml, normalizeGrapesPageData } from "@/lib/grapesContent";
 import { resolvePublicPageSlug } from "@/lib/resolvePublicPageSlug";
 
 export async function getPublicPageServerProps(slug: string) {
@@ -8,9 +7,11 @@ export async function getPublicPageServerProps(slug: string) {
 
   try {
     const res = await getPublicPageBySlug(normalizedSlug);
-    const pageData = normalizeGrapesPageData(res.data);
-    const htmlContent =
-      rewritePublicHtmlHrefs(buildPublicPageHtml(pageData) ?? "") || "";
+    const pageData = normalizeGrapesPageData({
+      ...res.data,
+      contents: res.data.content,
+    });
+    const htmlContent = buildRenderedPublicPageHtml(pageData) || "";
     const hideBanner = normalizedSlug !== "home";
 
     return {
