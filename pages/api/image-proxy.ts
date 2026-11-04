@@ -65,7 +65,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       upstreamHeaders.range = req.headers.range;
     }
 
-    const upstream = await fetch(rawUrl, { headers: upstreamHeaders });
+    let upstream = await fetch(rawUrl, { headers: upstreamHeaders });
+
+    if (upstream.status === 404 && rawUrl.includes("/storage/")) {
+      const altUrl = rawUrl.replace(/\/storage\//, "/api/public-disk/");
+      if (altUrl !== rawUrl) {
+        upstream = await fetch(altUrl, { headers: upstreamHeaders });
+      }
+    }
 
     if (!upstream.ok) {
       return res

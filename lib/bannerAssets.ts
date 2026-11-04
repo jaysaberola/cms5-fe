@@ -107,7 +107,7 @@ export function handleBannerStoragePreviewError(
 }
 
 export const CMS_STORAGE_LINK_HINT =
-  "Run php artisan storage:link on cms5-be so /storage/… files are public.";
+  "Deploy latest cms5-be (GET /api/public-disk/…) and ensure the file exists under storage/app/public on the server.";
 
 export function formatBannerFileSize(bytes: number) {
   if (bytes >= 1024 * 1024) {

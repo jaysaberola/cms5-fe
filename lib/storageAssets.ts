@@ -17,10 +17,19 @@ function normalizeHostname(hostname: string) {
   return hostname.toLowerCase() === "localhost" ? "127.0.0.1" : hostname.toLowerCase();
 }
 
+function isPublicDiskPathMarker(pathname: string): boolean {
+  const lower = pathname.toLowerCase();
+  return lower.includes("/storage/") || lower.includes("/api/public-disk/");
+}
+
 /** True when the URL points at this app's Laravel public disk (not CDN/external). */
 export function isApiHostedStorageAbsoluteUrl(absolute: string): boolean {
   if (!/^https?:\/\//i.test(absolute)) return false;
-  if (!absolute.toLowerCase().includes("/storage/")) return false;
+  try {
+    if (!isPublicDiskPathMarker(new URL(absolute).pathname)) return false;
+  } catch {
+    if (!isPublicDiskPathMarker(absolute)) return false;
+  }
 
   const base = storageApiBase();
   if (!base) return true;
@@ -34,18 +43,29 @@ export function isApiHostedStorageAbsoluteUrl(absolute: string): boolean {
   }
 }
 
-function buildPublicStorageUrl(storagePath: string): string | undefined {
+export function buildPublicStorageUrl(storagePath: string): string | undefined {
   const path = storagePath.replace(/^\/+/, "").split("?")[0]?.split("#")[0] ?? "";
   if (!path) return undefined;
 
   const base = storageApiBase();
   if (base) {
-    return `${base}/storage/${path}`;
+    return `${base}/api/public-disk/${path}`;
   }
 
   // Local dev fallback only — admin on Vercel must set NEXT_PUBLIC_API_URL.
   if (typeof window === "undefined") return undefined;
-  return `/storage/${path}`;
+  return `/api/public-disk/${path}`;
+}
+
+function extractStoragePathFromAbsoluteUrl(raw: string): string | undefined {
+  const lower = raw.toLowerCase();
+  for (const marker of ["/api/public-disk/", "/storage/"]) {
+    const idx = lower.indexOf(marker);
+    if (idx >= 0) {
+      return raw.slice(idx + marker.length).split("?")[0]?.split("#")[0] ?? "";
+    }
+  }
+  return undefined;
 }
 
 export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | undefined {
@@ -57,12 +77,8 @@ export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | unde
   if (embeddedAbsolute) return embeddedAbsolute;
 
   if (/^https?:\/\//i.test(raw)) {
-    const storageMarker = "/storage/";
-    const markerIndex = raw.toLowerCase().indexOf(storageMarker);
-    if (markerIndex < 0) return raw;
-
-    const storagePath =
-      raw.slice(markerIndex + storageMarker.length).split("?")[0]?.split("#")[0] ?? "";
+    const storagePath = extractStoragePathFromAbsoluteUrl(raw);
+    if (!storagePath) return raw;
     return buildPublicStorageUrl(storagePath);
   }
 

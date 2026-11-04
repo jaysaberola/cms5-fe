@@ -46,8 +46,8 @@ export function buildArticleStorageUrl(pathOrUrl?: string | null): string {
   const path = cleanStoragePath(raw);
   if (!path) return "";
 
-  if (apiBase) return `${apiBase}/storage/${path}`;
-  return typeof window !== "undefined" ? "" : `/storage/${path}`;
+  if (apiBase) return `${apiBase}/api/public-disk/${path}`;
+  return typeof window !== "undefined" ? "" : `/api/public-disk/${path}`;
 }
 
 export function extractFirstContentImage(html?: string | null): string {
