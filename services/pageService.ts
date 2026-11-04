@@ -5,6 +5,7 @@ export interface CreatePagePayload {
   label?: string;
   parent_page_id?: number | null;
   album_id?: number | null;
+  menu_id?: number | null;
   contents?: string;
   grapes_html?: string;
   grapes_css?: string;

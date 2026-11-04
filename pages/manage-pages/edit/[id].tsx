@@ -75,6 +75,7 @@ function EditPage() {
   const pendingStudioSwitchRef = useRef(consumeStudioPageSwitch());
   const [pageSwitching, setPageSwitching] = useState(pendingStudioSwitchRef.current.active);
   const previousPageIdRef = useRef<number | null>(null);
+  const grapesContentSyncRef = useRef<(() => string) | null>(null);
 
   const buildSnapshot = useCallback(
     (): PageSnapshot => ({
@@ -201,7 +202,8 @@ function EditPage() {
 
     try {
       setLoading(true);
-      const grapesParts = extractGrapesParts(grapesContent);
+      const contentToSave = grapesContentSyncRef.current?.() ?? grapesContent;
+      const grapesParts = extractGrapesParts(contentToSave);
       const hasGrapesData = Boolean(
         grapesParts.grapes_html?.trim() || grapesParts.grapes_css?.trim() || grapesParts.grapes_js?.trim(),
       );
@@ -212,7 +214,7 @@ function EditPage() {
         label: label || undefined,
         album_id: albumId,
         menu_id: menuId,
-        contents: grapesContent,
+        contents: contentToSave,
         content_type: "grapes",
         grapes_html: hasGrapesData ? grapesParts.grapes_html : undefined,
         grapes_css: hasGrapesData ? grapesParts.grapes_css : undefined,
@@ -224,8 +226,10 @@ function EditPage() {
       });
 
       if (!defaultPageLocked && opts?.publish) setVisibility(true);
+      setGrapesContent(contentToSave);
       setSavedSnapshot({
         ...buildSnapshot(),
+        grapesContent: contentToSave,
         visibility: nextVisibility,
       });
       invalidatePagesSwitcherListCache();
@@ -301,6 +305,7 @@ function EditPage() {
       fullScreen
       value={grapesContent}
       onChange={setGrapesContent}
+      contentSyncRef={grapesContentSyncRef}
       pageTitle={title}
       saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
       pageId={pageId}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type MutableRefObject, type ReactNode } from "react";
 import grapesjs from "grapesjs";
 import grapesjsPresetWebpage from "grapesjs-preset-webpage";
 import grapesjsBlocksBasic from "grapesjs-blocks-basic";
@@ -77,6 +77,8 @@ type GrapesEditorProps = {
   onPageSelect?: (pageId: number) => void;
   onCreatePage?: () => void;
   isPageLoading?: boolean;
+  /** Call before save to flush pending canvas changes (traits URL field, debounced emit). */
+  contentSyncRef?: MutableRefObject<(() => string) | null>;
 };
 
 type StudioDeviceKey = "desktop" | "tablet" | "mobile";
@@ -239,6 +241,17 @@ function installSafeCanvasRefresh(editor: any) {
         // ignore
       }
     };
+  }
+}
+
+/** Commit in-progress trait inputs (e.g. URL) before reading HTML for save. */
+function commitOpenTraitInputs(root: HTMLElement | null) {
+  if (!root || typeof document === "undefined") return;
+  const active = document.activeElement;
+  if (!active || !root.contains(active)) return;
+  if (active instanceof HTMLInputElement || active instanceof HTMLSelectElement || active instanceof HTMLTextAreaElement) {
+    active.dispatchEvent(new Event("change", { bubbles: true }));
+    active.blur();
   }
 }
 
@@ -957,6 +970,7 @@ export default function GrapesEditor({
   onPageSelect,
   onCreatePage,
   isPageLoading = false,
+  contentSyncRef,
 }: GrapesEditorProps) {
   const router = useRouter();
   const { openHelp } = useCmsHelp();
@@ -968,6 +982,7 @@ export default function GrapesEditor({
   const lastEmittedRef = useRef<string>("");
   const jsRef = useRef<string>("");
   const emitTimerRef = useRef<number | null>(null);
+  const buildContentRef = useRef<(ed: any) => string>(() => "");
   const fullscreenSenderRef = useRef<any>(null);
   const studioHeightRef = useRef(height);
   const isLeftSidebarHiddenRef = useRef(false);
@@ -986,6 +1001,34 @@ export default function GrapesEditor({
   useEffect(() => {
     valueRef.current = value;
   }, [value]);
+
+  const flushPendingContent = useCallback(() => {
+    commitOpenTraitInputs(rightTraitsRef.current);
+    if (emitTimerRef.current !== null) {
+      window.clearTimeout(emitTimerRef.current);
+      emitTimerRef.current = null;
+    }
+
+    const editor = editorRef.current;
+    const buildContent = buildContentRef.current;
+    if (editor && buildContent && canUseGrapesEditor(editor)) {
+      const next = buildContent(editor);
+      lastEmittedRef.current = next;
+      valueRef.current = next;
+      onChange(next);
+      return next;
+    }
+
+    return lastEmittedRef.current || valueRef.current || "";
+  }, [onChange]);
+
+  useEffect(() => {
+    if (!contentSyncRef) return;
+    contentSyncRef.current = flushPendingContent;
+    return () => {
+      contentSyncRef.current = null;
+    };
+  }, [contentSyncRef, flushPendingContent]);
 
   const [activeLeftPanel, setActiveLeftPanel] = useState<"blocks" | "layers">("blocks");
   const [activeRightPanel, setActiveRightPanel] = useState<"styles" | "settings">("styles");
@@ -1698,6 +1741,8 @@ export default function GrapesEditor({
       const jsTag = script ? `\n<script>${script}</script>` : "";
       return `${html}${cssTag}${jsTag}`.trim();
     };
+
+    buildContentRef.current = buildContent;
 
     registerStudioEditorFeatures(editor, buildContent);
     installStudioContextMenu(editor);
@@ -2914,12 +2959,14 @@ export default function GrapesEditor({
         const em = editor.getModel?.();
         (editor as { destroyed?: boolean }).destroyed = true;
         if (em) (em as { destroyed?: boolean }).destroyed = true;
+        buildContentRef.current = () => "";
         editorRef.current = null;
         setEditorReady(false);
         editor.destroy();
       } catch {
         // ignore destroy errors
       }
+      buildContentRef.current = () => "";
       editorRef.current = null;
       setEditorReady(false);
     };
@@ -3355,13 +3402,30 @@ export default function GrapesEditor({
             </button>
           ) : null}
           {onSave ? (
-            <button type="button" className="cms-grapes-studio-btn cms-grapes-studio-btn--save" title="Save (Ctrl+S)" data-cms-tour="grapes-save" onClick={onSave}>
+            <button
+              type="button"
+              className="cms-grapes-studio-btn cms-grapes-studio-btn--save"
+              title="Save (Ctrl+S)"
+              data-cms-tour="grapes-save"
+              onClick={() => {
+                flushPendingContent();
+                onSave();
+              }}
+            >
               <i className="fa-solid fa-floppy-disk" />
               Save
             </button>
           ) : null}
           {onPublish ? (
-            <button type="button" className="cms-grapes-studio-btn cms-grapes-studio-btn--publish" title="Publish" onClick={onPublish}>
+            <button
+              type="button"
+              className="cms-grapes-studio-btn cms-grapes-studio-btn--publish"
+              title="Publish"
+              onClick={() => {
+                flushPendingContent();
+                onPublish();
+              }}
+            >
               <i className="fa-solid fa-globe" />
               Publish
             </button>

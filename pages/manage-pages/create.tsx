@@ -1,5 +1,5 @@
 import AdminLayout from "@/components/Layout/AdminLayout";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { createPage } from "@/services/pageService";
 import { useRouter } from "next/router";
@@ -77,6 +77,7 @@ export default function CreatePage() {
   const [seoKeywords, setSeoKeywords] = useState("");
   const [loading, setLoading] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(true);
+  const grapesContentSyncRef = useRef<(() => string) | null>(null);
 
   const buildSnapshot = useCallback(
     (): PageSnapshot => ({
@@ -131,7 +132,8 @@ export default function CreatePage() {
 
     try {
       setLoading(true);
-      const grapesParts = extractGrapesParts(grapesContent);
+      const contentToSave = grapesContentSyncRef.current?.() ?? grapesContent;
+      const grapesParts = extractGrapesParts(contentToSave);
       const hasGrapesData = Boolean(
         grapesParts.grapes_html?.trim() || grapesParts.grapes_css?.trim() || grapesParts.grapes_js?.trim(),
       );
@@ -142,7 +144,7 @@ export default function CreatePage() {
         label: label || undefined,
         album_id: albumId || undefined,
         menu_id: menuId || undefined,
-        contents: grapesContent,
+        contents: contentToSave,
         content_type: "grapes",
         grapes_html: hasGrapesData ? grapesParts.grapes_html : undefined,
         grapes_css: hasGrapesData ? grapesParts.grapes_css : undefined,
@@ -212,6 +214,7 @@ export default function CreatePage() {
       fullScreen
       value={grapesContent}
       onChange={setGrapesContent}
+      contentSyncRef={grapesContentSyncRef}
       pageTitle={title}
       saveStatus={loading ? "saving" : isDirty ? "unsaved" : "saved"}
       onPageSelect={handlePageSelect}
