@@ -207,9 +207,13 @@ function HomeBanner() {
     event: React.SyntheticEvent<HTMLImageElement>,
     banner: Partial<BannerForm> & { image_path?: string; image_url?: string; preview?: string }
   ) => {
-    const fallback = resolveBannerPreviewFallback(banner, event.currentTarget.src);
+    const img = event.currentTarget;
+    if (img.dataset.storageFallbackApplied === "1") return;
+
+    const fallback = resolveBannerPreviewFallback(banner, img.src);
     if (fallback) {
-      event.currentTarget.src = fallback;
+      img.dataset.storageFallbackApplied = "1";
+      img.src = fallback;
     }
   };
 

@@ -78,11 +78,7 @@ export function resolveBannerPreviewUrl(
   const normalized = normalizeStoragePath(raw);
   if (!normalized) return "";
 
-  const storageUrl = resolveStorageAssetUrl(raw) ?? `/storage/${normalized}`;
-
-  if (mediaType === "video") return storageUrl;
-
-  return storageUrl;
+  return resolveStorageAssetUrl(raw) ?? "";
 }
 
 export function resolveBannerPreviewFallback(
@@ -92,15 +88,14 @@ export function resolveBannerPreviewFallback(
   },
   currentSrc: string
 ): string | null {
-  const raw = banner.image_path || banner.image_url || "";
-  const normalized = normalizeStoragePath(raw);
-  if (!normalized) return null;
+  const candidates = [banner.image_path, banner.image_url].filter(Boolean) as string[];
 
-  const direct = `/storage/${normalized}`;
-  const resolved = resolveStorageAssetUrl(raw);
-
-  if (currentSrc !== direct && direct !== currentSrc) return direct;
-  if (resolved && resolved !== currentSrc && resolved !== direct) return resolved;
+  for (const raw of candidates) {
+    const resolved = resolveStorageAssetUrl(raw);
+    if (resolved && resolved !== currentSrc) {
+      return resolved;
+    }
+  }
 
   return null;
 }

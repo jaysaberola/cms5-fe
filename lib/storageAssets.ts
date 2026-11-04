@@ -28,7 +28,9 @@ export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | unde
 
     const configuredBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
     const base = configuredBase.endsWith("/api") ? configuredBase.slice(0, -4) : configuredBase;
-    if (!base) return `/storage/${storagePath}`;
+    if (!base) {
+      return typeof window !== "undefined" ? `/storage/${storagePath}` : undefined;
+    }
     return `${base}/storage/${storagePath}`;
   }
 
@@ -48,8 +50,18 @@ export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | unde
   const configuredBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
   const base = configuredBase.endsWith("/api") ? configuredBase.slice(0, -4) : configuredBase;
 
-  if (!base) return `/storage/${storagePath}`;
+  if (!base) {
+    if (typeof window !== "undefined") {
+      return `/storage/${storagePath}`;
+    }
+    return undefined;
+  }
   return `${base}/storage/${storagePath}`;
+}
+
+/** Absolute API storage URL for admin UI (never bare /storage on Vercel). */
+export function resolveStorageAssetUrlForBrowser(pathOrUrl?: string | null): string {
+  return resolveStorageAssetUrl(pathOrUrl) || "";
 }
 
 export function resolveStorageAssetUrlWithFallback(
