@@ -31,7 +31,7 @@ type Props = {
 
 export default function NewsArticleView({
   article,
-  backHref = "/articles",
+  backHref = "/news",
   backLabel = "Back to News",
   previewBanner,
 }: Props) {

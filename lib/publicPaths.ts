@@ -30,7 +30,7 @@ export const ADMIN_ROOT_SEGMENTS = new Set([
 export const PUBLIC_ROOT_PAGE_PATHS = new Set([
   "/",
   "/about-us",
-  "/articles",
+  "/news",
   "/contact-us",
 ]);
 
@@ -40,7 +40,7 @@ export const PUBLIC_FIXED_PATHS: Record<string, string> = {
   "/search": "/public/search",
   "/events": "/public/events",
   "/careers": "/public/careers",
-  "/articles": "/public/news",
+  "/news": "/public/news",
   "/blog": "/public/blog",
 };
 
@@ -67,11 +67,11 @@ export function publicPagePath(slugOrPath: string): string {
   return path;
 }
 
-/** Public news index + article URLs (`/articles` avoids admin `/news`). */
+/** Public news index + article URLs (CMS admin is `/manage-news`). */
 export function publicNewsPath(articleSlug?: string | null): string {
-  if (!articleSlug) return "/articles";
+  if (!articleSlug) return "/news";
   const clean = String(articleSlug).replace(/^\/+/, "");
-  return `/articles/${clean}`;
+  return `/news/${clean}`;
 }
 
 export function stripLegacyPublicPrefix(pathname: string): string {

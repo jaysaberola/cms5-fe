@@ -58,7 +58,11 @@ export function middleware(request: NextRequest) {
     return rewriteToPublic(fixedTarget);
   }
 
-  // Article detail uses `pages/articles/[slug].tsx` (clean URL + client `_next/data` props).
+  // News article detail — page file required for client `_next/data`.
+  if (pathname.startsWith("/news/")) {
+    return NextResponse.next();
+  }
+
   if (pathname.startsWith("/articles/")) {
     return NextResponse.next();
   }

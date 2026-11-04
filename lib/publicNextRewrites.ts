@@ -11,6 +11,7 @@ export function buildPublicNextRewrites(): {
   afterFiles: RewriteRule[];
 } {
   const beforeFiles: RewriteRule[] = [
+    { source: "/news/:slug", destination: "/public/news/:slug" },
     { source: "/articles/:slug", destination: "/public/news/:slug" },
     { source: "/blog/:path*", destination: "/public/blog/:path*" },
   ];

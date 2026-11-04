@@ -71,6 +71,8 @@ export default function MenuItem({
   const pathNow = currentPath.split("?")[0];
 
   const isNewsMenuLink =
+    hrefPath === "/news" ||
+    hrefPath.startsWith("/news/") ||
     hrefPath === "/articles" ||
     hrefPath.startsWith("/articles/") ||
     hrefPath === "/manage-news" ||

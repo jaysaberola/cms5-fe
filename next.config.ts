@@ -63,6 +63,8 @@ const nextConfig: NextConfig = {
       { source: "/news/edit/:path*", destination: "/manage-news/edit/:path*", permanent: false },
       { source: "/news/edit_category/:path*", destination: "/manage-news/edit_category/:path*", permanent: false },
       { source: "/news/preview/:path*", destination: "/manage-news/preview/:path*", permanent: false },
+      { source: "/articles", destination: "/news", permanent: false },
+      { source: "/articles/:slug", destination: "/news/:slug", permanent: false },
     ];
   },
 };

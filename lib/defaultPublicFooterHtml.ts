@@ -13,7 +13,7 @@ export const DEFAULT_PUBLIC_FOOTER_HTML = `
           <li><a href="/">Home</a></li>
           <li><a href="/about-us">About</a></li>
           <li><a href="/services">Services</a></li>
-          <li><a href="/articles">News</a></li>
+          <li><a href="/news">News</a></li>
         </ul>
       </div>
       <div class="exec-footer-col">

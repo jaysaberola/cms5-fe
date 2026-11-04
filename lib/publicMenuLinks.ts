@@ -86,6 +86,7 @@ function normalizeParsedUrl(url: URL, fallback: string): string {
   const isPublicPath =
     url.pathname === "/" ||
     url.pathname.startsWith("/public/") ||
+    url.pathname.startsWith("/news") ||
     url.pathname.startsWith("/articles");
 
   if (isKnownHost || isPublicPath) {
