@@ -408,22 +408,49 @@ html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
   }
 }
 
-/* Contact Us page form controls */
+/* Contact Us page form controls (legacy Bootstrap + Executra CMS form) */
 .public-contact .form-control,
-.public-contact .form-select {
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  border-radius: 8px;
-  background-color: #fff;
+.public-contact .form-select,
+.public-page-content.public-contact .exec-input,
+.public-page-content.public-contact .cms-wsi-contact-form input,
+.public-page-content.public-contact .cms-wsi-contact-form select,
+.public-page-content.public-contact .cms-wsi-contact-form textarea,
+.public-contact .exec-input,
+.public-contact .cms-wsi-contact-form input,
+.public-contact .cms-wsi-contact-form select,
+.public-contact .cms-wsi-contact-form textarea {
+  border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.18)) !important;
+  border-radius: 10px;
+  background-color: var(--exec-surface-2, #f1f5f9) !important;
+  color: var(--exec-heading, #0f172a) !important;
+  box-shadow: none !important;
 }
 
-.public-contact textarea.form-control {
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+.public-contact textarea.form-control,
+.public-page-content.public-contact .cms-wsi-contact-form textarea {
+  border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.18)) !important;
 }
 
 .public-contact .form-control:focus,
-.public-contact .form-select:focus {
-  border-color: rgba(13, 110, 253, 0.55) !important;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
+.public-contact .form-select:focus,
+.public-page-content.public-contact .exec-input:focus,
+.public-page-content.public-contact .cms-wsi-contact-form input:focus,
+.public-page-content.public-contact .cms-wsi-contact-form select:focus,
+.public-page-content.public-contact .cms-wsi-contact-form textarea:focus {
+  border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 55%, transparent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange, #eb5124) 15%, transparent) !important;
+}
+
+.public-page-content.public-contact .exec-label,
+.public-contact .exec-label {
+  color: var(--exec-muted, #64748b) !important;
+}
+
+.public-page-content.public-contact .exec-contact-recaptcha,
+.public-contact .exec-contact-recaptcha {
+  border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.12)) !important;
+  background: var(--exec-surface-2, #f8fafc) !important;
+  color: var(--exec-text, #475569) !important;
 }
 
 /* Utility: reset default link look (bootstrap underlines anchors) */

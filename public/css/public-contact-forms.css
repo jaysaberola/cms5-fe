@@ -1,0 +1,107 @@
+/* Contact Us — form fields (loads after public-site-themes; beats main.css input resets) */
+
+.public-site-shell--executra .public-page-content.public-contact .exec-field,
+.public-site-shell--executra .public-page-content .exec-contact .exec-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.public-site-shell--executra .public-page-content.public-contact .exec-form-grid,
+.public-site-shell--executra .public-page-content .exec-contact .exec-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 639px) {
+  .public-site-shell--executra .public-page-content.public-contact .exec-form-grid,
+  .public-site-shell--executra .public-page-content .exec-contact .exec-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.public-site-shell--executra .public-page-content.public-contact .exec-label,
+.public-site-shell--executra .public-page-content .exec-contact .exec-label,
+.public-site-shell--executra .public-page-content.public-contact label,
+.public-site-shell--executra .public-page-content .exec-contact label {
+  color: var(--exec-muted, #64748b) !important;
+  opacity: 1 !important;
+}
+
+.public-site-shell--executra .public-page-content.public-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+.public-site-shell--executra .public-page-content.public-contact select,
+.public-site-shell--executra .public-page-content.public-contact textarea,
+.public-site-shell--executra .public-page-content .exec-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+.public-site-shell--executra .public-page-content .exec-contact select,
+.public-site-shell--executra .public-page-content .exec-contact textarea,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form input,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form select,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 2.75rem !important;
+  padding: 0.7rem 0.85rem !important;
+  margin: 0 !important;
+  border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.22)) !important;
+  border-radius: 10px !important;
+  background-color: var(--exec-surface-2, #f1f5f9) !important;
+  color: var(--exec-heading, #0f172a) !important;
+  -webkit-text-fill-color: var(--exec-heading, #0f172a) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  outline: none;
+}
+
+.public-site-shell--executra .public-page-content.public-contact textarea,
+.public-site-shell--executra .public-page-content .exec-contact textarea,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea {
+  min-height: 140px !important;
+  resize: vertical;
+}
+
+.public-site-shell--executra .public-page-content.public-contact input::placeholder,
+.public-site-shell--executra .public-page-content.public-contact textarea::placeholder,
+.public-site-shell--executra .public-page-content .exec-contact input::placeholder,
+.public-site-shell--executra .public-page-content .exec-contact textarea::placeholder {
+  color: var(--exec-muted, #94a3b8) !important;
+  opacity: 1 !important;
+}
+
+.public-site-shell--executra .public-page-content.public-contact input:focus,
+.public-site-shell--executra .public-page-content.public-contact select:focus,
+.public-site-shell--executra .public-page-content.public-contact textarea:focus,
+.public-site-shell--executra .public-page-content .exec-contact input:focus,
+.public-site-shell--executra .public-page-content .exec-contact select:focus,
+.public-site-shell--executra .public-page-content .exec-contact textarea:focus {
+  border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 55%, transparent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange, #eb5124) 15%, transparent) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact select,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact textarea,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact select,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact textarea {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact .exec-contact-recaptcha,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact .exec-contact-recaptcha {
+  border: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #64748b !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact .exec-contact-recaptcha p,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact .exec-contact-recaptcha p {
+  color: #b45309 !important;
+}

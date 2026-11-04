@@ -104,7 +104,7 @@ async function mountRecaptcha(form: HTMLFormElement, state: FormState, siteKey: 
 
   if (!siteKey) {
     mount.innerHTML =
-      '<p style="margin:0;font-size:13px;color:#b45309;">reCAPTCHA is not configured. Contact the site administrator.</p>';
+      '<p class="exec-contact-recaptcha-msg" style="margin:0;font-size:13px;color:#b45309;">reCAPTCHA is not configured. Contact the site administrator.</p>';
     return;
   }
 

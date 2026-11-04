@@ -1,0 +1,671 @@
+/* Public site color themes — <html data-public-theme="dark|light|ocean|emerald|violet"> */
+
+html[data-public-theme="dark"],
+html:not([data-public-theme]) {
+  --exec-bg: #050505;
+  --exec-surface: #111111;
+  --exec-surface-2: #161616;
+  --exec-border: rgba(255, 255, 255, 0.1);
+  --exec-text: rgba(255, 255, 255, 0.72);
+  --exec-heading: #ffffff;
+  --exec-orange: #eb5124;
+  --exec-orange-hover: #d9481c;
+  --exec-muted: rgba(255, 255, 255, 0.45);
+  --pub-header-bg: rgba(5, 5, 5, 0.92);
+  --pub-header-bg-scrolled: rgba(5, 5, 5, 0.94);
+  --pub-header-border: rgba(255, 255, 255, 0.08);
+  --pub-nav-link: rgba(255, 255, 255, 0.78);
+  --pub-nav-link-active: #ffffff;
+  --pub-header-icon-bg: rgba(255, 255, 255, 0.06);
+  --pub-header-icon-border: rgba(255, 255, 255, 0.14);
+  color-scheme: dark;
+}
+
+html[data-public-theme="light"] {
+  --pub-header-bg: rgba(255, 255, 255, 0.92);
+  --pub-header-bg-scrolled: rgba(255, 255, 255, 0.98);
+  --pub-header-border: rgba(15, 23, 42, 0.08);
+  --pub-nav-link: #475569;
+  --pub-nav-link-active: #0f172a;
+  --pub-header-icon-bg: rgba(15, 23, 42, 0.07);
+  --pub-header-icon-border: rgba(15, 23, 42, 0.28);
+  --exec-bg: #f1f5f9;
+  --exec-surface: #ffffff;
+  --exec-surface-2: #e2e8f0;
+  --exec-border: rgba(15, 23, 42, 0.12);
+  --exec-text: #334155;
+  --exec-heading: #0f172a;
+  --exec-orange: #ea580c;
+  --exec-orange-hover: #c2410c;
+  --exec-muted: #64748b;
+  color-scheme: light;
+}
+
+html[data-public-theme="ocean"] {
+  --exec-bg: #0b1220;
+  --exec-surface: #111827;
+  --exec-surface-2: #1e293b;
+  --exec-border: rgba(148, 163, 184, 0.18);
+  --exec-text: rgba(226, 232, 240, 0.82);
+  --exec-heading: #f8fafc;
+  --exec-orange: #0ea5e9;
+  --exec-orange-hover: #0284c7;
+  --exec-muted: rgba(148, 163, 184, 0.75);
+  --pub-header-bg: rgba(11, 18, 32, 0.92);
+  --pub-header-bg-scrolled: rgba(11, 18, 32, 0.97);
+  --pub-header-border: rgba(56, 189, 248, 0.15);
+  --pub-nav-link: rgba(226, 232, 240, 0.78);
+  --pub-nav-link-active: #f8fafc;
+  --pub-header-icon-bg: rgba(14, 165, 233, 0.08);
+  --pub-header-icon-border: rgba(56, 189, 248, 0.25);
+  color-scheme: dark;
+}
+
+html[data-public-theme="emerald"] {
+  --exec-bg: #061510;
+  --exec-surface: #0c1f18;
+  --exec-surface-2: #132a22;
+  --exec-border: rgba(110, 231, 183, 0.14);
+  --exec-text: rgba(209, 250, 229, 0.78);
+  --exec-heading: #ecfdf5;
+  --exec-orange: #10b981;
+  --exec-orange-hover: #059669;
+  --exec-muted: rgba(167, 243, 208, 0.55);
+  --pub-header-bg: rgba(6, 21, 16, 0.92);
+  --pub-header-bg-scrolled: rgba(6, 21, 16, 0.97);
+  --pub-header-border: rgba(16, 185, 129, 0.18);
+  --pub-nav-link: rgba(209, 250, 229, 0.75);
+  --pub-nav-link-active: #ecfdf5;
+  --pub-header-icon-bg: rgba(16, 185, 129, 0.1);
+  --pub-header-icon-border: rgba(52, 211, 153, 0.22);
+  color-scheme: dark;
+}
+
+html[data-public-theme="violet"] {
+  --exec-bg: #120a1a;
+  --exec-surface: #1a1024;
+  --exec-surface-2: #231533;
+  --exec-border: rgba(167, 139, 250, 0.16);
+  --exec-text: rgba(237, 233, 254, 0.78);
+  --exec-heading: #faf5ff;
+  --exec-orange: #a78bfa;
+  --exec-orange-hover: #8b5cf6;
+  --exec-muted: rgba(196, 181, 253, 0.55);
+  --pub-header-bg: rgba(18, 10, 26, 0.92);
+  --pub-header-bg-scrolled: rgba(18, 10, 26, 0.97);
+  --pub-header-border: rgba(167, 139, 250, 0.18);
+  --pub-nav-link: rgba(237, 233, 254, 0.75);
+  --pub-nav-link-active: #faf5ff;
+  --pub-header-icon-bg: rgba(167, 139, 250, 0.1);
+  --pub-header-icon-border: rgba(196, 181, 253, 0.22);
+  color-scheme: dark;
+}
+
+html[data-public-theme="dark"] .public-site-shell--executra,
+html:not([data-public-theme]) .public-site-shell--executra,
+html[data-public-theme="dark"] .public-site-shell--executra .exec-tpl,
+html:not([data-public-theme]) .public-site-shell--executra .exec-tpl {
+  --exec-bg: #050505;
+  --exec-surface: #111111;
+  --exec-surface-2: #161616;
+  --exec-border: rgba(255, 255, 255, 0.1);
+  --exec-text: rgba(255, 255, 255, 0.72);
+  --exec-heading: #ffffff;
+  --exec-orange: #eb5124;
+  --exec-orange-hover: #d9481c;
+  --exec-muted: rgba(255, 255, 255, 0.45);
+}
+
+html[data-public-theme="light"] .public-site-shell--executra,
+html[data-public-theme="light"] .public-site-shell--executra .exec-tpl {
+  --exec-bg: #f1f5f9;
+  --exec-surface: #ffffff;
+  --exec-surface-2: #e2e8f0;
+  --exec-border: rgba(15, 23, 42, 0.12);
+  --exec-text: #334155;
+  --exec-heading: #0f172a;
+  --exec-orange: #ea580c;
+  --exec-orange-hover: #c2410c;
+  --exec-muted: #64748b;
+}
+
+html[data-public-theme="ocean"] .public-site-shell--executra,
+html[data-public-theme="ocean"] .public-site-shell--executra .exec-tpl {
+  --exec-bg: #0b1220;
+  --exec-surface: #111827;
+  --exec-surface-2: #1e293b;
+  --exec-border: rgba(148, 163, 184, 0.18);
+  --exec-text: rgba(226, 232, 240, 0.82);
+  --exec-heading: #f8fafc;
+  --exec-orange: #0ea5e9;
+  --exec-orange-hover: #0284c7;
+  --exec-muted: rgba(148, 163, 184, 0.75);
+}
+
+html[data-public-theme="emerald"] .public-site-shell--executra,
+html[data-public-theme="emerald"] .public-site-shell--executra .exec-tpl {
+  --exec-bg: #061510;
+  --exec-surface: #0c1f18;
+  --exec-surface-2: #132a22;
+  --exec-border: rgba(110, 231, 183, 0.14);
+  --exec-text: rgba(209, 250, 229, 0.78);
+  --exec-heading: #ecfdf5;
+  --exec-orange: #10b981;
+  --exec-orange-hover: #059669;
+  --exec-muted: rgba(167, 243, 208, 0.55);
+}
+
+html[data-public-theme="violet"] .public-site-shell--executra,
+html[data-public-theme="violet"] .public-site-shell--executra .exec-tpl {
+  --exec-bg: #120a1a;
+  --exec-surface: #1a1024;
+  --exec-surface-2: #231533;
+  --exec-border: rgba(167, 139, 250, 0.16);
+  --exec-text: rgba(237, 233, 254, 0.78);
+  --exec-heading: #faf5ff;
+  --exec-orange: #a78bfa;
+  --exec-orange-hover: #8b5cf6;
+  --exec-muted: rgba(196, 181, 253, 0.55);
+}
+
+html[data-public-theme="light"] .public-site-shell--executra,
+html[data-public-theme="light"] .public-site-shell--executra .public-site-main {
+  background: var(--exec-bg);
+  color: var(--exec-text);
+}
+
+html[data-public-theme="light"] .exec-btn--ghost {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-public-theme="light"] .exec-btn--ghost:hover {
+  background: #e2e8f0;
+}
+
+html[data-public-theme="light"] .exec-btn--line {
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.25);
+}
+
+html[data-public-theme] .public-site-header {
+  background: var(--pub-header-bg) !important;
+  border-bottom-color: var(--pub-header-border) !important;
+}
+
+html[data-public-theme] .public-site-header.public-site-header-scrolled,
+html[data-public-theme] .public-site-header[class*="scrolled"] {
+  background: var(--pub-header-bg-scrolled) !important;
+}
+
+html[data-public-theme] .public-site-header .menu-link,
+html[data-public-theme] .public-site-header a.menu-link {
+  color: var(--pub-nav-link) !important;
+}
+
+html[data-public-theme] .public-site-header .menu-item.current > .menu-row > .menu-link,
+html[data-public-theme] .public-site-header .menu-item.current > .menu-link {
+  color: var(--pub-nav-link-active) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="demo-btn"],
+html[data-public-theme] .public-site-header .public-demo-cta {
+  background: var(--exec-orange, #eb5124) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="demo-btn"]:hover,
+html[data-public-theme] .public-site-header .public-demo-cta:hover {
+  background: var(--exec-orange-hover, #d9481c) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="searchShell"] {
+  border-color: var(--pub-header-icon-border) !important;
+  background: var(--pub-header-icon-bg) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="searchShellOpen"] {
+  border-color: color-mix(in srgb, var(--exec-orange) 55%, transparent) !important;
+  background: var(--exec-surface) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange) 18%, transparent) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="searchToggle"] {
+  color: var(--pub-nav-link-active) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="searchField"] {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="searchField"]::placeholder {
+  color: var(--exec-muted) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="searchToggle"]:hover,
+html[data-public-theme] .public-site-header .public-header-search-toggle:hover {
+  color: var(--exec-orange) !important;
+}
+
+html[data-public-theme] .public-site-header [class*="toggle"]:not([class*="mobile-toggle"]) {
+  border-color: var(--pub-header-icon-border) !important;
+  background: var(--pub-header-icon-bg) !important;
+  color: var(--pub-nav-link-active) !important;
+}
+
+@media (min-width: 992px) {
+  html[data-public-theme] .public-site-header .public-header-search,
+  html[data-public-theme] .public-site-header [class*="searchShell"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+html[data-public-theme="light"] .public-site-header .public-header-search,
+html[data-public-theme="light"] .public-site-header [class*="searchShell"] {
+  border: 1px solid rgba(15, 23, 42, 0.32) !important;
+  background: rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+html[data-public-theme="light"] .public-site-header .public-header-search-toggle,
+html[data-public-theme="light"] .public-site-header [class*="searchToggle"] {
+  color: #0f172a !important;
+}
+
+html[data-public-theme="light"] .public-site-header [class*="search-mobile-btn"] {
+  border: 1px solid rgba(15, 23, 42, 0.28) !important;
+  background: rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
+}
+
+html[data-public-theme="light"] .public-site-header [class*="brand"],
+html[data-public-theme="light"] .public-site-header [class*="wordmark-web"],
+html[data-public-theme="light"] .public-site-header [class*="wordmark-focus"] {
+  color: #0f172a !important;
+}
+
+html[data-public-theme="light"] .public-site-header [class*="brandBadge"] {
+  background: rgba(234, 88, 12, 0.12) !important;
+  color: #c2410c !important;
+}
+
+/* ——— Contact Us (CMS + legacy) ——— */
+html[data-public-theme] .public-page-content.public-contact,
+html[data-public-theme] .public-page-content .exec-contact {
+  background: var(--exec-bg);
+  color: var(--exec-text);
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-contact-form-panel,
+html[data-public-theme] .public-page-content.public-contact .exec-contact .exec-card,
+html[data-public-theme] .public-page-content .exec-contact .exec-contact-form-panel,
+html[data-public-theme] .public-page-content .exec-contact .exec-card {
+  border: 1px solid var(--exec-border) !important;
+  background: var(--exec-surface) !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-contact-form-panel,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-contact .exec-card,
+html[data-public-theme="light"] .public-page-content .exec-contact .exec-contact-form-panel,
+html[data-public-theme="light"] .public-page-content .exec-contact .exec-card {
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-form-title,
+html[data-public-theme] .public-page-content.public-contact .exec-card h3,
+html[data-public-theme] .public-page-content .exec-contact .exec-form-title,
+html[data-public-theme] .public-page-content .exec-contact .exec-card h3 {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-form-hint,
+html[data-public-theme] .public-page-content.public-contact .exec-label,
+html[data-public-theme] .public-page-content.public-contact .exec-contact-info-label,
+html[data-public-theme] .public-page-content .exec-contact .exec-form-hint,
+html[data-public-theme] .public-page-content .exec-contact .exec-label {
+  color: var(--exec-muted) !important;
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-contact-info p,
+html[data-public-theme] .public-page-content.public-contact .exec-card p,
+html[data-public-theme] .public-page-content .exec-contact .exec-contact-info p {
+  color: var(--exec-text) !important;
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-input,
+html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form input,
+html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form select,
+html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form textarea,
+html[data-public-theme] .public-page-content .exec-contact .exec-input,
+html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form input,
+html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form select,
+html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form textarea {
+  border: 1px solid var(--exec-border) !important;
+  background: var(--exec-surface-2) !important;
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-input,
+html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form input,
+html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form select,
+html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form textarea,
+html[data-public-theme="light"] .public-page-content .exec-contact .exec-input,
+html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form input,
+html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form select,
+html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form textarea {
+  border-color: rgba(15, 23, 42, 0.2) !important;
+  background: #f8fafc !important;
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-preferred-grid label,
+html[data-public-theme] .public-page-content .exec-contact .exec-preferred-grid label {
+  color: var(--exec-text) !important;
+}
+
+html[data-public-theme] .public-page-content.public-contact .exec-contact-recaptcha,
+html[data-public-theme] .public-page-content .exec-contact .exec-contact-recaptcha {
+  color: var(--exec-muted) !important;
+}
+
+/* ——— News listing & article pages ——— */
+html[data-public-theme] [data-public-news-page] {
+  background: var(--exec-bg, #050505);
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-main:has([data-public-news-page]) {
+  background: var(--exec-bg, #050505);
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-hero {
+  border-bottom-color: var(--exec-border) !important;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 100% 0%,
+      color-mix(in srgb, var(--exec-orange, #eb5124) 14%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 0% 100%,
+      color-mix(in srgb, var(--exec-heading, #fff) 4%, transparent) 0%,
+      transparent 50%
+    ),
+    var(--exec-surface-2, #0a0a0a) !important;
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-shell {
+  background: var(--exec-bg);
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-featured,
+html[data-public-theme] [data-public-news-page] .public-news-card,
+html[data-public-theme] [data-public-news-page] .public-news-sidebar-card {
+  background: var(--exec-surface) !important;
+  border-color: var(--exec-border) !important;
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-eyebrow,
+html[data-public-theme] [data-public-news-page] .public-news-section-label {
+  color: var(--exec-muted) !important;
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-title {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-lead {
+  color: var(--exec-text) !important;
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-sidebar-title {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-sidebar button {
+  color: var(--exec-text);
+}
+
+html[data-public-theme] [data-public-news-page] .public-news-search-input {
+  background: var(--exec-surface-2) !important;
+  border-color: var(--exec-border) !important;
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme] [data-public-news-page] :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--exec-heading);
+}
+
+/* ——— Full page content (Grapes / CMS HTML) ——— */
+html[data-public-theme] body {
+  background: var(--exec-bg, #050505);
+}
+
+/* ——— Footer (matches header + content theme) ——— */
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .wsi-footer {
+  background: var(--exec-bg, #050505) !important;
+  color: var(--exec-muted) !important;
+  border-top-color: var(--exec-border) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-logo,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer-logo {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-logo mark,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer-logo mark {
+  color: var(--exec-orange) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-tagline,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-col p,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-bar,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer-bottom {
+  color: var(--exec-muted) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-col h5,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer h5 {
+  color: var(--exec-muted) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-col a:not(.exec-btn),
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer a:not(.exec-btn) {
+  color: var(--exec-text) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-col a:not(.exec-btn):hover,
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .biz-footer a:not(.exec-btn):hover {
+  color: var(--exec-orange) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-social a {
+  color: var(--exec-text) !important;
+  border-color: var(--exec-border) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-footer-bar {
+  border-top-color: var(--exec-border) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-btn--line {
+  color: var(--exec-heading) !important;
+  border-color: var(--exec-border) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-btn--line:hover {
+  color: var(--exec-orange) !important;
+  border-color: var(--exec-orange) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-footer-host .exec-btn--primary {
+  background: var(--exec-orange) !important;
+  color: #fff !important;
+}
+
+/* Remap common Grapes inline dark surfaces to active theme */
+html[data-public-theme] .public-site-shell--executra .public-page-content section[style*="background"],
+html[data-public-theme] .public-site-shell--executra .public-page-content div[style*="background-color"],
+html[data-public-theme] .public-site-shell--executra .public-page-content div[style*="background:"] {
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.1));
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#050505"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background: #050505"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#0a0a0a"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background: #0a0a0a"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#111"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background: #111"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#111111"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background-color:#050505"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background-color: #111"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#161616"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background: #161616"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#1a1a1a"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background: #1a1a1a"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="rgb(5, 5, 5)"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="rgb(5,5,5)"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="rgb(10, 10, 10)"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="rgb(17, 17, 17)"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="rgb(22, 22, 22)"] {
+  background: var(--exec-surface, #fff) !important;
+  background-color: var(--exec-surface, #fff) !important;
+  color: var(--exec-text, #334155) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background:#050505"] *,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="background: #050505"] *,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="rgb(5, 5, 5)"] * {
+  color: inherit;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:#fff"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: #fff"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:#ffffff"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: #ffffff"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: rgb(255, 255, 255)"] {
+  color: var(--exec-heading, #0f172a) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:rgba(255, 255, 255"] {
+  color: var(--exec-text, #334155) !important;
+}
+
+html[data-public-theme="ocean"] .public-site-shell--executra .public-page-content [style*="background:#050505"],
+html[data-public-theme="ocean"] .public-site-shell--executra .public-page-content [style*="background: #050505"],
+html[data-public-theme="ocean"] .public-site-shell--executra .public-page-content [style*="background:#0a0a0a"],
+html[data-public-theme="emerald"] .public-site-shell--executra .public-page-content [style*="background:#050505"],
+html[data-public-theme="emerald"] .public-site-shell--executra .public-page-content [style*="background: #050505"],
+html[data-public-theme="emerald"] .public-site-shell--executra .public-page-content [style*="background:#0a0a0a"],
+html[data-public-theme="violet"] .public-site-shell--executra .public-page-content [style*="background:#050505"],
+html[data-public-theme="violet"] .public-site-shell--executra .public-page-content [style*="background: #050505"],
+html[data-public-theme="violet"] .public-site-shell--executra .public-page-content [style*="background:#0a0a0a"] {
+  background: var(--exec-bg, #0b1220) !important;
+  background-color: var(--exec-bg, #0b1220) !important;
+}
+
+html[data-public-theme="ocean"] .public-site-shell--executra .public-page-content [style*="background:#111"],
+html[data-public-theme="ocean"] .public-site-shell--executra .public-page-content [style*="background: #111"],
+html[data-public-theme="emerald"] .public-site-shell--executra .public-page-content [style*="background:#111"],
+html[data-public-theme="violet"] .public-site-shell--executra .public-page-content [style*="background:#111"] {
+  background: var(--exec-surface, #111827) !important;
+  background-color: var(--exec-surface, #111827) !important;
+}
+
+html[data-public-theme]:not([data-public-theme="dark"]) .public-site-shell--executra .public-page-content a[style*="color:#eb5124"],
+html[data-public-theme]:not([data-public-theme="dark"]) .public-site-shell--executra .public-page-content a[style*="color: #eb5124"] {
+  color: var(--exec-orange, #eb5124) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .exec-btn--ghost {
+  background: var(--exec-surface-2, #e2e8f0);
+  color: var(--exec-heading, #0f172a);
+  border-color: var(--exec-border, rgba(15, 23, 42, 0.12));
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .exec-card,
+html[data-public-theme="light"] .public-site-shell--executra .exec-tpl [style*="border: 1px solid rgba(255, 255, 255"] {
+  border-color: var(--exec-border, rgba(15, 23, 42, 0.12)) !important;
+}
+
+/* ——— Light theme: readable CMS / Executra blocks ——— */
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl {
+  color: var(--exec-text);
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl :is(h1, h2, h3, h4, h5, h6, .exec-h2) {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl :is(p, li, .exec-lead, .exec-tab p, .exec-checklist li, .exec-faq-item p) {
+  color: var(--exec-text) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-tab strong,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-card h3,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-step h3 {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl svg.exec-card-icon,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-card svg {
+  stroke: var(--exec-heading) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-btn--primary {
+  color: #fff !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-btn--ghost,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-btn--line {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .exec-card p,
+html[data-public-theme="light"] .public-site-shell--executra .exec-stat p,
+html[data-public-theme="light"] .public-site-shell--executra .exec-price-card,
+html[data-public-theme="light"] .public-site-shell--executra .exec-testimonial-slide {
+  color: var(--exec-text);
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content #wsi-home-cms,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .wsi-home-cms {
+  background: var(--exec-bg);
+  color: var(--exec-text);
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content #wsi-home-cms :is(h1, h2, h3, h4, h5, h6),
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .wsi-home-cms :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--exec-heading) !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content #wsi-home-cms :is(p, li, span),
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .wsi-home-cms :is(p, li, span) {
+  color: var(--exec-text);
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-eyebrow,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-tab,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-card p,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-stat p {
+  color: var(--exec-text) !important;
+}
+
+/* Beat legacy public-overrides nav colors when a theme is active */
+html[data-public-theme] .public-site-shell--executra .public-site-header .menu-link,
+html[data-public-theme] .public-site-shell--executra .public-site-header a.menu-link,
+html[data-public-theme] .public-site-shell .menu-item.current > .menu-link,
+html[data-public-theme] .public-site-shell .menu-item.current > .menu-row > .menu-link {
+  color: var(--pub-nav-link) !important;
+}
+
+html[data-public-theme] .public-site-shell--executra .public-site-header .menu-item.current > .menu-row > .menu-link,
+html[data-public-theme] .public-site-shell--executra .public-site-header .menu-item.current > .menu-link {
+  color: var(--pub-nav-link-active) !important;
+}

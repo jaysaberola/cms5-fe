@@ -16,6 +16,7 @@ import { getWebsiteSettingsCached, readStoredWebsiteSettings, subscribeWebsiteSe
 import SiteFavicon from "@/components/Layout/SiteFavicon";
 import { usePublicRouteTransition } from "@/lib/usePublicRouteTransition";
 import { usePublicInternalLinkCapture } from "@/lib/usePublicInternalLinkCapture";
+import { applyPublicSiteTheme, readPublicSiteTheme } from "@/lib/publicSiteTheme";
 import transitionStyles from "@/styles/publicPageTransition.module.css";
 
 interface LandingPageLayoutProps {
@@ -52,6 +53,7 @@ export default function LandingPageLayout({
   const [companyName, setCompanyName] = useState<string | null>(null);
 
   useLayoutEffect(() => {
+    applyPublicSiteTheme(readPublicSiteTheme());
     revealAppDocument();
     const root =
       (document.querySelector(".public-page-content") as HTMLElement | null) ||

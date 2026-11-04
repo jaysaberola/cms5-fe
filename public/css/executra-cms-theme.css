@@ -137,20 +137,20 @@
 }
 
 .exec-btn--ghost {
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--exec-surface-2, #1a1a1a);
+  color: var(--exec-heading, #fff);
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.12));
 }
 
 .exec-btn--ghost:hover {
-  background: #222;
+  background: color-mix(in srgb, var(--exec-surface-2, #1a1a1a) 88%, var(--exec-heading, #fff));
   transform: translateY(-2px);
 }
 
 .exec-btn--line {
   background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: var(--exec-heading, #fff);
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.35));
   padding: 0.75rem 1.25rem;
 }
 
@@ -193,7 +193,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--exec-muted);
   white-space: nowrap;
 }
 
@@ -345,9 +345,9 @@
 }
 
 .exec-pill.is-active {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
+  background: var(--exec-heading);
+  color: var(--exec-bg);
+  border-color: var(--exec-heading);
 }
 
 .exec-service-panel {
@@ -387,7 +387,7 @@
 
 .exec-service-panel h3 {
   margin: 0 0 0.75rem;
-  color: #fff;
+  color: var(--exec-heading);
   font-size: 1.75rem;
   font-weight: 400;
 }
@@ -438,7 +438,7 @@
   margin: 0 0 0.35rem;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 400;
-  color: #fff;
+  color: var(--exec-heading);
   letter-spacing: -0.03em;
 }
 
@@ -485,7 +485,7 @@
   margin: 0 0 0.75rem;
   font-size: 2.5rem;
   font-weight: 400;
-  color: #fff;
+  color: var(--exec-heading);
 }
 
 /* Steps */
@@ -522,7 +522,7 @@
 
 .exec-step h3 {
   margin: 0 0 0.5rem;
-  color: #fff;
+  color: var(--exec-heading);
   font-size: 1.125rem;
   font-weight: 500;
 }
@@ -553,7 +553,7 @@
   margin: 0 0 1.25rem;
   font-size: 1.125rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--exec-text);
 }
 
 .exec-testimonial-slide footer {
@@ -573,7 +573,7 @@
   height: 2.75rem;
   border: 1px solid var(--exec-border);
   background: var(--exec-surface);
-  color: #fff;
+  color: var(--exec-heading);
   cursor: pointer;
   font-size: 1.1rem;
   transition: background 0.25s ease, border-color 0.25s ease;
@@ -597,7 +597,7 @@
   list-style: none;
   cursor: pointer;
   padding: 1.25rem 0;
-  color: #fff;
+  color: var(--exec-heading);
   font-weight: 500;
   font-size: 1rem;
 }
@@ -625,7 +625,7 @@
   margin: 0 0 0.75rem;
   font-size: clamp(2rem, 5vw, 3.25rem);
   font-weight: 400;
-  color: #fff;
+  color: var(--exec-heading);
 }
 
 /* Scroll reveal */
@@ -686,10 +686,10 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 /* ——— Site footer (Executra-style) ——— */
 .exec-footer,
 .public-site-shell--executra .biz-footer {
-  background: #050505;
-  color: rgba(255, 255, 255, 0.55);
+  background: var(--exec-bg, #050505);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.55));
   font-family: var(--exec-font, "Outfit", system-ui, sans-serif);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--exec-border, rgba(255, 255, 255, 0.08));
   padding: clamp(3rem, 7vw, 4.5rem) var(--exec-gutter, 1.25rem) 0;
   margin: 0;
   width: 100%;
@@ -724,7 +724,7 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   align-items: center;
   gap: 0.5rem;
   margin: 0 0 1rem;
-  color: #fff;
+  color: var(--exec-heading, #fff);
   font-size: 1.35rem;
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -743,13 +743,13 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.52));
 }
 
 .exec-footer-col h5,
 .public-site-shell--executra .biz-footer h5 {
   margin: 0 0 1rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -770,7 +770,7 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 
 .exec-footer-col a,
 .public-site-shell--executra .biz-footer a {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--exec-text);
   text-decoration: none;
   font-size: 0.9375rem;
   transition: color 0.2s ease;
@@ -785,7 +785,7 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--exec-muted);
 }
 
 .exec-footer-social {
@@ -802,18 +802,18 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   min-width: 2.25rem;
   height: 2.25rem;
   padding: 0 0.65rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--exec-border);
   border-radius: 2px;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: var(--exec-text) !important;
 }
 
 .exec-footer-social a:hover {
-  border-color: rgba(235, 81, 36, 0.55);
-  color: #fff !important;
+  border-color: color-mix(in srgb, var(--exec-orange) 55%, transparent);
+  color: var(--exec-heading) !important;
 }
 
 .exec-footer-bar {
@@ -823,9 +823,9 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   justify-content: space-between;
   gap: 1rem 1.5rem;
   padding: 1.25rem 0 clamp(1.25rem, 3vw, 1.75rem);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--exec-border);
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.42);
+  color: var(--exec-muted);
 }
 
 .exec-footer-bar-actions {
@@ -983,7 +983,21 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   border: 1px solid var(--exec-border);
   border-radius: 16px;
   background: var(--exec-surface);
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--exec-bg, #000) 28%, transparent);
+}
+
+.exec-contact .exec-card {
+  border: 1px solid var(--exec-border);
+  background: var(--exec-surface);
+}
+
+.exec-contact .exec-card h3 {
+  color: var(--exec-heading);
+}
+
+.exec-contact .exec-card p,
+.exec-contact-info p {
+  color: var(--exec-text);
 }
 
 .exec-form-title {
@@ -1027,7 +1041,7 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 .exec-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.55));
 }
 
 .exec-label-required {
@@ -1043,13 +1057,22 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   width: 100%;
   padding: 0.7rem 0.85rem;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: var(--exec-surface-2);
-  color: var(--exec-heading);
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.12)) !important;
+  background: var(--exec-surface-2, #161616) !important;
+  color: var(--exec-heading, #fff) !important;
   font-family: var(--exec-font);
   font-size: 0.875rem;
   line-height: 1.4;
+  box-shadow: none !important;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.exec-input::placeholder,
+.exec-contact-form-panel textarea::placeholder,
+.exec-tpl .cms-wsi-contact-form input::placeholder,
+.exec-tpl .cms-wsi-contact-form textarea::placeholder {
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
+  opacity: 1;
 }
 
 .exec-input:focus,
@@ -1059,8 +1082,8 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 .exec-tpl .cms-wsi-contact-form input:focus,
 .exec-tpl .cms-wsi-contact-form textarea:focus {
   outline: none;
-  border-color: rgba(235, 81, 36, 0.55);
-  box-shadow: 0 0 0 3px rgba(235, 81, 36, 0.15);
+  border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 55%, transparent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange, #eb5124) 15%, transparent) !important;
 }
 
 .exec-contact-form-panel textarea,

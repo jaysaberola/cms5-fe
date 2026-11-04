@@ -109,23 +109,29 @@
 
 .searchShell {
   position: relative;
+  z-index: 5;
   display: none;
   align-items: center;
   height: 40px;
   width: 40px;
   flex: 0 0 auto;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--pub-header-icon-border, rgba(255, 255, 255, 0.14));
+  background: var(--pub-header-icon-bg, rgba(255, 255, 255, 0.06));
   overflow: hidden;
   transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
+.searchToggle svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .searchShellOpen {
   width: min(300px, 26vw);
-  border-color: rgba(235, 81, 36, 0.55);
-  box-shadow: 0 0 0 3px rgba(235, 81, 36, 0.18);
-  background: #111111;
+  border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 55%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange, #eb5124) 18%, transparent);
+  background: var(--exec-surface, #111111);
 }
 
 .searchToggle {
@@ -139,13 +145,15 @@
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--pub-nav-link-active, rgba(255, 255, 255, 0.78));
   cursor: pointer;
 }
 
+.public-header-search-toggle svg,
 .searchToggle svg {
   width: 18px;
   height: 18px;
+  stroke: currentColor;
 }
 
 .searchForm {
@@ -183,7 +191,7 @@
   padding: 0 0.35rem 0 0.15rem;
   border: 0 !important;
   background: transparent;
-  color: #f8fafc;
+  color: var(--exec-heading, #f8fafc);
   font-size: 0.8125rem;
   font-weight: 500;
   outline: none;
@@ -191,7 +199,7 @@
 }
 
 .searchField::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
 }
 
 .searchSubmit {
@@ -201,7 +209,7 @@
   padding: 0 0.75rem;
   border: 0;
   border-radius: 999px;
-  background: #eb5124;
+  background: var(--exec-orange, #eb5124);
   color: #fff;
   font-size: 0.6875rem;
   font-weight: 700;
@@ -211,7 +219,7 @@
 }
 
 .searchSubmit:hover {
-  background: #d9481c;
+  background: var(--exec-orange-hover, #d9481c);
 }
 
 .nav-wrap {
@@ -454,9 +462,9 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.14);
-  background: #ffffff;
-  color: #334155;
+  border: 1px solid var(--pub-header-icon-border, rgba(15, 23, 42, 0.14));
+  background: var(--pub-header-icon-bg, #ffffff);
+  color: var(--pub-nav-link-active, #334155);
   text-decoration: none;
   transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }

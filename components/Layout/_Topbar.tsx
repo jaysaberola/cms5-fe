@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Menu from "./_Menu";
 import HeaderSearch from "./HeaderSearch";
+import PublicThemeSwitcher from "./PublicThemeSwitcher";
 import SignInDropdown from "@/components/Auth/SignInDropdown";
 import styles from "@/styles/_topbar.module.css";
 import { useStoredPublicAuthState } from "@/lib/publicAuthState";
@@ -121,14 +122,17 @@ export default function LandingTopbar() {
           <ul className={styles["nav-list"]}>
             <Menu isMobile={mobileOpen} onNavigate={closeMobileMenu} />
           </ul>
+          <PublicThemeSwitcher variant="mobileMenu" onNavigate={closeMobileMenu} />
         </nav>
 
-        <HeaderSearch />
-
         <div className={styles.actions}>
+          <HeaderSearch />
+
           <Link href="/contact-us" className={`${styles["demo-btn"]} public-demo-cta`} prefetch scroll={false}>
             Book a call
           </Link>
+
+          <PublicThemeSwitcher />
 
           {!isStaffLoggedIn ? (
             <>

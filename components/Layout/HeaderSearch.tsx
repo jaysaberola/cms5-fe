@@ -58,11 +58,11 @@ export default function HeaderSearch() {
   return (
     <div
       ref={shellRef}
-      className={`${styles.searchShell} ${open ? styles.searchShellOpen : ""}`}
+      className={`public-header-search ${styles.searchShell} ${open ? styles.searchShellOpen : ""}`}
     >
       <button
         type="button"
-        className={styles.searchToggle}
+        className={`public-header-search-toggle ${styles.searchToggle}`}
         onClick={openSearch}
         aria-label="Open search"
         aria-expanded={open}

@@ -1,7 +1,8 @@
 /* Executra theme for React pages, Bootstrap widgets, and legacy CMS (biz-tpl) markup */
 
 .public-site-shell--executra {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
+  background: var(--exec-bg, #050505);
 }
 
 .public-site-shell--executra .public-site-main > .container,
@@ -9,10 +10,14 @@
   color: inherit;
 }
 
+.public-site-shell--executra .public-site-main {
+  background: var(--exec-bg, #050505);
+}
+
 /* Grapes / CMS HTML wrapper */
 .public-site-shell--executra .public-page-content {
-  color: rgba(255, 255, 255, 0.72);
-  background: #050505;
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
+  background: var(--exec-bg, #050505);
   width: 100%;
   max-width: 100%;
 }
@@ -21,10 +26,12 @@
 .public-site-shell--executra .public-page-content #wsi-home-cms {
   width: 100%;
   max-width: 100%;
+  background: var(--exec-bg, #050505);
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
 }
 
 .public-site-shell--executra .public-page-content a:not([class*="exec-btn"]) {
-  color: #eb5124;
+  color: var(--exec-orange, #eb5124);
 }
 
 .public-site-shell--executra .public-page-content h1,
@@ -32,14 +39,26 @@
 .public-site-shell--executra .public-page-content h3,
 .public-site-shell--executra .public-page-content h4,
 .public-site-shell--executra .public-page-content h5 {
-  color: #fff;
+  color: var(--exec-heading, #fff);
+}
+
+.public-site-shell--executra .exec-eyebrow {
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
+}
+
+.public-site-shell--executra .exec-h2 {
+  color: var(--exec-heading, #fff);
+}
+
+.public-site-shell--executra .exec-lead {
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
 }
 
 /* Legacy biz-tpl pages (contact, old home blocks, footer host) */
 .public-site-shell--executra .biz-tpl {
   font-family: "Outfit", system-ui, sans-serif;
-  color: rgba(255, 255, 255, 0.72);
-  background: #050505;
+  color: var(--exec-text, rgba(255, 255, 255, 0.72));
+  background: var(--exec-bg, #050505);
 }
 
 .public-site-shell--executra .biz-tpl .biz-section {
@@ -49,11 +68,11 @@
 .public-site-shell--executra .biz-tpl .biz-section-head h2,
 .public-site-shell--executra .biz-tpl .biz-info-card h4,
 .public-site-shell--executra .biz-tpl .biz-form-panel h3 {
-  color: #fff;
+  color: var(--exec-heading, #fff);
 }
 
 .public-site-shell--executra .biz-tpl .biz-kicker {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-size: 0.6875rem;
@@ -61,29 +80,29 @@
 
 .public-site-shell--executra .biz-tpl .biz-info-card,
 .public-site-shell--executra .biz-tpl .biz-form-panel {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--exec-surface, #111);
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.1));
   border-radius: 2px;
   box-shadow: none;
 }
 
 .public-site-shell--executra .biz-tpl .biz-form-panel label {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--exec-muted, rgba(255, 255, 255, 0.55));
   font-size: 0.8125rem;
 }
 
 .public-site-shell--executra .biz-tpl .biz-form-panel input,
 .public-site-shell--executra .biz-tpl .biz-form-panel select,
 .public-site-shell--executra .biz-tpl .biz-form-panel textarea {
-  background: #161616 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #fff !important;
+  background: var(--exec-surface-2, #161616) !important;
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--exec-heading, #fff) !important;
   border-radius: 2px !important;
 }
 
 .public-site-shell--executra .biz-tpl .biz-form-panel button[type="submit"],
 .public-site-shell--executra .biz-tpl .biz-form-panel [data-cms-contact-submit] {
-  background: #eb5124 !important;
+  background: var(--exec-orange, #eb5124) !important;
   border: none !important;
   color: #fff !important;
   text-transform: uppercase;
@@ -95,17 +114,17 @@
 }
 
 .public-site-shell--executra .biz-tpl a {
-  color: #eb5124;
+  color: var(--exec-orange, #eb5124);
 }
 
 /* Executra contact (Grapes + CMS form) */
 .public-site-shell--executra .public-contact.exec-tpl,
 .public-site-shell--executra .public-page-content .exec-contact {
-  background: #050505;
+  background: var(--exec-bg, #050505);
 }
 
 .public-site-shell--executra .public-page-content .exec-contact a {
-  color: #eb5124;
+  color: var(--exec-orange, #eb5124);
   text-decoration: none;
 }
 
@@ -119,48 +138,53 @@
 }
 
 .public-site-shell--executra .public-contact .form-control,
-.public-site-shell--executra .public-contact .form-select {
-  background: #161616 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #fff !important;
+.public-site-shell--executra .public-contact .form-select,
+.public-site-shell--executra .public-page-content.public-contact .exec-input,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form input,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form select,
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea {
+  background: var(--exec-surface-2, #161616) !important;
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--exec-heading, #fff) !important;
   border-radius: 10px !important;
+  box-shadow: none !important;
 }
 
 /* Bootstrap (search, alerts, lists) */
 .public-site-shell--executra .alert-info {
-  background: #161616;
-  border-color: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
+  background: var(--exec-surface-2, #161616);
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.12));
+  color: var(--exec-text, rgba(255, 255, 255, 0.75));
 }
 
 .public-site-shell--executra .alert-danger {
-  background: rgba(235, 81, 36, 0.12);
-  border-color: rgba(235, 81, 36, 0.35);
+  background: color-mix(in srgb, var(--exec-orange, #eb5124) 12%, transparent);
+  border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 35%, transparent);
   color: #ffb4a0;
 }
 
 .public-site-shell--executra .text-muted {
-  color: rgba(255, 255, 255, 0.45) !important;
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45)) !important;
 }
 
 .public-site-shell--executra .list-group-item {
-  background: #111;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.78);
+  background: var(--exec-surface, #111);
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.1));
+  color: var(--exec-text, rgba(255, 255, 255, 0.78));
 }
 
 .public-site-shell--executra .list-group-item a {
-  color: #fff;
+  color: var(--exec-heading, #fff);
   font-weight: 600;
 }
 
 .public-site-shell--executra .list-group-item a:hover {
-  color: #eb5124;
+  color: var(--exec-orange, #eb5124);
 }
 
 .public-site-shell--executra h3,
 .public-site-shell--executra h5 {
-  color: #fff;
+  color: var(--exec-heading, #fff);
   font-family: "Outfit", system-ui, sans-serif;
   font-weight: 500;
 }
@@ -168,65 +192,65 @@
 /* Legacy events / careers template utility classes */
 .public-site-shell--executra .txt33,
 .public-site-shell--executra .txt27 {
-  color: #fff !important;
+  color: var(--exec-heading, #fff) !important;
 }
 
 .public-site-shell--executra .txt14,
 .public-site-shell--executra .txt29,
 .public-site-shell--executra .color1 {
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: var(--exec-muted, rgba(255, 255, 255, 0.55)) !important;
 }
 
 .public-site-shell--executra .color0,
 .public-site-shell--executra .color0-hov:hover {
-  color: #eb5124 !important;
+  color: var(--exec-orange, #eb5124) !important;
 }
 
 .public-site-shell--executra .bo5-b,
 .public-site-shell--executra .bo5-t {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.1)) !important;
 }
 
 .public-site-shell--executra .sidebar2 {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--exec-surface, #111);
+  border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.1));
   border-radius: 2px;
   padding: 1.5rem !important;
 }
 
 .public-site-shell--executra .input-search-sidebar2 {
-  background: #161616 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #fff !important;
+  background: var(--exec-surface-2, #161616) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--exec-heading, #fff) !important;
 }
 
 .public-site-shell--executra .item-event,
 .public-site-shell--executra .wrap-item-event {
-  background: #111 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: var(--exec-surface, #111) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.1)) !important;
 }
 
 .public-site-shell--executra .btn-view-event,
 .public-site-shell--executra .btn-book-event {
-  background: #eb5124 !important;
-  border-color: #eb5124 !important;
+  background: var(--exec-orange, #eb5124) !important;
+  border-color: var(--exec-orange, #eb5124) !important;
   color: #fff !important;
 }
 
 .public-site-shell--executra .card,
 .public-site-shell--executra .bg-white {
-  background: #111 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.78);
+  background: var(--exec-surface, #111) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.1)) !important;
+  color: var(--exec-text, rgba(255, 255, 255, 0.78));
 }
 
 .public-site-shell--executra .form-control,
 .public-site-shell--executra .form-select,
 .public-site-shell--executra .public-news-search-input,
 .public-site-shell--executra .public-site-header [class*="searchField"] {
-  background: #161616 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #fff !important;
+  background: var(--exec-surface-2, #161616) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--exec-heading, #fff) !important;
   box-shadow: none !important;
 }
 
@@ -236,8 +260,8 @@
 }
 
 .public-site-shell--executra .btn-primary {
-  background: #eb5124 !important;
-  border-color: #eb5124 !important;
+  background: var(--exec-orange, #eb5124) !important;
+  border-color: var(--exec-orange, #eb5124) !important;
 }
 
 .public-site-shell--executra a {
@@ -245,7 +269,7 @@
 }
 
 .public-site-shell--executra .public-site-main a:not(.exec-btn):not(.public-demo-cta):not([class*="demo-btn"]) {
-  color: #eb5124;
+  color: var(--exec-orange, #eb5124);
 }
 
 /* TinyMCE / legacy inline HTML on CMS pages */
@@ -253,9 +277,9 @@
 .public-site-shell--executra .public-page-content div[style*="background:#ffffff"],
 .public-site-shell--executra .public-page-content div[style*="background: #fff"],
 .public-site-shell--executra .public-page-content div[style*="background:#fff"] {
-  background: #111 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.72) !important;
+  background: var(--exec-surface, #111) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.1)) !important;
+  color: var(--exec-text, rgba(255, 255, 255, 0.72)) !important;
   box-shadow: none !important;
 }
 
@@ -269,11 +293,11 @@
 
 .public-site-shell--executra .public-page-content h1[style],
 .public-site-shell--executra .public-page-content h2[style] {
-  color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: var(--exec-heading, #fff) !important;
+  border-color: var(--exec-border, rgba(255, 255, 255, 0.15)) !important;
 }
 
 .public-site-shell--executra .public-page-content p[style*="color: #"],
 .public-site-shell--executra .public-page-content li[style*="color: #"] {
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: var(--exec-text, rgba(255, 255, 255, 0.72)) !important;
 }
