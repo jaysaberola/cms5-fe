@@ -6,6 +6,7 @@ import { scheduleIdleTask } from "@/lib/referenceDataCache";
 import { getUsers } from "@/services/userService";
 import { getPages } from "@/services/pageService";
 import { getArticles } from "@/services/articleService";
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import Tooltip from "@/components/UI/Tooltip";
 
 type WebsiteSummaryStats = {
@@ -210,9 +211,12 @@ export default function WebsiteSummary({ stats, loading = false, compact = false
 
   const isBusy = loading || settingsLoading;
 
-  const apiBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-  const logoUrl = settings?.company_logo ? `${apiBase}/storage/${settings.company_logo}` : null;
-  const faviconUrl = settings?.website_favicon ? `${apiBase}/storage/${settings.website_favicon}` : null;
+  const logoUrl = settings?.company_logo
+    ? resolveStorageAssetUrlForBrowser(settings.company_logo)
+    : null;
+  const faviconUrl = settings?.website_favicon
+    ? resolveStorageAssetUrlForBrowser(settings.website_favicon)
+    : null;
 
   const checklist = useMemo(() => {
     const items = [

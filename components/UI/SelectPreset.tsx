@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import { layoutPresetService, LayoutPreset } from "@/services/layoutPresetService";
 
 type Props = {
@@ -44,7 +45,7 @@ export default function SelectPreset({ onSelect }: Props) {
           >
             {preset.thumbnail && (
               <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${preset.thumbnail}`}
+                src={resolveStorageAssetUrlForBrowser(preset.thumbnail)}
                 alt={preset.name}
                 className="card-img-top"
                 style={{

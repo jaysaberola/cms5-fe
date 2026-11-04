@@ -292,15 +292,23 @@ function HomeBanner() {
             },
             loadedBannerType
           );
-          const resolvedPreview =
-            (b.id && localPreviews[b.id]) ||
-            resolveBannerPreviewUrl(
-              {
-                image_path: b.image_path,
-                image_url: b.image_url,
-              },
-              mediaType
-            );
+          const hasStoredMedia = Boolean(b.image_path || b.image_url);
+          const resolvedPreview = hasStoredMedia
+            ? resolveBannerPreviewUrl(
+                {
+                  image_path: b.image_path,
+                  image_url: b.image_url,
+                },
+                mediaType
+              )
+            : (b.id && localPreviews[b.id]) ||
+              resolveBannerPreviewUrl(
+                {
+                  image_path: b.image_path,
+                  image_url: b.image_url,
+                },
+                mediaType
+              );
 
           const keyById = b?.id ? `id:${b.id}` : undefined;
           const keyByOrder = typeof b?.order !== "undefined" ? `order:${b.order}` : undefined;
@@ -384,6 +392,7 @@ function HomeBanner() {
             preview: resolvedPreview,
             image_path: b.image_path,
             image_url: b.image_url,
+            image: undefined,
             media_type: mediaType,
             is_active: isActive,
             title: b.title,
@@ -1147,7 +1156,15 @@ function HomeBanner() {
         await updateAlbum(HOME_ALBUM_ID, payload);
       } else {
         await createAlbum(payload);
+        setAlbumExists(true);
       }
+
+      setLocalPreviews({});
+      banners.forEach((b) => {
+        if (b.preview?.startsWith("blob:")) {
+          URL.revokeObjectURL(b.preview);
+        }
+      });
 
       await loadAlbum();
       toast.success("Home banner updated successfully");
@@ -1503,10 +1520,12 @@ function HomeBanner() {
 
               {bannerMediaType(banner) === "video" ? (
                 <video
+                  key={`video-${banner.id ?? index}-${banner.preview}`}
                   src={banner.preview}
                   muted
                   loop
                   playsInline
+                  preload="metadata"
                   controls
                   draggable={false}
                   onClick={(e) => e.stopPropagation()}

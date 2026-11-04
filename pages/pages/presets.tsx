@@ -11,6 +11,7 @@ import {
 } from "@/services/layoutPresetService";
 import ConfirmModal from "@/components/UI/ConfirmModal";
 import CategoryCombobox from "@/components/UI/CategoryCombobox";
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import { toast } from "@/lib/toast";
 
 type AdvancedSearchValues = Record<string, string>;
@@ -597,7 +598,7 @@ function PresetPage() {
       render: (row) =>
         row.thumbnail ? (
           <img
-            src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${row.thumbnail}`}
+            src={resolveStorageAssetUrlForBrowser(row.thumbnail)}
             className="rounded border"
             style={{ width: "60px" }}
           />
@@ -943,9 +944,9 @@ function PresetPage() {
                         <Tooltip text="Existing thumbnail image currently assigned to this preset." />
                       </label>
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${
-                          presets.find(p => p.id === editingId)?.thumbnail
-                        }`}
+                        src={resolveStorageAssetUrlForBrowser(
+                          presets.find((p) => p.id === editingId)?.thumbnail
+                        )}
                         className="img-fluid rounded border"
                         alt="Current Thumbnail"
                       />

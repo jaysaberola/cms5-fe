@@ -66,8 +66,8 @@ export const createAlbum = (payload: AlbumPayload) => {
 
 export const updateAlbum = (id: number, payload: AlbumPayload) => {
   const formData = buildAlbumFormData(payload);
-  formData.append("_method", "PUT"); // Laravel PUT via POST
-  return axiosInstance.post(`/albums/${id}`, formData, multipartUploadConfig);
+  // Dedicated POST route — reliable multipart uploads on shared hosting (no _method PUT).
+  return axiosInstance.post(`/albums/${id}/save`, formData, multipartUploadConfig);
 };
 
 export const updateAlbumMeta = (id: number, payload: Partial<AlbumPayload>) => {
@@ -93,7 +93,7 @@ const buildAlbumFormData = (payload: AlbumPayload) => {
   formData.append("banner_type", payload.banner_type);
 
   payload.banners.forEach((banner, index) => {
-    if (banner.id) {
+    if (banner.id != null && banner.id !== "") {
       formData.append(`banners[${index}][id]`, String(banner.id));
     }
 

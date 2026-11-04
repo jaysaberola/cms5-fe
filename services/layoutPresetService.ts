@@ -33,9 +33,6 @@ export const layoutPresetService = {
   },
 
   update(id: number, data: FormData) {
-    if (!data.has("_method")) {
-      data.append("_method", "PUT");
-    }
     return axiosInstance.post(`/layout-presets/${id}`, data, multipartUploadConfig);
   },
 

@@ -1,3 +1,4 @@
+import { multipartUploadConfig } from "@/lib/multipartUpload";
 import { axiosInstance } from "@/services/axios";
 
 export interface JobOrderItem {
@@ -77,7 +78,7 @@ export const updateJobOrder = async (id: number | string, payload: JobOrderPaylo
 
   if (body instanceof FormData) {
     body.append("_method", "PUT");
-    const res = await axiosInstance.post(`/job-orders/${id}`, body);
+    const res = await axiosInstance.post(`/job-orders/${id}`, body, multipartUploadConfig);
     return res.data;
   }
 

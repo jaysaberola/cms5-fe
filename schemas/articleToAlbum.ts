@@ -1,3 +1,4 @@
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import { PublicAlbum } from "@/services/publicPageService";
 
 export const articleToAlbum = (article: any): PublicAlbum | null => {
@@ -14,7 +15,7 @@ export const articleToAlbum = (article: any): PublicAlbum | null => {
         title: article.name,
         description: article.teaser,
         alt: article.name,
-        image_url: `${process.env.NEXT_PUBLIC_API_URL}/storage/${article.image_url}`,
+        image_url: resolveStorageAssetUrlForBrowser(article.image_url) || "",
         order: 1,
       },
     ],

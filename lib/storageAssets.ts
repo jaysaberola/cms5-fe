@@ -1,11 +1,30 @@
 /**
- * Build a storage asset URL that works on localhost and production.
- * Accepts a relative storage path (`banners/foo.jpg`), `/storage/...`, or a full URL
- * from any host and rewrites it using NEXT_PUBLIC_API_URL.
+ * Build a storage asset URL that works on localhost and production (admin on Vercel + API on Laravel).
+ * Accepts a relative storage path (`banners/foo.jpg`), `/storage/...`, or a full URL from any host.
  */
 function extractEmbeddedAbsoluteUrl(value: string): string | undefined {
   const match = value.match(/\/storage\/+(https?:\/\/[^\s"']+)/i);
   return match?.[1];
+}
+
+export function storageApiBase(): string {
+  const configuredBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+  if (!configuredBase) return "";
+  return configuredBase.endsWith("/api") ? configuredBase.slice(0, -4) : configuredBase;
+}
+
+function buildPublicStorageUrl(storagePath: string): string | undefined {
+  const path = storagePath.replace(/^\/+/, "").split("?")[0]?.split("#")[0] ?? "";
+  if (!path) return undefined;
+
+  const base = storageApiBase();
+  if (base) {
+    return `${base}/storage/${path}`;
+  }
+
+  // Local dev fallback only — admin on Vercel must set NEXT_PUBLIC_API_URL.
+  if (typeof window === "undefined") return undefined;
+  return `/storage/${path}`;
 }
 
 export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | undefined {
@@ -16,7 +35,6 @@ export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | unde
   const embeddedAbsolute = extractEmbeddedAbsoluteUrl(raw);
   if (embeddedAbsolute) return embeddedAbsolute;
 
-  // Pass through non-storage absolute URLs (frontend assets, CDN, etc.)
   if (/^https?:\/\//i.test(raw)) {
     const storageMarker = "/storage/";
     const markerIndex = raw.toLowerCase().indexOf(storageMarker);
@@ -24,39 +42,17 @@ export function resolveStorageAssetUrl(pathOrUrl?: string | null): string | unde
 
     const storagePath =
       raw.slice(markerIndex + storageMarker.length).split("?")[0]?.split("#")[0] ?? "";
-    if (!storagePath) return undefined;
-
-    const configuredBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-    const base = configuredBase.endsWith("/api") ? configuredBase.slice(0, -4) : configuredBase;
-    if (!base) {
-      return typeof window !== "undefined" ? `/storage/${storagePath}` : undefined;
-    }
-    return `${base}/storage/${storagePath}`;
+    return buildPublicStorageUrl(storagePath);
   }
 
   let storagePath = raw;
-
   if (raw.startsWith("storage/")) {
     storagePath = raw.slice("storage/".length);
   } else if (raw.startsWith("/storage/")) {
     storagePath = raw.slice("/storage/".length);
   }
 
-  storagePath = storagePath.replace(/^\/+/, "").split("?")[0]?.split("#")[0] ?? "";
-  if (!storagePath) return undefined;
-
-  if (/^https?:\/\//i.test(storagePath)) return storagePath;
-
-  const configuredBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-  const base = configuredBase.endsWith("/api") ? configuredBase.slice(0, -4) : configuredBase;
-
-  if (!base) {
-    if (typeof window !== "undefined") {
-      return `/storage/${storagePath}`;
-    }
-    return undefined;
-  }
-  return `${base}/storage/${storagePath}`;
+  return buildPublicStorageUrl(storagePath);
 }
 
 /** Absolute API storage URL for admin UI (never bare /storage on Vercel). */

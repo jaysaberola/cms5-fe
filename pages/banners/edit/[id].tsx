@@ -7,6 +7,7 @@ import { getAlbum, updateAlbum } from "@/services/albumService";
 import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import { axiosInstance } from "@/services/axios";
+import { resolveBannerPreviewUrl } from "@/lib/bannerAssets";
 import { resolveStorageAssetUrl } from "@/lib/storageAssets";
 import Tooltip from "@/components/UI/Tooltip";
 
@@ -113,13 +114,18 @@ function EditAlbum() {
 
       setBanners(
         album.banners.map((b: any) => {
-          const serverPreview = resolveStorageAssetUrl(b.image_path) ?? "";
           const mediaType: BannerType = isVideoUrl(b.image_path) || b.media_type === "video" ? "video" : loadedBannerType;
+          const serverPreview = resolveBannerPreviewUrl(
+            { image_path: b.image_path, image_url: b.image_url },
+            mediaType
+          );
 
           return ({
           id: b.id,
           preview: mediaType === "video" ? serverPreview : toProxiedImageUrl(serverPreview),
           image_path: b.image_path,
+          image_url: b.image_url,
+          image: undefined,
           media_type: mediaType,
           title: b.title,
           title_font: b.title_font ?? b.titleFont ?? b.title_font_family ?? b.titleFontFamily,

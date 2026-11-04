@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { publicNewsPath } from "@/lib/publicPaths";
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 
 export default function NewsCard({ article }: any) {
   const date = new Date(article.date);
@@ -14,7 +15,7 @@ export default function NewsCard({ article }: any) {
           <img
             src={
               article.thumbnail_url
-                ? `${process.env.NEXT_PUBLIC_API_URL}/storage/${article.thumbnail_url}`
+                ? resolveStorageAssetUrlForBrowser(article.thumbnail_url)
                 : article.image_url
             }
             alt={article.name}

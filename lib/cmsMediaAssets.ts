@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 
 type FileManagerFile = {
   basename?: string;
@@ -13,8 +14,7 @@ const IMAGE_EXT = /\.(jpe?g|png|gif|webp|svg|avif)$/i;
 
 function toStorageUrl(path: string) {
   const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-  const base = String(process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-  return `${base}/storage/${encodedPath}`;
+  return resolveStorageAssetUrlForBrowser(encodedPath);
 }
 
 export async function loadCmsMediaIntoAssetManager(editor: any) {
