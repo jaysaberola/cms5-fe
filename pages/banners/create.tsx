@@ -7,6 +7,10 @@ import { createAlbum } from "@/services/albumService";
 import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import CmsModuleShell from "@/components/Modules/CmsModuleShell";
+import { CmsStorageImage, CmsStorageVideo } from "@/components/UI/CmsStorageMedia";
+import {
+  resolveBannerMediaType,
+} from "@/lib/bannerAssets";
 import {
   CmsSettingsChoicePills,
   CmsSettingsField,
@@ -39,11 +43,8 @@ function CreateAlbum() {
   const [exitOptions, setExitOptions] = useState<OptionItem[]>([]);
   const [mediaDragOver, setMediaDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isVideoBanner = (banner: BannerForm) => {
-    if (banner.media_type === "video") return true;
-    if (banner.image instanceof File && banner.image.type.startsWith("video/")) return true;
-    return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(String(banner.preview ?? ""));
-  };
+  const isVideoBanner = (banner: BannerForm) =>
+    resolveBannerMediaType(banner, bannerType) === "video";
 
   /* ======================
    * Load options
@@ -308,7 +309,7 @@ function CreateAlbum() {
                     </div>
 
                     {isVideoBanner(banner) ? (
-                      <video
+                      <CmsStorageVideo
                         src={banner.preview}
                         className="card-img-top"
                         muted
@@ -320,7 +321,7 @@ function CreateAlbum() {
                         style={{ height: 200, objectFit: "cover" }}
                       />
                     ) : (
-                      <img
+                      <CmsStorageImage
                         src={banner.preview}
                         className="card-img-top"
                         alt=""

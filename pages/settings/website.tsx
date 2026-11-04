@@ -11,7 +11,11 @@ import {
   DEFAULT_PRIVACY_POPUP,
   DEFAULT_PRIVACY_TITLE,
 } from "@/lib/defaultPrivacyContent";
-import { notifyWebsiteSettingsUpdated, resolveWebsiteAssetUrl, storeWebsiteSettings } from "@/lib/websiteSettings";
+import {
+  notifyWebsiteSettingsUpdated,
+  resolveWebsiteAssetUrlForAdmin,
+  storeWebsiteSettings,
+} from "@/lib/websiteSettings";
 import { normalizePhMobile, phMobileError, phMobileMaxLength, rejectLetterKey, sanitizePhMobileInput } from "@/lib/phMobile";
 import CmsModuleShell from "@/components/Modules/CmsModuleShell";
 import {
@@ -145,12 +149,12 @@ function WebsiteSettingsPage() {
       setPrivacyContent(privacyHtml || DEFAULT_PRIVACY_HTML);
 
       if (data.company_logo) {
-        setLogoPreview(resolveWebsiteAssetUrl(data.company_logo) ?? null);
+        setLogoPreview(resolveWebsiteAssetUrlForAdmin(data.company_logo) ?? null);
         setLogoName(String(data.company_logo));
       }
 
       if (data.website_favicon) {
-        setFaviconPreview(resolveWebsiteAssetUrl(data.website_favicon) ?? null);
+        setFaviconPreview(resolveWebsiteAssetUrlForAdmin(data.website_favicon) ?? null);
         setFaviconName(String(data.website_favicon));
       }
 

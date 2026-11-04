@@ -64,10 +64,19 @@ export const createAlbum = (payload: AlbumPayload) => {
   return axiosInstance.post("/albums", formData, multipartUploadConfig);
 };
 
-export const updateAlbum = (id: number, payload: AlbumPayload) => {
+export const updateAlbum = async (id: number, payload: AlbumPayload) => {
   const formData = buildAlbumFormData(payload);
-  // Dedicated POST route — reliable multipart uploads on shared hosting (no _method PUT).
-  return axiosInstance.post(`/albums/${id}/save`, formData, multipartUploadConfig);
+
+  try {
+    return await axiosInstance.post(`/albums/${id}/save`, formData, multipartUploadConfig);
+  } catch (error: unknown) {
+    const status = (error as { response?: { status?: number } })?.response?.status;
+    if (status !== 404) throw error;
+
+    const legacy = buildAlbumFormData(payload);
+    legacy.append("_method", "PUT");
+    return axiosInstance.post(`/albums/${id}`, legacy, multipartUploadConfig);
+  }
 };
 
 export const updateAlbumMeta = (id: number, payload: Partial<AlbumPayload>) => {
@@ -170,6 +179,7 @@ const buildAlbumFormData = (payload: AlbumPayload) => {
       const fallback =
         banner.media_type === "video" ? `banner-${index}.mp4` : `banner-${index}.jpg`;
       appendUploadFile(formData, `banners[${index}][image]`, banner.image, fallback);
+      appendUploadFile(formData, `banners.${index}.image`, banner.image, fallback);
     }
   });
 

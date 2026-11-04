@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
+import { handleCmsStoragePreviewError, resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import { layoutPresetService, LayoutPreset } from "@/services/layoutPresetService";
 
 type Props = {
@@ -52,6 +52,9 @@ export default function SelectPreset({ onSelect }: Props) {
                   height: 60,
                   objectFit: "cover",
                 }}
+                onError={(e) =>
+                  handleCmsStoragePreviewError(e, { image_path: preset.thumbnail })
+                }
               />
             )}
 

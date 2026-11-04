@@ -6,7 +6,7 @@ import { multipartUploadConfig } from '@/lib/multipartUpload';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import CmsModuleShell from '@/components/Modules/CmsModuleShell';
-import { resolveStorageAssetUrl } from '@/lib/storageAssets';
+import { handleCmsStoragePreviewError, resolveStorageAssetUrlForBrowser } from '@/lib/storageAssets';
 
 const DISK = 'public' as const;
 
@@ -286,7 +286,7 @@ export default function FileManagerPage() {
 
   const getFileUrl = (file: FMFile) => {
     const encodedPath = file.path.split('/').filter(Boolean).map(encodeURIComponent).join('/');
-    return resolveStorageAssetUrl(encodedPath) ?? '';
+    return resolveStorageAssetUrlForBrowser(encodedPath) ?? '';
   };
 
   const selectedFiles = files.filter((file) => selected.has(file.path));
@@ -623,7 +623,9 @@ export default function FileManagerPage() {
                           <img
                             src={getFileUrl(file)}
                             alt={file.name}
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            onError={(e) =>
+                              handleCmsStoragePreviewError(e, { image_path: file.path })
+                            }
                           />
                         </button>
                       ) : (
@@ -707,7 +709,9 @@ export default function FileManagerPage() {
                               className="cms-file-manager__list-thumb"
                               src={getFileUrl(file)}
                               alt=""
-                              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                              onError={(e) =>
+                                handleCmsStoragePreviewError(e, { image_path: file.path })
+                              }
                             />
                           ) : (
                             <span className="cms-file-manager__list-emoji">{file.isDirectory ? '📁' : getFileIcon(file.name)}</span>

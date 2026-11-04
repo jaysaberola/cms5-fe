@@ -1,4 +1,5 @@
 import PageEditorSettingsPanel from "@/components/Pages/PageEditorSettingsPanel";
+import { handleCmsStoragePreviewError } from "@/lib/storageAssets";
 import type { ArticleCategory } from "@/services/articleService";
 
 type NewsEditorMetaFieldsProps = {
@@ -177,6 +178,12 @@ export default function NewsEditorMetaFields({
               alt=""
               className="img-fluid rounded border mt-2"
               style={{ maxHeight: 200 }}
+              onError={(e) =>
+                handleCmsStoragePreviewError(e, {
+                  image_path: bannerPreview,
+                  image_url: bannerPreview,
+                })
+              }
             />
           )}
         </div>
@@ -198,6 +205,12 @@ export default function NewsEditorMetaFields({
               alt=""
               className="img-fluid rounded border mt-2"
               style={{ maxHeight: 150 }}
+              onError={(e) =>
+                handleCmsStoragePreviewError(e, {
+                  image_path: thumbnailPreview,
+                  image_url: thumbnailPreview,
+                })
+              }
             />
           )}
         </div>

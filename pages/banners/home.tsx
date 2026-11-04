@@ -10,7 +10,7 @@ import {
   updateAlbum,
 } from "@/services/albumService";
 import { axiosInstance } from "@/services/axios";
-import { resolveStorageAssetUrl } from "@/lib/storageAssets";
+import { resolveCmsAdminMediaUrl } from "@/lib/storageAssets";
 import {
   BANNER_IMAGE_REQUIREMENTS_LABEL,
   BANNER_MEDIA_MAX_BYTES,
@@ -18,9 +18,10 @@ import {
   BANNER_VIDEO_REQUIREMENTS_LABEL,
   bannerMediaTooLargeMessage,
   resolveBannerMediaType,
-  resolveBannerPreviewFallback,
   resolveBannerPreviewUrl,
   bannerMatchesMediaType,
+  handleBannerStoragePreviewError,
+  CMS_STORAGE_LINK_HINT,
 } from "@/lib/bannerAssets";
 import Tooltip from "@/components/UI/Tooltip";
 import CmsModuleShell from "@/components/Modules/CmsModuleShell";
@@ -187,35 +188,10 @@ function HomeBanner() {
   const [entranceOptions, setEntranceOptions] = useState<OptionItem[]>([]);
   const [exitOptions, setExitOptions] = useState<OptionItem[]>([]);
 
-  const toProxiedImageUrl = (rawUrl: string) => {
-    if (!rawUrl) return rawUrl;
-    if (rawUrl.startsWith("/")) return rawUrl;
-    if (rawUrl.startsWith("blob:") || rawUrl.startsWith("data:")) return rawUrl;
-
-    const resolvedStorage = resolveStorageAssetUrl(rawUrl);
-    if (resolvedStorage) return resolvedStorage;
-
-    return `/api/image-proxy?url=${encodeURIComponent(rawUrl)}`;
-  };
-
   const bannerMediaType = (
     banner: Partial<BannerForm> & { image_path?: string; image_url?: string },
     fallback: BannerType = bannerType
   ) => resolveBannerMediaType(banner, fallback);
-
-  const handleBannerPreviewError = (
-    event: React.SyntheticEvent<HTMLImageElement>,
-    banner: Partial<BannerForm> & { image_path?: string; image_url?: string; preview?: string }
-  ) => {
-    const img = event.currentTarget;
-    if (img.dataset.storageFallbackApplied === "1") return;
-
-    const fallback = resolveBannerPreviewFallback(banner, img.src);
-    if (fallback) {
-      img.dataset.storageFallbackApplied = "1";
-      img.src = fallback;
-    }
-  };
 
 
   useEffect(() => {
@@ -663,7 +639,7 @@ function HomeBanner() {
       return;
     }
 
-    const safeSrc = typeof src === "string" ? toProxiedImageUrl(src) : src;
+    const safeSrc = typeof src === "string" ? resolveCmsAdminMediaUrl(src) || src : src;
 
     const img = new Image();
     img.src = safeSrc as string;
@@ -1159,6 +1135,10 @@ function HomeBanner() {
         setAlbumExists(true);
       }
 
+      const hadNewUpload = payload.banners.some(
+        (b: { image?: File }) => b.image instanceof File
+      );
+
       setLocalPreviews({});
       banners.forEach((b) => {
         if (b.preview?.startsWith("blob:")) {
@@ -1167,6 +1147,28 @@ function HomeBanner() {
       });
 
       await loadAlbum();
+
+      if (hadNewUpload) {
+        const verify = await getAlbum(HOME_ALBUM_ID);
+        const slides = Array.isArray(verify.data?.banners) ? verify.data.banners : [];
+        const uploadedRows = payload.banners.filter(
+          (b: { image?: File }) => b.image instanceof File
+        ) as Array<{ id?: number; order?: number }>;
+        const missingFile = uploadedRows.some((row) => {
+          const slide =
+            row.id != null
+              ? slides.find((s: { id?: number }) => s.id === row.id)
+              : slides[row.order ?? -1];
+          return !slide?.image_path;
+        });
+        if (missingFile) {
+          toast.error(
+            "Save completed but the media file is missing on the server. Deploy the latest cms5-be (POST /albums/{id}/save), run php artisan storage:link, and check PHP upload_max_filesize (10MB+)."
+          );
+          return;
+        }
+      }
+
       toast.success("Home banner updated successfully");
     } catch (err: any) {
       const status = err?.response?.status;
@@ -1433,14 +1435,18 @@ function HomeBanner() {
                           draggable={false}
                           onDragStart={(e) => e.preventDefault()}
                         />
-                      ) : (
+                      ) : banner.preview ? (
                         <img
                           src={banner.preview}
                           alt={banner.alt || "Banner"}
                           draggable={false}
                           onDragStart={(e) => e.preventDefault()}
-                          onError={(e) => handleBannerPreviewError(e, banner)}
+                          onError={(e) => handleBannerStoragePreviewError(e, banner)}
                         />
+                      ) : (
+                        <div className="home-banner-filmstrip__thumb-missing" title="File missing or storage not linked">
+                          <i className="fa fa-image" aria-hidden="true" />
+                        </div>
                       )}
                     </div>
                     <div className="home-banner-filmstrip__label">
@@ -1519,6 +1525,7 @@ function HomeBanner() {
               </div>
 
               {bannerMediaType(banner) === "video" ? (
+                banner.preview ? (
                 <video
                   key={`video-${banner.id ?? index}-${banner.preview}`}
                   src={banner.preview}
@@ -1531,14 +1538,25 @@ function HomeBanner() {
                   onClick={(e) => e.stopPropagation()}
                   onDragStart={(e) => e.preventDefault()}
                 />
-              ) : (
+                ) : (
+                  <div className="home-banner-empty home-banner-empty--inline">
+                    <p>Video file not found on server. Save again after backend deploy + storage:link.</p>
+                  </div>
+                )
+              ) : banner.preview ? (
                 <img
                   src={banner.preview}
                   alt={banner.alt || "Banner"}
                   draggable={false}
                   onDragStart={(e) => e.preventDefault()}
-                  onError={(e) => handleBannerPreviewError(e, banner)}
+                  onError={(e) => handleBannerStoragePreviewError(e, banner)}
                 />
+              ) : (
+                <div className="home-banner-empty home-banner-empty--inline">
+                  <p>
+                    {CMS_STORAGE_LINK_HINT}
+                  </p>
+                </div>
               )}
 
               <span className="home-banner-slide__media-zoom">
@@ -2014,7 +2032,7 @@ function HomeBanner() {
                 <img
                   src={mediaPreviewBanner.preview}
                   alt={mediaPreviewBanner.alt || "Banner preview"}
-                  onError={(e) => handleBannerPreviewError(e, mediaPreviewBanner)}
+                  onError={(e) => handleBannerStoragePreviewError(e, mediaPreviewBanner)}
                 />
               )}
             </div>

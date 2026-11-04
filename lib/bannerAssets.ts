@@ -1,4 +1,10 @@
-import { resolveStorageAssetUrl } from "@/lib/storageAssets";
+import {
+  handleCmsStoragePreviewError,
+  resolveCmsAdminMediaUrl,
+  resolveCmsStoragePreviewFallback,
+  resolveStorageAssetUrl,
+  type CmsStorageMediaFields,
+} from "@/lib/storageAssets";
 
 export type BannerMediaType = "image" | "video";
 
@@ -78,27 +84,30 @@ export function resolveBannerPreviewUrl(
   const normalized = normalizeStoragePath(raw);
   if (!normalized) return "";
 
-  return resolveStorageAssetUrl(raw) ?? "";
+  const absolute = resolveStorageAssetUrl(raw) ?? "";
+  if (!absolute) return "";
+  if (typeof window !== "undefined" && (mediaType === "video" || mediaType === "image")) {
+    return resolveCmsAdminMediaUrl(raw) || absolute;
+  }
+  return absolute;
 }
 
 export function resolveBannerPreviewFallback(
-  banner: {
-    image_path?: string | null;
-    image_url?: string | null;
-  },
+  banner: CmsStorageMediaFields,
   currentSrc: string
 ): string | null {
-  const candidates = [banner.image_path, banner.image_url].filter(Boolean) as string[];
-
-  for (const raw of candidates) {
-    const resolved = resolveStorageAssetUrl(raw);
-    if (resolved && resolved !== currentSrc) {
-      return resolved;
-    }
-  }
-
-  return null;
+  return resolveCmsStoragePreviewFallback(banner, currentSrc);
 }
+
+export function handleBannerStoragePreviewError(
+  event: { currentTarget: HTMLImageElement },
+  banner: CmsStorageMediaFields & { preview?: string | null }
+) {
+  handleCmsStoragePreviewError(event, banner);
+}
+
+export const CMS_STORAGE_LINK_HINT =
+  "Run php artisan storage:link on cms5-be so /storage/… files are public.";
 
 export function formatBannerFileSize(bytes: number) {
   if (bytes >= 1024 * 1024) {

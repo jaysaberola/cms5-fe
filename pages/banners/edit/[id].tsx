@@ -7,8 +7,13 @@ import { getAlbum, updateAlbum } from "@/services/albumService";
 import { firstApiValidationMessage } from "@/lib/multipartUpload";
 import { toast } from "@/lib/toast";
 import { axiosInstance } from "@/services/axios";
-import { resolveBannerPreviewUrl } from "@/lib/bannerAssets";
-import { resolveStorageAssetUrl } from "@/lib/storageAssets";
+import {
+  resolveBannerMediaType,
+  resolveBannerPreviewUrl,
+  handleBannerStoragePreviewError,
+  CMS_STORAGE_LINK_HINT,
+} from "@/lib/bannerAssets";
+import { CmsStorageImage, CmsStorageVideo } from "@/components/UI/CmsStorageMedia";
 import Tooltip from "@/components/UI/Tooltip";
 
 type BannerType = "image" | "video";
@@ -59,24 +64,10 @@ function EditAlbum() {
   const [isProcessingCrop, setIsProcessingCrop] = useState(false);
   const [cropPreview, setCropPreview] = useState<string | null>(null);
 
-  const toProxiedImageUrl = (rawUrl: string) => {
-    if (!rawUrl) return rawUrl;
-    if (rawUrl.startsWith("/")) return rawUrl;
-    if (rawUrl.startsWith("blob:") || rawUrl.startsWith("data:")) return rawUrl;
-
-    const resolvedStorage = resolveStorageAssetUrl(rawUrl);
-    if (resolvedStorage) return resolvedStorage;
-
-    return `/api/image-proxy?url=${encodeURIComponent(rawUrl)}`;
-  };
-
-  const isVideoUrl = (url?: string | null) => /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(String(url ?? ""));
-  const bannerMediaType = (banner: Partial<BannerForm> & { image_path?: string }, fallback: BannerType = bannerType): BannerType => {
-    if (banner.media_type === "video") return "video";
-    if (banner.image instanceof File && banner.image.type.startsWith("video/")) return "video";
-    if (isVideoUrl(banner.preview) || isVideoUrl(banner.image_path)) return "video";
-    return fallback;
-  };
+  const bannerMediaType = (
+    banner: Partial<BannerForm> & { image_path?: string; image_url?: string },
+    fallback: BannerType = bannerType
+  ) => resolveBannerMediaType(banner, fallback);
 
   const [entranceOptions, setEntranceOptions] = useState<OptionItem[]>([]);
   const [exitOptions, setExitOptions] = useState<OptionItem[]>([]);
@@ -114,7 +105,14 @@ function EditAlbum() {
 
       setBanners(
         album.banners.map((b: any) => {
-          const mediaType: BannerType = isVideoUrl(b.image_path) || b.media_type === "video" ? "video" : loadedBannerType;
+          const mediaType = resolveBannerMediaType(
+            {
+              image_path: b.image_path,
+              image_url: b.image_url,
+              media_type: b.media_type,
+            },
+            loadedBannerType
+          );
           const serverPreview = resolveBannerPreviewUrl(
             { image_path: b.image_path, image_url: b.image_url },
             mediaType
@@ -122,7 +120,7 @@ function EditAlbum() {
 
           return ({
           id: b.id,
-          preview: mediaType === "video" ? serverPreview : toProxiedImageUrl(serverPreview),
+          preview: serverPreview,
           image_path: b.image_path,
           image_url: b.image_url,
           image: undefined,
@@ -662,6 +660,39 @@ function EditAlbum() {
 
     try {
       await updateAlbum(Number(id), payload);
+
+      const hadNewUpload = payload.banners.some(
+        (b: { image?: File }) => b.image instanceof File
+      );
+
+      banners.forEach((b) => {
+        if (b.preview?.startsWith("blob:")) {
+          URL.revokeObjectURL(b.preview);
+        }
+      });
+
+      if (hadNewUpload) {
+        const verify = await getAlbum(Number(id));
+        const slides = Array.isArray(verify.data?.banners) ? verify.data.banners : [];
+        const uploadedRows = payload.banners.filter(
+          (b: { image?: File }) => b.image instanceof File
+        ) as Array<{ id?: number; order?: number }>;
+        const missingFile = uploadedRows.some((row) => {
+          const slide =
+            row.id != null
+              ? slides.find((s: { id?: number }) => s.id === row.id)
+              : slides[row.order ?? -1];
+          return !slide?.image_path;
+        });
+        if (missingFile) {
+          toast.error(
+            `Save completed but media is missing on the server. ${CMS_STORAGE_LINK_HINT}`
+          );
+          await loadAlbum(Number(id));
+          return;
+        }
+      }
+
       toast.success("Album updated successfully!");
       router.push("/banners");
     } catch (err: unknown) {
@@ -823,7 +854,7 @@ function EditAlbum() {
               </div>
 
               {bannerMediaType(banner) === "video" ? (
-                <video
+                <CmsStorageVideo
                   src={banner.preview}
                   className="card-img-top"
                   muted
@@ -835,9 +866,14 @@ function EditAlbum() {
                   style={{ height: 200, objectFit: "cover" }}
                 />
               ) : (
-                <img
+                <CmsStorageImage
                   src={banner.preview}
                   className="card-img-top"
+                  alt={banner.alt || "Banner"}
+                  fallbackFields={{
+                    image_path: (banner as BannerForm & { image_path?: string }).image_path,
+                    image_url: (banner as BannerForm & { image_url?: string }).image_url,
+                  }}
                   draggable={false}
                   onDragStart={(e) => e.preventDefault()}
                   style={{ height: 200, objectFit: "cover" }}

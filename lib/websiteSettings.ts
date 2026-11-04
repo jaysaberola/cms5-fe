@@ -1,5 +1,5 @@
 import { websiteService } from "@/services/websiteService";
-import { resolveStorageAssetUrl } from "@/lib/storageAssets";
+import { resolveCmsAdminMediaUrl, resolveStorageAssetUrl } from "@/lib/storageAssets";
 import { isPublicSiteRoute } from "@/lib/publicSiteRoute";
 import { isAdminSiteRoute } from "@/lib/adminRoute";
 
@@ -166,6 +166,11 @@ export function subscribeWebsiteSettingsUpdated(cb: () => void): () => void {
 
 export function resolveWebsiteAssetUrl(path?: string | null): string | undefined {
   return resolveStorageAssetUrl(path);
+}
+
+/** CMS settings previews (logo/favicon) on Vercel admin. */
+export function resolveWebsiteAssetUrlForAdmin(path?: string | null): string {
+  return resolveCmsAdminMediaUrl(path) || resolveStorageAssetUrl(path) || "";
 }
 
 export function resolveWebsiteFaviconUrl(settings?: WebsiteSettings | null): string | undefined {

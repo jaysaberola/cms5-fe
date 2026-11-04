@@ -3,7 +3,7 @@ import { accountService, User } from "@/services/accountService";
 import { isAdminLikeUser } from "@/lib/adminPreviewAccess";
 import { clearStoredAuthToken, readStoredAuthToken } from "@/lib/authToken";
 import { getUserPermissions } from "@/lib/userPermissions";
-import { resolveStorageAssetUrl } from "@/lib/storageAssets";
+import { resolveCmsAdminMediaUrl, resolveStorageAssetUrl } from "@/lib/storageAssets";
 
 export const CURRENT_USER_STORAGE_KEY = "cms4.currentUser.v1";
 export const CURRENT_USER_UPDATED_EVENT = "cms4:user-updated";
@@ -126,7 +126,7 @@ export function subscribeCurrentUserUpdated(cb: () => void): () => void {
 }
 
 export function resolveAvatarUrl(avatar?: string | null): string | undefined {
-  return resolveStorageAssetUrl(avatar);
+  return resolveCmsAdminMediaUrl(avatar) || resolveStorageAssetUrl(avatar);
 }
 
 export function initialsForUser(user: Partial<User> | null | undefined): string {

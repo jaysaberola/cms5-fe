@@ -11,7 +11,7 @@ import {
 } from "@/services/layoutPresetService";
 import ConfirmModal from "@/components/UI/ConfirmModal";
 import CategoryCombobox from "@/components/UI/CategoryCombobox";
-import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
+import { handleCmsStoragePreviewError, resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import { toast } from "@/lib/toast";
 
 type AdvancedSearchValues = Record<string, string>;
@@ -601,6 +601,10 @@ function PresetPage() {
             src={resolveStorageAssetUrlForBrowser(row.thumbnail)}
             className="rounded border"
             style={{ width: "60px" }}
+            alt=""
+            onError={(e) =>
+              handleCmsStoragePreviewError(e, { image_path: row.thumbnail })
+            }
           />
         ) : (
           <span className="text-muted small">No Image</span>
@@ -949,6 +953,11 @@ function PresetPage() {
                         )}
                         className="img-fluid rounded border"
                         alt="Current Thumbnail"
+                        onError={(e) =>
+                          handleCmsStoragePreviewError(e, {
+                            image_path: presets.find((p) => p.id === editingId)?.thumbnail,
+                          })
+                        }
                       />
                     </div>
                   )}

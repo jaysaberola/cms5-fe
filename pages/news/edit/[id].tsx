@@ -1,7 +1,7 @@
 import AdminLayout from "@/components/Layout/AdminLayout";
 import NewsEditorMetaFields from "@/components/News/NewsEditorMetaFields";
 import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
-import { resolveStorageAssetUrl } from "@/lib/storageAssets";
+import { resolveStorageAssetUrlForBrowser } from "@/lib/storageAssets";
 import { toast } from "@/lib/toast";
 import {
   updateArticle,
@@ -127,8 +127,8 @@ export default function EditNews() {
         setSeoKeywords(nextSeoKeywords);
         setCategories(cats);
 
-        const bannerUrl = resolveStorageAssetUrl(article.image_url) || null;
-        const thumbUrl = resolveStorageAssetUrl(article.thumbnail_url) || null;
+        const bannerUrl = resolveStorageAssetUrlForBrowser(article.image_url) || null;
+        const thumbUrl = resolveStorageAssetUrlForBrowser(article.thumbnail_url) || null;
         serverBannerPreviewRef.current = bannerUrl;
         serverThumbnailPreviewRef.current = thumbUrl;
         setBannerPreview(bannerUrl);

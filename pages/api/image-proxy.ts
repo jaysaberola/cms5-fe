@@ -57,14 +57,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const upstream = await fetch(rawUrl, {
-      headers: {
-        // Forward auth if the upstream requires it
-        ...(typeof req.headers.authorization === "string"
-          ? { authorization: req.headers.authorization }
-          : {}),
-      },
-    });
+    const upstreamHeaders: Record<string, string> = {};
+    if (typeof req.headers.authorization === "string") {
+      upstreamHeaders.authorization = req.headers.authorization;
+    }
+    if (typeof req.headers.range === "string") {
+      upstreamHeaders.range = req.headers.range;
+    }
+
+    const upstream = await fetch(rawUrl, { headers: upstreamHeaders });
 
     if (!upstream.ok) {
       return res
@@ -75,9 +76,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const contentType = upstream.headers.get("content-type") || "application/octet-stream";
     res.setHeader("Content-Type", contentType);
     res.setHeader("Cache-Control", "private, max-age=300");
+    const contentLength = upstream.headers.get("content-length");
+    const contentRange = upstream.headers.get("content-range");
+    const acceptRanges = upstream.headers.get("accept-ranges");
+    if (contentLength) res.setHeader("Content-Length", contentLength);
+    if (contentRange) res.setHeader("Content-Range", contentRange);
+    if (acceptRanges) res.setHeader("Accept-Ranges", acceptRanges);
 
     const arrayBuffer = await upstream.arrayBuffer();
-    return res.status(200).send(Buffer.from(arrayBuffer));
+    return res.status(upstream.status).send(Buffer.from(arrayBuffer));
   } catch (err) {
     return res.status(500).json({ message: "Proxy failed" });
   }
