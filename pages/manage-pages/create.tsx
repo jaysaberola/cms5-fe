@@ -7,7 +7,7 @@ import { toast } from "@/lib/toast";
 import { extractGrapesParts } from "@/lib/grapesContent";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
-import { prefetchPagesSwitcherList } from "@/lib/manage-pagesListCache";
+import { prefetchPagesSwitcherList } from "@/lib/pagesListCache";
 import { beginStudioPageSwitch } from "@/lib/studioPageSwitch";
 
 const GrapesEditor = dynamic(() => import("@/components/UI/GrapesEditor"), {

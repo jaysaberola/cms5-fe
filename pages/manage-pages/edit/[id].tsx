@@ -8,7 +8,7 @@ import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesConten
 import { isDefaultProtectedPage } from "@/lib/defaultPages";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
-import { prefetchPagesSwitcherList, invalidatePagesSwitcherListCache } from "@/lib/manage-pagesListCache";
+import { prefetchPagesSwitcherList, invalidatePagesSwitcherListCache } from "@/lib/pagesListCache";
 import { syncAuthTokenCookieFromStorage } from "@/lib/authToken";
 import { beginStudioPageSwitch, consumeStudioPageSwitch } from "@/lib/studioPageSwitch";
 
