@@ -63,7 +63,7 @@ export default function CustomDocument({ isPublicRoute, isAdminRoute }: CustomDo
         {isPublicRoute ? (
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){try{document.documentElement.classList.add("public-booting");if(localStorage.getItem("webfocus.publicConsent.v1")!=="1"){document.documentElement.classList.add("needs-privacy-consent");}var tk=localStorage.getItem("webfocus.publicSiteTheme.v1")||"dark";var ok=["dark","light","ocean","emerald","violet"];if(ok.indexOf(tk)===-1)tk="dark";document.documentElement.setAttribute("data-public-theme",tk);var boot={dark:"#050505",light:"#f1f5f9",ocean:"#0b1220",emerald:"#061510",violet:"#120a1a"};document.documentElement.style.background=boot[tk]||boot.dark;}catch(e){}})();`,
+              __html: `(function(){try{document.documentElement.classList.add("public-booting");if(localStorage.getItem("webfocus.publicConsent.v1")!=="1"){document.documentElement.classList.add("needs-privacy-consent");}var tk=localStorage.getItem("webfocus.publicSiteTheme.v1")||"dark";var ok=["dark","light"];if(ok.indexOf(tk)===-1){tk="dark";try{localStorage.setItem("webfocus.publicSiteTheme.v1","dark");}catch(e){}}document.documentElement.setAttribute("data-public-theme",tk);var boot={dark:"#050505",light:"#f1f5f9"};document.documentElement.style.background=boot[tk]||boot.dark;}catch(e){}})();`,
             }}
           />
         ) : null}

@@ -17,7 +17,15 @@ export const PUBLIC_SITE_THEMES: PublicSiteThemeOption[] = [
   { id: "violet", label: "Violet", swatch: "#a78bfa", description: "Dark plum with purple accent" },
 ];
 
+/** Themes shown in the header / mobile theme picker (legacy themes remain in CSS only). */
+export const PUBLIC_SITE_THEME_PICKER_IDS: PublicSiteThemeId[] = ["dark", "light"];
+
+export const PUBLIC_SITE_THEME_PICKER_OPTIONS = PUBLIC_SITE_THEMES.filter((t) =>
+  PUBLIC_SITE_THEME_PICKER_IDS.includes(t.id),
+);
+
 const VALID = new Set<string>(PUBLIC_SITE_THEMES.map((t) => t.id));
+const PICKER_IDS = new Set<string>(PUBLIC_SITE_THEME_PICKER_IDS);
 
 export const PUBLIC_THEME_BOOT_BG: Record<PublicSiteThemeId, string> = {
   dark: "#050505",
@@ -35,7 +43,9 @@ export function readPublicSiteTheme(): PublicSiteThemeId {
   if (typeof window === "undefined") return "dark";
   try {
     const raw = localStorage.getItem(PUBLIC_SITE_THEME_STORAGE_KEY);
-    return isPublicSiteThemeId(raw) ? raw : "dark";
+    if (!isPublicSiteThemeId(raw)) return "dark";
+    if (!PICKER_IDS.has(raw)) return "dark";
+    return raw;
   } catch {
     return "dark";
   }

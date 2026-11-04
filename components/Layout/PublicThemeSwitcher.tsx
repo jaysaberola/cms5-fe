@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  PUBLIC_SITE_THEME_PICKER_OPTIONS,
   PUBLIC_SITE_THEMES,
   applyPublicSiteTheme,
   readPublicSiteTheme,
@@ -29,7 +30,9 @@ export default function PublicThemeSwitcher({ variant = "header", onNavigate }: 
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    setTheme(readPublicSiteTheme());
+    const current = readPublicSiteTheme();
+    applyPublicSiteTheme(current);
+    setTheme(current);
   }, []);
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function PublicThemeSwitcher({ variant = "header", onNavigate }: 
           Color theme
         </p>
         <div className={styles.mobileRow}>
-          {PUBLIC_SITE_THEMES.map((item) => (
+          {PUBLIC_SITE_THEME_PICKER_OPTIONS.map((item) => (
             <button
               key={item.id}
               type="button"
@@ -111,7 +114,7 @@ export default function PublicThemeSwitcher({ variant = "header", onNavigate }: 
         <div className={styles.panel} role="listbox" aria-label="Color theme">
           <p className={styles.panelTitle}>Color theme</p>
           <ul className={styles.list}>
-            {PUBLIC_SITE_THEMES.map((item) => (
+            {PUBLIC_SITE_THEME_PICKER_OPTIONS.map((item) => (
               <li key={item.id}>
                 <button
                   type="button"
