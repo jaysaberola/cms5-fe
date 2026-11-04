@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { getPageById, updatePage } from "@/services/pageService";
 import { useRouter } from "next/router";
 import { toast } from "@/lib/toast";
-import { composeContentFromGrapes, extractGrapesParts } from "@/lib/grapesContent";
+import { composeContentFromGrapes, extractGrapesParts, resolveGrapesPartsFromPage } from "@/lib/grapesContent";
 import { isDefaultProtectedPage } from "@/lib/defaultPages";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
@@ -111,11 +111,7 @@ function EditPage() {
         const hasGrapesFields = Boolean(page.grapes_html || page.grapes_css || page.grapes_js);
         const isGrapes = page.content_type === "grapes" || hasGrapesFields;
         const composedContent = isGrapes
-          ? composeContentFromGrapes({
-              grapes_html: page.grapes_html || page.contents || "",
-              grapes_css: page.grapes_css || "",
-              grapes_js: page.grapes_js || "",
-            })
+          ? composeContentFromGrapes(resolveGrapesPartsFromPage(page))
           : composeContentFromGrapes({
               grapes_html: page.contents || "",
               grapes_css: "",

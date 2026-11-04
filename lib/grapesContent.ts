@@ -12,13 +12,33 @@ export type GrapesParts = {
   grapes_js: string;
 };
 
-type GrapesPageLike = {
+export type GrapesPageLike = {
   content?: string | null;
+  /** Admin API field — full Grapes export (html + style + script). */
+  contents?: string | null;
   content_type?: string | null;
   grapes_html?: string | null;
   grapes_css?: string | null;
   grapes_js?: string | null;
 };
+
+/** Full editor blob from admin (`contents`) or public API (`content`). */
+export function pageEditorPayload(page: Pick<GrapesPageLike, "content" | "contents">): string {
+  return String(page.contents ?? page.content ?? "").trim();
+}
+
+/**
+ * Prefer HTML/CSS/JS parsed from `contents`/`content` — that field is updated on every save.
+ * Stale `grapes_*` columns on production must not override fresh link URLs in `contents`.
+ */
+export function resolveGrapesPartsFromPage(page: GrapesPageLike): GrapesParts {
+  const parsed = extractGrapesParts(pageEditorPayload(page));
+  return {
+    grapes_html: parsed.grapes_html || String(page.grapes_html ?? "").trim(),
+    grapes_css: parsed.grapes_css || String(page.grapes_css ?? "").trim(),
+    grapes_js: parsed.grapes_js || String(page.grapes_js ?? "").trim(),
+  };
+}
 
 /** Normalize CRLF/CR to LF so SSR and client hydration match on Windows. */
 export function normalizeLineEndings(value: string) {
@@ -26,9 +46,11 @@ export function normalizeLineEndings(value: string) {
 }
 
 export function normalizeGrapesPageData<T extends GrapesPageLike>(page: T): T {
+  const payload = pageEditorPayload(page);
   return {
     ...page,
-    content: normalizeLineEndings(page.content || ""),
+    content: normalizeLineEndings(page.content || payload),
+    contents: normalizeLineEndings(page.contents || payload),
     grapes_html: normalizeLineEndings(page.grapes_html || ""),
     grapes_css: normalizeLineEndings(page.grapes_css || ""),
     grapes_js: normalizeLineEndings(page.grapes_js || ""),
@@ -52,19 +74,15 @@ export function buildPublicPageHtml(pageData: GrapesPageLike): string {
   const hasGrapesFields = Boolean(pageData?.grapes_html || pageData?.grapes_css || pageData?.grapes_js);
   const isGrapes = pageData?.content_type === "grapes" || hasGrapesFields;
 
-  if (!isGrapes) return normalizeLineEndings(pageData?.content || "");
+  if (!isGrapes) return normalizeLineEndings(pageEditorPayload(pageData));
 
-  const parsed = extractGrapesParts(pageData?.content || "");
-  const grapesHtml = sanitizeGrapesPublicHtml(
-    normalizeLineEndings((pageData?.grapes_html || "").trim() || parsed.grapes_html),
-  );
-  const grapesCss = normalizeLineEndings((pageData?.grapes_css || "").trim() || parsed.grapes_css);
-  const grapesJs = normalizeLineEndings((pageData?.grapes_js || "").trim() || parsed.grapes_js);
+  const parts = resolveGrapesPartsFromPage(pageData);
+  const grapesHtml = sanitizeGrapesPublicHtml(normalizeLineEndings(parts.grapes_html));
 
   return composeContentFromGrapes({
     grapes_html: grapesHtml,
-    grapes_css: grapesCss,
-    grapes_js: grapesJs,
+    grapes_css: normalizeLineEndings(parts.grapes_css),
+    grapes_js: normalizeLineEndings(parts.grapes_js),
   });
 }
 

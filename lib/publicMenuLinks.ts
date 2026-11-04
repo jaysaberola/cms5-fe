@@ -1,17 +1,38 @@
 import type { PublicMenuItem } from "@/services/publicPageService";
 import { publicNewsPath, publicPagePath } from "@/lib/publicPaths";
 
-/** Known dev/prod hosts saved in menu/footer targets — strip to pathname at render time. */
-const KNOWN_PUBLIC_HOSTS = new Set([
+/** Static hosts; also merged with env + current browser host at runtime. */
+const STATIC_KNOWN_PUBLIC_HOSTS = new Set([
   "localhost",
   "127.0.0.1",
   "cms4-nextjs.vercel.app",
   "cms5-fe.vercel.app",
   "webfocus-fe.vercel.app",
+  "cms4.webfocusprod.wsiph2.com",
 ]);
 
+function addHostFromUrl(hosts: Set<string>, raw?: string | null) {
+  const value = String(raw ?? "").trim();
+  if (!value) return;
+  try {
+    hosts.add(new URL(value).hostname.toLowerCase());
+  } catch {
+    // ignore invalid URL
+  }
+}
+
+function getKnownPublicHosts(): Set<string> {
+  const hosts = new Set(STATIC_KNOWN_PUBLIC_HOSTS);
+  addHostFromUrl(hosts, process.env.NEXT_PUBLIC_FRONTEND_URL);
+  addHostFromUrl(hosts, process.env.NEXT_PUBLIC_API_URL);
+  if (typeof window !== "undefined") {
+    hosts.add(window.location.hostname.toLowerCase());
+  }
+  return hosts;
+}
+
 function isSameDeploymentHost(hostname: string): boolean {
-  return KNOWN_PUBLIC_HOSTS.has(hostname.toLowerCase());
+  return getKnownPublicHosts().has(hostname.toLowerCase());
 }
 
 /** True for full http(s) links to sites outside this CMS deployment. */
