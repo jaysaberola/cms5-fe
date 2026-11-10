@@ -11,8 +11,28 @@ const OFFICE = {
   email: "customercare@webfocus.ph",
 };
 
-function formCard(extraStyle = "") {
-  return `<div class="exec-contact-form-panel cms-contact-form-card" style="min-width:0;max-width:100%;overflow:visible;height:auto;padding:28px;border-radius:24px;background:#fff;border:1px solid #e2e8f0;box-shadow:0 20px 44px rgba(15,23,42,.08);${extraStyle}">${buildCmsContactFormMarkup()}</div>`;
+function formCard(extraStyle = "", formOptions?: Parameters<typeof buildCmsContactFormMarkup>[0]) {
+  return `<div class="exec-contact-form-panel cms-contact-form-card" style="min-width:0;max-width:100%;overflow:visible;height:auto;padding:28px;border-radius:24px;background:#fff;border:1px solid #e2e8f0;box-shadow:0 20px 44px rgba(15,23,42,.08);${extraStyle}">${buildCmsContactFormMarkup(formOptions)}</div>`;
+}
+
+/** Dark Executra-style form panel (matches live Contact Us design). */
+function darkFormCard() {
+  return `<div class="exec-contact-form-panel" style="min-width:0;max-width:100%;overflow:visible;height:auto;padding:clamp(1.35rem,3vw,1.75rem);border-radius:16px;border:1px solid rgba(255,255,255,0.1);background:#121212;box-shadow:0 16px 40px rgba(0,0,0,0.35);">${buildCmsContactFormMarkup(
+    {
+      title: "Send message",
+      hint: null,
+      includePreferredServices: false,
+      mobileLabel: "Mobile",
+    },
+  )}</div>`;
+}
+
+function darkInfoCard(title: string, bodyHtml: string) {
+  return `
+    <div class="exec-card" style="min-width:0;padding:1.35rem 1.4rem;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:#121212;">
+      <h3 style="margin:0 0 0.65rem;color:#fff;font-size:1.125rem;font-weight:500;">${title}</h3>
+      <div style="margin:0;color:rgba(255,255,255,0.62);line-height:1.65;font-size:0.9375rem;">${bodyHtml}</div>
+    </div>`;
 }
 
 function infoPanel(dark = false) {
@@ -39,8 +59,35 @@ type ContactTemplateDef = {
 
 const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   {
+    id: "cms-contact-tpl-executra-dark",
+    label: "01 · Executra Dark",
+    thumb: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=640&q=80",
+    content: `
+      <div class="public-contact exec-tpl exec-contact cms-contact-page cms-contact-page--dark" data-cms-contact-page="1" data-cms-contact-template="executra-dark" data-cms-site-template="1" style="padding:0 0 4rem;background:#050505;color:rgba(255,255,255,0.72);font-family:Outfit,Inter,Segoe UI,sans-serif;">
+        <div class="exec-contact-hero" style="position:relative;overflow:hidden;padding:clamp(3rem,8vw,5rem) 1.25rem clamp(2rem,5vw,3rem);border-bottom:1px solid rgba(255,255,255,0.08);text-align:center;background:radial-gradient(ellipse 80% 60% at 100% 0%,rgba(235,81,36,0.14) 0%,transparent 55%),#050505;">
+          <div style="max-width:720px;margin:0 auto;">
+            <p style="margin:0 0 0.75rem;font-size:0.6875rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.45);">Contact Us</p>
+            <h1 style="margin:0 0 0.75rem;color:#fff;font-size:clamp(1.85rem,4.5vw,2.75rem);font-weight:500;letter-spacing:-0.03em;line-height:1.15;">We're here to help you move forward</h1>
+            <p style="margin:0 auto;max-width:36rem;color:rgba(255,255,255,0.55);line-height:1.7;font-size:1rem;">Reach out for questions, support, or guidance..</p>
+          </div>
+        </div>
+        <div style="padding:clamp(2rem,5vw,3rem) 1.25rem 0;">
+          <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:1.25rem;align-items:start;">
+            <div style="display:grid;gap:1rem;min-width:0;">
+              ${darkInfoCard("Address", "Unit 907-909, Antel Global Corporate Center,<br />Julia Vargas Ave., Ortigas Center, Pasig City")}
+              ${darkInfoCard(
+                "Phone &amp; email",
+                `<a href="tel:+63287065796" style="color:rgba(255,255,255,0.72);text-decoration:none;">${OFFICE.phone}</a><br /><a href="mailto:${OFFICE.email}" style="color:rgba(255,255,255,0.72);text-decoration:none;">${OFFICE.email}</a>`,
+              )}
+            </div>
+            ${darkFormCard()}
+          </div>
+        </div>
+      </div>`,
+  },
+  {
     id: "cms-contact-tpl-split-indigo",
-    label: "01 · Split Indigo",
+    label: "02 · Split Indigo",
     thumb: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="split-indigo" style="padding:48px 20px;background:#fff;font-family:Inter,Segoe UI,sans-serif;">
@@ -52,7 +99,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-centered-hero",
-    label: "02 · Centered Hero",
+    label: "03 · Centered Hero",
     thumb: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="centered-hero" style="padding:0 0 56px;background:#f8fafc;font-family:Inter,Segoe UI,sans-serif;">
@@ -66,7 +113,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-map-focus",
-    label: "03 · Map & Form",
+    label: "04 · Map & Form",
     thumb: "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="map-focus" style="font-family:Inter,Segoe UI,sans-serif;">
@@ -84,7 +131,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-corporate-cards",
-    label: "04 · Corporate Cards",
+    label: "05 · Corporate Cards",
     thumb: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="corporate-cards" style="padding:56px 20px;background:#fff;font-family:Inter,Segoe UI,sans-serif;">
@@ -102,7 +149,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-minimal",
-    label: "05 · Minimal Light",
+    label: "06 · Minimal Light",
     thumb: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="minimal" style="padding:64px 20px;background:#fff;font-family:Inter,Segoe UI,sans-serif;">
@@ -115,7 +162,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-gradient",
-    label: "06 · Gradient Band",
+    label: "07 · Gradient Band",
     thumb: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="gradient" style="font-family:Inter,Segoe UI,sans-serif;background:#0f172a;">
@@ -128,7 +175,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-support",
-    label: "07 · Support First",
+    label: "08 · Support First",
     thumb: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="support" style="padding:48px 20px;background:#f0fdf4;font-family:Inter,Segoe UI,sans-serif;">
@@ -145,7 +192,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-teal",
-    label: "08 · Teal Professional",
+    label: "09 · Teal Professional",
     thumb: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="teal" style="padding:56px 20px;background:#ecfeff;font-family:Inter,Segoe UI,sans-serif;">
@@ -156,13 +203,13 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
             <p style="margin:0 0 8px;color:#99f6e4;">${OFFICE.phone}</p>
             <p style="margin:0;color:#99f6e4;">${OFFICE.email}</p>
           </div>
-          <div class="exec-contact-form-panel" style="min-width:0;overflow:visible;height:auto;padding:28px;border:0;border-radius:0 28px 28px 0;box-shadow:none;background:#fff;">${buildCmsContactFormMarkup({ title: "Request a callback", hint: "We typically respond within one business day." })}</div>
+          <div class="exec-contact-form-panel cms-contact-form-card" style="min-width:0;overflow:visible;height:auto;padding:28px;border:0;border-radius:0 28px 28px 0;box-shadow:none;background:#fff;">${buildCmsContactFormMarkup({ title: "Request a callback", hint: "We typically respond within one business day." })}</div>
         </div>
       </div>`,
   },
   {
     id: "cms-contact-tpl-warm",
-    label: "09 · Warm Accent",
+    label: "10 · Warm Accent",
     thumb: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="warm" style="padding:52px 20px;background:#fff7ed;font-family:Inter,Segoe UI,sans-serif;">
@@ -184,7 +231,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
   },
   {
     id: "cms-contact-tpl-sidebar-light",
-    label: "10 · Sidebar Light",
+    label: "11 · Sidebar Light",
     thumb: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="sidebar-light" style="padding:48px 20px;background:#f1f5f9;font-family:Inter,Segoe UI,sans-serif;">

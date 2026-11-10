@@ -20,6 +20,9 @@ type PageEditorMetaFieldsProps = {
   visibility: boolean;
   onVisibilityChange: (value: boolean) => void;
   defaultPageLocked?: boolean;
+  showContactFormRecipient?: boolean;
+  contactFormRecipient?: string;
+  onContactFormRecipientChange?: (value: string) => void;
   seoTitle: string;
   onSeoTitleChange: (value: string) => void;
   seoDescription: string;
@@ -44,6 +47,9 @@ export default function PageEditorMetaFields({
   visibility,
   onVisibilityChange,
   defaultPageLocked = false,
+  showContactFormRecipient = false,
+  contactFormRecipient = "",
+  onContactFormRecipientChange,
   seoTitle,
   onSeoTitleChange,
   seoDescription,
@@ -56,6 +62,25 @@ export default function PageEditorMetaFields({
 
   return (
     <div className="page-editor__settings-stack">
+      {showContactFormRecipient ? (
+        <PageEditorSettingsPanel title="Contact Form" tourId="page-editor-contact-form">
+          <div className="mb-0">
+            <label className="form-label d-flex align-items-center">
+              Email recipient
+              <Tooltip text="Customer Contact Us submissions are emailed to this address." />
+            </label>
+            <input
+              type="email"
+              className="form-control"
+              value={contactFormRecipient}
+              placeholder="customercare@example.com"
+              onChange={(event) => onContactFormRecipientChange?.(event.target.value)}
+            />
+            <div className="small text-muted mt-1">Who receives emails when visitors submit this form.</div>
+          </div>
+        </PageEditorSettingsPanel>
+      ) : null}
+
       <PageEditorSettingsPanel title="Page Details" tourId="page-editor-details">
         <div className="mb-3">
           <label className="form-label d-flex align-items-center">

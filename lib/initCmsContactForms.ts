@@ -115,6 +115,10 @@ function unlockRecaptchaLayout(mount: HTMLElement) {
   clearSizeLocks(mount.querySelector<HTMLElement>("[data-cms-recaptcha-host]"));
   clearSizeLocks(mount.querySelector<HTMLElement>(".g-recaptcha"));
 
+  // Consistent gap after Message / before Submit on every contact template.
+  mount.style.setProperty("margin-top", "1.25rem", "important");
+  mount.style.setProperty("margin-bottom", "1.25rem", "important");
+
   // Keep Google's private response field hidden (our form CSS can unhide it).
   mount.querySelectorAll<HTMLTextAreaElement>("textarea.g-recaptcha-response").forEach((el) => {
     el.style.setProperty("display", "none", "important");
@@ -171,13 +175,17 @@ async function mountRecaptcha(form: HTMLFormElement, state: FormState, siteKey: 
 
     unlockRecaptchaLayout(mount);
 
-    // Render into an inner host so wrappers never clip the Google iframe.
+    // Replace editor placeholder with a clean host for the live Google widget.
     let host = mount.querySelector<HTMLElement>("[data-cms-recaptcha-host]");
     if (!host) {
       host = document.createElement("div");
       host.setAttribute("data-cms-recaptcha-host", "1");
       mount.replaceChildren(host);
+    } else {
+      host.replaceChildren();
+      host.removeAttribute("style");
     }
+    mount.querySelectorAll("[data-cms-recaptcha-placeholder]").forEach((node) => node.remove());
 
     state.widgetId = window.grecaptcha.render(host, {
       sitekey: siteKey,

@@ -19,6 +19,7 @@ import {
 import { registerCanvasWebsiteTemplates } from "./grapesWebsiteTemplates";
 import { applyContactUsPageSlugPolicy, registerContactUsPageTemplates } from "./grapesContactUsTemplates";
 import { registerCmsContactFormBlock } from "./grapesContactForm";
+import { registerCmsContactFormComponentType } from "./grapesCmsContactFormType";
 import { CANVAS7_CANVAS_STYLES, htmlNeedsCanvas7Assets } from "@/lib/canvasTemplateCatalog";
 import { runExecutraCanvasInFrame } from "@/lib/executraCanvasBoot";
 import {
@@ -1627,6 +1628,7 @@ export default function GrapesEditor({
       });
     };
 
+    registerCmsContactFormComponentType(editor);
     registerCmsBlocks(editor);
     registerCanvasWebsiteTemplates(editor);
     registerCmsContactFormBlock(editor);

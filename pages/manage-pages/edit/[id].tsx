@@ -2,10 +2,12 @@ import AdminLayout from "@/components/Layout/AdminLayout";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { getPageById, updatePage } from "@/services/pageService";
+import { websiteService } from "@/services/websiteService";
 import { useRouter } from "next/router";
 import { toast } from "@/lib/toast";
 import { composeContentFromGrapes, extractGrapesParts, resolveGrapesPartsFromPage } from "@/lib/grapesContent";
 import { isDefaultProtectedPage } from "@/lib/defaultPages";
+import { isContactUsPage } from "@/lib/isContactUsPageSlug";
 import PageEditorMetaFields from "@/components/Pages/PageEditorMetaFields";
 import { getAlbumsCached, getMenusCached, scheduleIdleTask } from "@/lib/referenceDataCache";
 import { prefetchPagesSwitcherList, invalidatePagesSwitcherListCache } from "@/lib/pagesListCache";
@@ -27,6 +29,7 @@ type PageSnapshot = {
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;
+  contactFormRecipient: string;
 };
 
 const getPageSaveErrorMessage = (error: any, mode: "create" | "update") => {
@@ -70,6 +73,7 @@ function EditPage() {
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [seoKeywords, setSeoKeywords] = useState("");
+  const [contactFormRecipient, setContactFormRecipient] = useState("");
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [defaultPageLocked, setDefaultPageLocked] = useState(false);
@@ -92,8 +96,20 @@ function EditPage() {
       seoTitle,
       seoDescription,
       seoKeywords,
+      contactFormRecipient,
     }),
-    [title, label, grapesContent, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords],
+    [
+      title,
+      label,
+      grapesContent,
+      visibility,
+      albumId,
+      menuId,
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+      contactFormRecipient,
+    ],
   );
 
   const isDirty = useMemo(() => {
@@ -109,8 +125,11 @@ function EditPage() {
     setInitialLoading(true);
     if (isSwitch) setPageSwitching(true);
 
-    getPageById(pageId)
-      .then((res) => {
+    Promise.all([
+      getPageById(pageId),
+      websiteService.getSettings().catch(() => ({ setting: {} })),
+    ])
+      .then(([res, settingsData]) => {
         const page = res.data;
         const hasGrapesFields = Boolean(page.grapes_html || page.grapes_css || page.grapes_js);
         const isGrapes = page.content_type === "grapes" || hasGrapesFields;
@@ -130,10 +149,22 @@ function EditPage() {
         const nextSeoTitle = page.meta_title || "";
         const nextSeoDescription = page.meta_description || "";
         const nextSeoKeywords = page.meta_keyword || "";
+        const nextSlug = page.slug || "";
+        const isContactPage = isContactUsPage({
+          slug: nextSlug,
+          name: nextTitle,
+          label: nextLabel,
+          title: nextTitle,
+        });
+        const nextRecipient = isContactPage
+          ? String(
+              page.contact_form_recipient || settingsData?.setting?.email || "",
+            ).trim()
+          : "";
 
         setTitle(nextTitle);
         setLabel(nextLabel);
-        setPageSlug(page.slug || "");
+        setPageSlug(nextSlug);
         setAlbumId(nextAlbumId);
         setMenuId(nextMenuId);
         setGrapesContent(composedContent);
@@ -150,6 +181,7 @@ function EditPage() {
         setSeoTitle(nextSeoTitle);
         setSeoDescription(nextSeoDescription);
         setSeoKeywords(nextSeoKeywords);
+        setContactFormRecipient(nextRecipient);
         setSavedSnapshot({
           title: nextTitle,
           label: nextLabel,
@@ -160,6 +192,7 @@ function EditPage() {
           seoTitle: nextSeoTitle,
           seoDescription: nextSeoDescription,
           seoKeywords: nextSeoKeywords,
+          contactFormRecipient: nextRecipient,
         });
       })
       .finally(() => {
@@ -200,6 +233,24 @@ function EditPage() {
       return;
     }
 
+    const isContactPage = isContactUsPage({
+      slug: pageSlug,
+      name: title,
+      label,
+      title,
+    });
+    const recipient = contactFormRecipient.trim();
+    if (isContactPage) {
+      if (!recipient) {
+        if (!opts?.silent) toast.error("Form recipient email is required for Contact Us");
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+        if (!opts?.silent) toast.error("Enter a valid form recipient email");
+        return;
+      }
+    }
+
     try {
       setLoading(true);
       const contentToSave = grapesContentSyncRef.current?.() ?? grapesContent;
@@ -223,14 +274,25 @@ function EditPage() {
         meta_title: seoTitle || undefined,
         meta_description: seoDescription || undefined,
         meta_keyword: seoKeywords || undefined,
+        ...(isContactPage ? { contact_form_recipient: recipient } : {}),
       });
+
+      if (isContactPage && recipient !== savedSnapshot?.contactFormRecipient) {
+        try {
+          await websiteService.updateContactFormRecipient({ email: recipient });
+        } catch {
+          // Page recipient is already saved; website contact sync is best-effort.
+        }
+      }
 
       if (!defaultPageLocked && opts?.publish) setVisibility(true);
       setGrapesContent(contentToSave);
+      setContactFormRecipient(recipient);
       setSavedSnapshot({
         ...buildSnapshot(),
         grapesContent: contentToSave,
         visibility: nextVisibility,
+        contactFormRecipient: recipient,
       });
       invalidatePagesSwitcherListCache();
       prefetchPagesSwitcherList();
@@ -252,7 +314,20 @@ function EditPage() {
       void handleSaveRef.current({ silent: true });
     }, 5000);
     return () => window.clearTimeout(timer);
-  }, [isDirty, grapesContent, title, label, visibility, albumId, menuId, seoTitle, seoDescription, seoKeywords, initialLoading]);
+  }, [
+    isDirty,
+    grapesContent,
+    title,
+    label,
+    visibility,
+    albumId,
+    menuId,
+    seoTitle,
+    seoDescription,
+    seoKeywords,
+    contactFormRecipient,
+    initialLoading,
+  ]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -291,6 +366,14 @@ function EditPage() {
       visibility={visibility}
       onVisibilityChange={setVisibility}
       defaultPageLocked={defaultPageLocked}
+      showContactFormRecipient={isContactUsPage({
+        slug: pageSlug,
+        name: title,
+        label,
+        title,
+      })}
+      contactFormRecipient={contactFormRecipient}
+      onContactFormRecipientChange={setContactFormRecipient}
       seoTitle={seoTitle}
       onSeoTitleChange={setSeoTitle}
       seoDescription={seoDescription}

@@ -288,9 +288,15 @@ export const cmsStudioCanvasCss = `
     object-position: top center !important;
   }
 
-  form {
+  form:not(.cms-wsi-contact-form) {
     display: grid;
     gap: 14px;
+  }
+
+  /* Live CMS contact form — keep block flow (nested .exec-form-grid handles columns) */
+  form.cms-wsi-contact-form {
+    display: block !important;
+    gap: 0 !important;
   }
 
   label {

@@ -74,6 +74,10 @@ export const websiteService = {
     return axiosInstance.post("/website-settings/contact", payload);
   },
 
+  async updateContactFormRecipient(payload: { email: string }) {
+    return axiosInstance.post("/website-settings/contact-form-recipient", payload);
+  },
+
   /* ======================
      PRIVACY TAB
   ====================== */

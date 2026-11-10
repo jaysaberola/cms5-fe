@@ -24,7 +24,9 @@
 .public-page-content.public-contact .exec-contact-recaptcha,
 .public-page-content .exec-contact .exec-contact-recaptcha,
 .public-page-content.public-contact [data-cms-contact-recaptcha],
-.public-contact .exec-contact-recaptcha {
+.public-page-content .cms-contact-page [data-cms-contact-recaptcha],
+.public-contact .exec-contact-recaptcha,
+.public-contact [data-cms-contact-recaptcha] {
   display: block !important;
   width: auto !important;
   max-width: 100% !important;
@@ -32,7 +34,8 @@
   min-height: 78px !important;
   height: auto !important;
   max-height: none !important;
-  margin: 0 0 1rem !important;
+  /* Space above (after Message) and below (before Submit) — all contact templates */
+  margin: 1.25rem 0 !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -40,6 +43,16 @@
   box-shadow: none !important;
   overflow: visible !important;
   box-sizing: border-box !important;
+}
+
+/* Keep Message field from collapsing into the CAPTCHA */
+.public-page-content.public-contact textarea#cms_message,
+.public-page-content.public-contact textarea[name="message"],
+.public-page-content .cms-contact-page textarea#cms_message,
+.public-page-content .cms-contact-page textarea[name="message"],
+.public-contact textarea#cms_message,
+.public-contact textarea[name="message"] {
+  margin-bottom: 0 !important;
 }
 
 .public-page-content.public-contact .exec-contact-recaptcha [data-cms-recaptcha-host],
@@ -67,14 +80,16 @@
 }
 
 .public-page-content.public-contact [data-cms-contact-submit],
-.public-page-content .exec-contact [data-cms-contact-submit] {
+.public-page-content .exec-contact [data-cms-contact-submit],
+.public-page-content .cms-contact-page [data-cms-contact-submit],
+.public-contact [data-cms-contact-submit] {
   position: relative;
   z-index: 1;
   clear: both;
   display: inline-flex;
   width: 100%;
   max-width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0;
   box-sizing: border-box;
 }
 
@@ -215,4 +230,132 @@ html[data-public-theme="light"] .public-site-shell--executra .public-page-conten
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact .exec-contact-recaptcha p,
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact .exec-contact-recaptcha p {
   color: #b45309 !important;
+}
+
+/*
+ * Light Contact Us Templates only — skip .cms-contact-page--dark (Executra Dark).
+ */
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark),
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-contact-form-card,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-contact-form-panel {
+  color: #0f172a;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-form-title,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form h2 {
+  color: #0f172a !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-form-hint,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form > p,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-label {
+  color: #64748b !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-label-required {
+  color: #ea580c !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-label-optional {
+  color: #94a3b8 !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-input,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form select,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea:not(.g-recaptcha-response),
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-contact-form-panel select,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-contact-form-panel textarea:not(.g-recaptcha-response),
+.public-site-shell--executra .public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+.public-site-shell--executra .public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form select,
+.public-site-shell--executra .public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
+  color-scheme: light !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-input::placeholder,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input::placeholder,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea:not(.g-recaptcha-response)::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-input:focus,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input:focus,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form select:focus,
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea:not(.g-recaptcha-response):focus {
+  border-color: #fb923c !important;
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.2) !important;
+  outline: none !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-preferred-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-preferred-grid label {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155 !important;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-preferred-grid input[type="checkbox"] {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  accent-color: #ea580c;
+  background: #fff !important;
+  border: 1px solid #94a3b8 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  -webkit-text-fill-color: initial !important;
+  box-shadow: none !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-contact-alert.is-success {
+  border-color: rgba(22, 163, 74, 0.35) !important;
+  background: rgba(220, 252, 231, 0.9) !important;
+  color: #166534 !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-contact-alert.is-error {
+  border-color: rgba(234, 88, 12, 0.4) !important;
+  background: rgba(255, 237, 213, 0.95) !important;
+  color: #9a3412 !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) [data-cms-contact-phone-error] {
+  color: #c2410c !important;
+}
+
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) [data-cms-contact-submit],
+.public-page-content .cms-contact-page:not(.cms-contact-page--dark) .exec-btn--primary {
+  background: #ea580c !important;
+  border-color: #ea580c !important;
+  color: #fff !important;
+}
+
+/* Responsive stack for Executra Dark template */
+@media (max-width: 991px) {
+  .public-page-content .cms-contact-page--dark .exec-contact-layout {
+    grid-template-columns: 1fr !important;
+  }
 }

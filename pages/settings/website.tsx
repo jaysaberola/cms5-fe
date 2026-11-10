@@ -512,12 +512,17 @@ function WebsiteSettingsPage() {
                       onChange={(e) => setFax(e.target.value)}
                     />
                   </CmsSettingsField>
-                  <CmsSettingsField label="Email Address" required>
+                  <CmsSettingsField
+                    label="Contact form recipient email"
+                    required
+                    hint="Inquiries from the Contact Us page are sent to this address."
+                  >
                     <input
                       type="email"
                       className="form-control"
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="customercare@example.com"
                     />
                   </CmsSettingsField>
                 </CmsSettingsGrid>

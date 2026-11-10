@@ -1065,6 +1065,11 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   color: #ffb4a0;
 }
 
+.exec-label-optional {
+  font-weight: 500;
+  color: var(--exec-muted, rgba(255, 255, 255, 0.45));
+}
+
 .exec-input,
 .exec-contact-form-panel select,
 .exec-contact-form-panel textarea,
@@ -1151,7 +1156,8 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   accent-color: var(--exec-orange);
 }
 
-.exec-contact-recaptcha {
+.exec-contact-recaptcha,
+[data-cms-contact-recaptcha] {
   display: block;
   width: auto;
   max-width: 100%;
@@ -1159,7 +1165,7 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   min-height: 78px;
   height: auto !important;
   max-height: none !important;
-  margin: 0 0 1rem;
+  margin: 1.25rem 0;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -1194,7 +1200,8 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 }
 
 .exec-contact-form-panel [data-cms-contact-submit],
-.exec-tpl .cms-wsi-contact-form [data-cms-contact-submit] {
+.exec-tpl .cms-wsi-contact-form [data-cms-contact-submit],
+form[data-cms-contact-form] [data-cms-contact-submit] {
   margin-top: 0.25rem;
   width: 100%;
   justify-content: center;

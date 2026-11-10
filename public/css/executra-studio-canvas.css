@@ -85,16 +85,67 @@ body {
 }
 
 .exec-tpl .exec-contact-recaptcha,
-.cms-contact-page .exec-contact-recaptcha {
+.exec-tpl [data-cms-contact-recaptcha],
+.cms-contact-page .exec-contact-recaptcha,
+.cms-contact-page [data-cms-contact-recaptcha] {
   width: auto;
   max-width: 100%;
   min-height: 78px;
   height: auto !important;
   max-height: none !important;
+  margin: 1.25rem 0 !important;
   padding: 0 !important;
   border: 0 !important;
   background: transparent !important;
   overflow: visible !important;
+}
+
+/* Prevent canvas default form{display:grid} from blowing up contact form spacing */
+form.cms-wsi-contact-form,
+.cms-contact-page form.cms-wsi-contact-form,
+.exec-tpl form.cms-wsi-contact-form {
+  display: block !important;
+}
+
+form.cms-wsi-contact-form .exec-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+  margin-bottom: 0 !important;
+}
+
+form.cms-wsi-contact-form .exec-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.4rem !important;
+  margin-bottom: 1rem !important;
+  min-height: 0 !important;
+}
+
+form.cms-wsi-contact-form .exec-field--full {
+  grid-column: auto !important;
+}
+
+form.cms-wsi-contact-form .exec-form-grid .exec-field {
+  margin-bottom: 0 !important;
+}
+
+form.cms-wsi-contact-form textarea.exec-input,
+form.cms-wsi-contact-form textarea {
+  min-height: 140px !important;
+  max-height: 220px !important;
+  height: 140px !important;
+  resize: vertical !important;
+}
+
+form.cms-wsi-contact-form .exec-contact-recaptcha,
+form.cms-wsi-contact-form [data-cms-contact-recaptcha] {
+  margin: 1.25rem 0 !important;
+  min-height: 78px !important;
+}
+
+form.cms-wsi-contact-form [data-cms-contact-submit] {
+  margin-top: 0 !important;
 }
 
 .exec-tpl .exec-input:disabled {
@@ -102,8 +153,130 @@ body {
   cursor: not-allowed;
 }
 
-.exec-tpl .cms-wsi-contact-form select,
-.exec-tpl .cms-wsi-contact-form input,
-.exec-tpl .cms-wsi-contact-form textarea {
+/* Dark Executra shell only — not light Contact Us Templates */
+.exec-tpl:not(.cms-contact-page) .cms-wsi-contact-form select,
+.exec-tpl:not(.cms-contact-page) .cms-wsi-contact-form input,
+.exec-tpl:not(.cms-contact-page) .cms-wsi-contact-form textarea {
+  color-scheme: dark;
+}
+
+/*
+ * Light Contact Us Templates only. Dark Executra template uses
+ * .cms-contact-page--dark and keeps Executra dark field tokens.
+ */
+.cms-contact-page:not(.cms-contact-page--dark),
+.cms-contact-page:not(.cms-contact-page--dark) .cms-contact-form-card,
+.cms-contact-page:not(.cms-contact-page--dark) .exec-contact-form-panel {
+  color: #0f172a;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-form-title,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form h2 {
+  color: #0f172a !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-form-hint,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form > p,
+.cms-contact-page:not(.cms-contact-page--dark) .exec-label {
+  color: #64748b !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-label-required {
+  color: #ea580c !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-label-optional {
+  color: #94a3b8 !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-input,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form select,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea,
+.cms-contact-page:not(.cms-contact-page--dark) .exec-contact-form-panel select,
+.cms-contact-page:not(.cms-contact-page--dark) .exec-contact-form-panel textarea {
+  color-scheme: light !important;
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-input::placeholder,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input::placeholder,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-input:focus,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form input:focus,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form select:focus,
+.cms-contact-page:not(.cms-contact-page--dark) .cms-wsi-contact-form textarea:focus {
+  border-color: #fb923c !important;
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.2) !important;
+  outline: none !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-preferred-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-preferred-grid label {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155 !important;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-preferred-grid input[type="checkbox"] {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  accent-color: #ea580c;
+  background: #fff !important;
+  border: 1px solid #94a3b8 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-contact-alert.is-success {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(220, 252, 231, 0.9);
+  color: #166534;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) .exec-contact-alert.is-error {
+  border-color: rgba(234, 88, 12, 0.4);
+  background: rgba(255, 237, 213, 0.95);
+  color: #9a3412;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) [data-cms-contact-phone-error] {
+  color: #c2410c !important;
+}
+
+.cms-contact-page:not(.cms-contact-page--dark) [data-cms-contact-submit],
+.cms-contact-page:not(.cms-contact-page--dark) .exec-btn--primary {
+  background: #ea580c !important;
+  border-color: #ea580c !important;
+  color: #fff !important;
+}
+
+/* Dark Executra contact template — keep dark fields readable in canvas */
+.cms-contact-page--dark .cms-wsi-contact-form select,
+.cms-contact-page--dark .cms-wsi-contact-form input,
+.cms-contact-page--dark .cms-wsi-contact-form textarea {
   color-scheme: dark;
 }

@@ -403,7 +403,7 @@
 }
 
 .captchaRow {
-  margin-top: 1rem;
+  margin: 1.25rem 0;
   padding: 0;
   border: 0;
   border-radius: 0;
