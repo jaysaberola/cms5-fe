@@ -84,6 +84,31 @@
   display: none !important;
 }
 
+/*
+ * Google injects a hidden textarea.g-recaptcha-response inside the widget.
+ * Our contact form textarea rules were forcing it visible (border + overflow:auto),
+ * which looked like a scrolled/clipped CAPTCHA above the submit button.
+ */
+.public-page-content.public-contact textarea.g-recaptcha-response,
+.public-page-content .exec-contact textarea.g-recaptcha-response,
+.public-contact textarea.g-recaptcha-response,
+.public-page-content.public-contact .g-recaptcha textarea,
+.public-page-content [data-cms-contact-recaptcha] textarea.g-recaptcha-response {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .public-site-shell--executra .public-page-content.public-contact .exec-field,
 .public-site-shell--executra .public-page-content .exec-contact .exec-field {
   display: flex;
@@ -117,13 +142,13 @@
 
 .public-site-shell--executra .public-page-content.public-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
 .public-site-shell--executra .public-page-content.public-contact select,
-.public-site-shell--executra .public-page-content.public-contact textarea,
+.public-site-shell--executra .public-page-content.public-contact textarea:not(.g-recaptcha-response),
 .public-site-shell--executra .public-page-content .exec-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
 .public-site-shell--executra .public-page-content .exec-contact select,
-.public-site-shell--executra .public-page-content .exec-contact textarea,
+.public-site-shell--executra .public-page-content .exec-contact textarea:not(.g-recaptcha-response),
 .public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form input,
 .public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form select,
-.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea {
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   box-sizing: border-box !important;
   display: block !important;
   width: 100% !important;
@@ -141,37 +166,37 @@
   outline: none;
 }
 
-.public-site-shell--executra .public-page-content.public-contact textarea,
-.public-site-shell--executra .public-page-content .exec-contact textarea,
-.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea {
+.public-site-shell--executra .public-page-content.public-contact textarea:not(.g-recaptcha-response),
+.public-site-shell--executra .public-page-content .exec-contact textarea:not(.g-recaptcha-response),
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   min-height: 140px !important;
   resize: vertical;
 }
 
 .public-site-shell--executra .public-page-content.public-contact input::placeholder,
-.public-site-shell--executra .public-page-content.public-contact textarea::placeholder,
+.public-site-shell--executra .public-page-content.public-contact textarea:not(.g-recaptcha-response)::placeholder,
 .public-site-shell--executra .public-page-content .exec-contact input::placeholder,
-.public-site-shell--executra .public-page-content .exec-contact textarea::placeholder {
+.public-site-shell--executra .public-page-content .exec-contact textarea:not(.g-recaptcha-response)::placeholder {
   color: var(--exec-muted, #94a3b8) !important;
   opacity: 1 !important;
 }
 
 .public-site-shell--executra .public-page-content.public-contact input:focus,
 .public-site-shell--executra .public-page-content.public-contact select:focus,
-.public-site-shell--executra .public-page-content.public-contact textarea:focus,
+.public-site-shell--executra .public-page-content.public-contact textarea:not(.g-recaptcha-response):focus,
 .public-site-shell--executra .public-page-content .exec-contact input:focus,
 .public-site-shell--executra .public-page-content .exec-contact select:focus,
-.public-site-shell--executra .public-page-content .exec-contact textarea:focus {
+.public-site-shell--executra .public-page-content .exec-contact textarea:not(.g-recaptcha-response):focus {
   border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 55%, transparent) !important;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange, #eb5124) 15%, transparent) !important;
 }
 
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact select,
-html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact textarea,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content.public-contact textarea:not(.g-recaptcha-response),
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact select,
-html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact textarea {
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact textarea:not(.g-recaptcha-response) {
   border: 1px solid #cbd5e1 !important;
   background-color: #f1f5f9 !important;
   color: #0f172a !important;

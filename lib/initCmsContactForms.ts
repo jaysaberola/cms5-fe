@@ -115,15 +115,26 @@ function unlockRecaptchaLayout(mount: HTMLElement) {
   clearSizeLocks(mount.querySelector<HTMLElement>("[data-cms-recaptcha-host]"));
   clearSizeLocks(mount.querySelector<HTMLElement>(".g-recaptcha"));
 
+  // Keep Google's private response field hidden (our form CSS can unhide it).
+  mount.querySelectorAll<HTMLTextAreaElement>("textarea.g-recaptcha-response").forEach((el) => {
+    el.style.setProperty("display", "none", "important");
+    el.style.setProperty("visibility", "hidden", "important");
+    el.style.setProperty("height", "1px", "important");
+    el.style.setProperty("min-height", "0", "important");
+    el.style.setProperty("overflow", "hidden", "important");
+    el.style.setProperty("border", "0", "important");
+    el.style.setProperty("margin", "0", "important");
+    el.style.setProperty("padding", "0", "important");
+  });
+
   const iframe = mount.querySelector("iframe");
   if (iframe) {
     iframe.style.removeProperty("max-width");
     iframe.style.setProperty("display", "inline-block", "important");
-    // Let Google size the iframe; only unlock clipping from our wrappers.
-    const h = iframe.getBoundingClientRect().height || iframe.offsetHeight;
-    if (h > 0) {
-      mount.style.setProperty("min-height", `${Math.ceil(h)}px`, "important");
-    }
+    iframe.style.setProperty("width", "304px", "important");
+    iframe.style.setProperty("height", "78px", "important");
+    const h = iframe.getBoundingClientRect().height || iframe.offsetHeight || 78;
+    mount.style.setProperty("min-height", `${Math.ceil(h)}px`, "important");
   }
 
   // Grapes sometimes saves fixed height/overflow on the form panel — unlock those too.

@@ -142,7 +142,7 @@
 .public-site-shell--executra .public-page-content.public-contact .exec-input,
 .public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form input,
 .public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form select,
-.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea {
+.public-site-shell--executra .public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   background: var(--exec-surface-2, #161616) !important;
   border: 1px solid var(--exec-border, rgba(255, 255, 255, 0.12)) !important;
   color: var(--exec-heading, #fff) !important;

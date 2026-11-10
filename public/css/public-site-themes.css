@@ -344,11 +344,11 @@ html[data-public-theme] .public-page-content .exec-contact .exec-contact-info p 
 html[data-public-theme] .public-page-content.public-contact .exec-input,
 html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form input,
 html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form select,
-html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form textarea,
+html[data-public-theme] .public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response),
 html[data-public-theme] .public-page-content .exec-contact .exec-input,
 html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form input,
 html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form select,
-html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form textarea {
+html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   border: 1px solid var(--exec-border) !important;
   background: var(--exec-surface-2) !important;
   color: var(--exec-heading) !important;
@@ -357,11 +357,11 @@ html[data-public-theme] .public-page-content .exec-contact .cms-wsi-contact-form
 html[data-public-theme="light"] .public-page-content.public-contact .exec-input,
 html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form input,
 html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form select,
-html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form textarea,
+html[data-public-theme="light"] .public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response),
 html[data-public-theme="light"] .public-page-content .exec-contact .exec-input,
 html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form input,
 html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form select,
-html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form textarea {
+html[data-public-theme="light"] .public-page-content .exec-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   border-color: rgba(15, 23, 42, 0.2) !important;
   background: #f8fafc !important;
 }

@@ -414,11 +414,11 @@ html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
 .public-page-content.public-contact .exec-input,
 .public-page-content.public-contact .cms-wsi-contact-form input,
 .public-page-content.public-contact .cms-wsi-contact-form select,
-.public-page-content.public-contact .cms-wsi-contact-form textarea,
+.public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response),
 .public-contact .exec-input,
 .public-contact .cms-wsi-contact-form input,
 .public-contact .cms-wsi-contact-form select,
-.public-contact .cms-wsi-contact-form textarea {
+.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.18)) !important;
   border-radius: 10px;
   background-color: var(--exec-surface-2, #f1f5f9) !important;
@@ -426,8 +426,8 @@ html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
   box-shadow: none !important;
 }
 
-.public-contact textarea.form-control,
-.public-page-content.public-contact .cms-wsi-contact-form textarea {
+.public-contact textarea.form-control:not(.g-recaptcha-response),
+.public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response) {
   border: 1px solid var(--exec-border, rgba(15, 23, 42, 0.18)) !important;
 }
 
@@ -436,7 +436,7 @@ html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
 .public-page-content.public-contact .exec-input:focus,
 .public-page-content.public-contact .cms-wsi-contact-form input:focus,
 .public-page-content.public-contact .cms-wsi-contact-form select:focus,
-.public-page-content.public-contact .cms-wsi-contact-form textarea:focus {
+.public-page-content.public-contact .cms-wsi-contact-form textarea:not(.g-recaptcha-response):focus {
   border-color: color-mix(in srgb, var(--exec-orange, #eb5124) 55%, transparent) !important;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--exec-orange, #eb5124) 15%, transparent) !important;
 }
