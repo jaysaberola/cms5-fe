@@ -47,10 +47,10 @@ export function buildCmsContactFormMarkup(options?: {
   const mobileLabel = options?.mobileLabel ?? "Mobile number";
 
   return `
-<form data-cms-contact-form="1" class="cms-wsi-contact-form" novalidate>
+<form data-cms-contact-form="1" class="cms-wsi-contact-form" method="post" action="#" novalidate>
   <h2 class="exec-form-title">${title}</h2>
   ${hint ? `<p class="exec-form-hint">${hint}</p>` : ""}
-  <div data-cms-contact-alert class="exec-contact-alert"></div>
+  <div data-cms-contact-alert="1" class="exec-contact-alert" role="alert" aria-live="polite"></div>
   ${inquirySelect()}
   <div class="exec-form-grid">
     <div class="exec-field">
@@ -76,9 +76,9 @@ export function buildCmsContactFormMarkup(options?: {
     <textarea id="cms_message" name="message" rows="5" required class="exec-input"></textarea>
   </div>
   ${includePreferred ? preferredServices() : ""}
-  <div class="exec-contact-recaptcha" data-cms-contact-recaptcha="1" style="margin:1.25rem 0;">
-    <div data-cms-recaptcha-host="1" style="min-height:78px;display:flex;align-items:center;justify-content:flex-start;">
-      <span data-cms-recaptcha-placeholder="1" style="display:inline-flex;align-items:center;gap:10px;min-width:304px;min-height:78px;padding:0 12px;border:1px solid #d3d3d3;border-radius:3px;background:#f9f9f9;color:#555;font:400 14px Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box;">
+  <div class="exec-contact-recaptcha" data-cms-contact-recaptcha="1" style="margin:0.85rem 0;line-height:0;">
+    <div data-cms-recaptcha-host="1" style="min-height:78px;height:auto;line-height:0;display:block;">
+      <span data-cms-recaptcha-placeholder="1" style="display:inline-flex;align-items:center;gap:10px;min-width:304px;min-height:78px;padding:0 12px;border:1px solid #d3d3d3;border-radius:3px;background:#f9f9f9;color:#555;font:400 14px Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box;line-height:1.2;">
         <span style="width:24px;height:24px;border:2px solid #c1c1c1;border-radius:2px;background:#fff;flex:0 0 auto;"></span>
         I'm not a robot
       </span>

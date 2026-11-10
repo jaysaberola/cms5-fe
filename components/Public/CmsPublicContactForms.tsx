@@ -31,8 +31,26 @@ export default function CmsPublicContactForms({ recaptchaSiteKey = "", rootRef }
   }, [recaptchaSiteKey]);
 
   useEffect(() => {
-    const root = rootRef?.current ?? document;
-    return initCmsContactForms({ root, recaptchaSiteKey: siteKey });
+    let cancelled = false;
+    let cleanup: (() => void) | undefined;
+
+    const bind = () => {
+      if (cancelled) return;
+      const root = rootRef?.current ?? document;
+      cleanup?.();
+      cleanup = initCmsContactForms({ root, recaptchaSiteKey: siteKey });
+    };
+
+    bind();
+    const t1 = window.setTimeout(bind, 100);
+    const t2 = window.setTimeout(bind, 400);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      cleanup?.();
+    };
   }, [siteKey, rootRef]);
 
   return null;

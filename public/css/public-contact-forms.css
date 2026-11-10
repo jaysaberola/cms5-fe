@@ -21,6 +21,24 @@
   height: auto !important;
 }
 
+/* Contact pages: tighten large Executra section padding */
+.public-page-content.public-contact .exec-section,
+.public-page-content #wf-contact .exec-section,
+.public-page-content .cms-contact-page .exec-section {
+  padding-top: clamp(1.5rem, 3.5vw, 2.5rem) !important;
+  padding-bottom: clamp(2rem, 4vw, 3rem) !important;
+}
+
+.public-page-content.public-contact .exec-center-head,
+.public-page-content #wf-contact .exec-center-head {
+  margin-bottom: 1.25rem !important;
+}
+
+.public-page-content.public-contact .exec-split,
+.public-page-content #wf-contact .exec-split {
+  gap: 1.25rem !important;
+}
+
 .public-page-content.public-contact .exec-contact-recaptcha,
 .public-page-content .exec-contact .exec-contact-recaptcha,
 .public-page-content.public-contact [data-cms-contact-recaptcha],
@@ -35,7 +53,7 @@
   height: auto !important;
   max-height: none !important;
   /* Space above (after Message) and below (before Submit) — all contact templates */
-  margin: 1.25rem 0 !important;
+  margin: 0.85rem 0 !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -43,6 +61,7 @@
   box-shadow: none !important;
   overflow: visible !important;
   box-sizing: border-box !important;
+  line-height: 0 !important;
 }
 
 /* Keep Message field from collapsing into the CAPTCHA */
@@ -69,14 +88,48 @@
   line-height: 0 !important;
 }
 
-.public-page-content.public-contact .exec-contact-recaptcha iframe,
-.public-page-content .exec-contact .exec-contact-recaptcha iframe,
-.public-contact .exec-contact-recaptcha iframe {
+/* Only size the visible checkbox widget — never Google's hidden challenge iframe */
+.public-page-content.public-contact .exec-contact-recaptcha iframe[title="reCAPTCHA"],
+.public-page-content .exec-contact .exec-contact-recaptcha iframe[title="reCAPTCHA"],
+.public-contact .exec-contact-recaptcha iframe[title="reCAPTCHA"],
+.public-page-content.public-contact .exec-contact-recaptcha iframe[src*="anchor"],
+.public-page-content .exec-contact .exec-contact-recaptcha iframe[src*="anchor"],
+.public-contact .exec-contact-recaptcha iframe[src*="anchor"] {
   display: inline-block !important;
   width: 304px !important;
   max-width: none !important;
+  height: 78px !important;
   min-height: 78px !important;
   border: 0 !important;
+}
+
+.public-page-content.public-contact .exec-contact-recaptcha iframe:not([title="reCAPTCHA"]):not([src*="anchor"]),
+.public-page-content .exec-contact .exec-contact-recaptcha iframe:not([title="reCAPTCHA"]):not([src*="anchor"]),
+.public-contact .exec-contact-recaptcha iframe:not([title="reCAPTCHA"]):not([src*="anchor"]),
+.public-page-content.public-contact .exec-contact-recaptcha iframe[src*="bframe"],
+.public-page-content .exec-contact .exec-contact-recaptcha iframe[src*="bframe"],
+.public-contact .exec-contact-recaptcha iframe[src*="bframe"] {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  pointer-events: none !important;
+}
+
+.public-page-content.public-contact .exec-contact-recaptcha [data-cms-recaptcha-host],
+.public-page-content .exec-contact .exec-contact-recaptcha [data-cms-recaptcha-host],
+.public-contact .exec-contact-recaptcha [data-cms-recaptcha-host] {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  min-height: 78px !important;
+  height: auto !important;
+  line-height: 0 !important;
 }
 
 .public-page-content.public-contact [data-cms-contact-submit],
@@ -84,13 +137,39 @@
 .public-page-content .cms-contact-page [data-cms-contact-submit],
 .public-contact [data-cms-contact-submit] {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   clear: both;
   display: inline-flex;
   width: 100%;
   max-width: 100%;
-  margin-top: 0;
+  margin-top: 0.25rem;
   box-sizing: border-box;
+}
+
+.public-page-content.public-contact [data-cms-contact-alert].is-error,
+.public-page-content.public-contact [data-cms-contact-alert].is-success,
+.public-contact [data-cms-contact-alert].is-error,
+.public-contact [data-cms-contact-alert].is-success {
+  display: block !important;
+  margin-bottom: 1rem !important;
+  padding: 0.75rem 0.9rem !important;
+  border-radius: 10px !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.45 !important;
+}
+
+.public-page-content.public-contact [data-cms-contact-alert].is-error,
+.public-contact [data-cms-contact-alert].is-error {
+  border: 1px solid rgba(235, 81, 36, 0.45) !important;
+  background: rgba(235, 81, 36, 0.16) !important;
+  color: #ffb4a0 !important;
+}
+
+.public-page-content.public-contact [data-cms-contact-alert].is-success,
+.public-contact [data-cms-contact-alert].is-success {
+  border: 1px solid rgba(74, 222, 128, 0.35) !important;
+  background: rgba(22, 101, 52, 0.28) !important;
+  color: #bbf7d0 !important;
 }
 
 /* Hide CMS editor-only tips on the live site */

@@ -45,10 +45,28 @@ function loadRecaptchaScript(): Promise<void> {
 function showAlert(form: HTMLFormElement, kind: "success" | "error", message: string) {
   const alert = form.querySelector("[data-cms-contact-alert]") as HTMLElement | null;
   if (!alert) return;
+  alert.classList.add("exec-contact-alert");
   alert.classList.remove("is-success", "is-error");
   alert.classList.add(kind === "success" ? "is-success" : "is-error");
   alert.style.display = "block";
+  if (kind === "error") {
+    alert.style.border = "1px solid rgba(235, 81, 36, 0.45)";
+    alert.style.background = "rgba(235, 81, 36, 0.16)";
+    alert.style.color = "#ffb4a0";
+  } else {
+    alert.style.border = "1px solid rgba(74, 222, 128, 0.35)";
+    alert.style.background = "rgba(22, 101, 52, 0.28)";
+    alert.style.color = "#bbf7d0";
+  }
+  alert.style.padding = "0.75rem 0.9rem";
+  alert.style.borderRadius = "10px";
+  alert.style.marginBottom = "1rem";
   alert.textContent = message;
+  try {
+    alert.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } catch {
+    /* ignore */
+  }
 }
 
 function hideAlert(form: HTMLFormElement) {
@@ -56,6 +74,9 @@ function hideAlert(form: HTMLFormElement) {
   if (!alert) return;
   alert.classList.remove("is-success", "is-error");
   alert.style.display = "none";
+  alert.style.removeProperty("border");
+  alert.style.removeProperty("background");
+  alert.style.removeProperty("color");
 }
 
 function resetForm(form: HTMLFormElement, state: FormState) {
@@ -116,8 +137,8 @@ function unlockRecaptchaLayout(mount: HTMLElement) {
   clearSizeLocks(mount.querySelector<HTMLElement>(".g-recaptcha"));
 
   // Consistent gap after Message / before Submit on every contact template.
-  mount.style.setProperty("margin-top", "1.25rem", "important");
-  mount.style.setProperty("margin-bottom", "1.25rem", "important");
+  mount.style.setProperty("margin-top", "0.85rem", "important");
+  mount.style.setProperty("margin-bottom", "0.85rem", "important");
 
   // Keep Google's private response field hidden (our form CSS can unhide it).
   mount.querySelectorAll<HTMLTextAreaElement>("textarea.g-recaptcha-response").forEach((el) => {
@@ -131,15 +152,34 @@ function unlockRecaptchaLayout(mount: HTMLElement) {
     el.style.setProperty("padding", "0", "important");
   });
 
-  const iframe = mount.querySelector("iframe");
-  if (iframe) {
+  // Never force Google's hidden challenge iframe into layout (creates huge empty gaps).
+  mount.querySelectorAll("iframe").forEach((iframe) => {
+    const title = (iframe.getAttribute("title") || "").toLowerCase();
+    const src = iframe.getAttribute("src") || "";
+    const isAnchor = title.includes("recaptcha") || src.includes("anchor");
+    if (!isAnchor) {
+      iframe.style.setProperty("display", "none", "important");
+      iframe.style.setProperty("width", "0", "important");
+      iframe.style.setProperty("height", "0", "important");
+      iframe.style.setProperty("min-height", "0", "important");
+      iframe.style.setProperty("position", "absolute", "important");
+      iframe.style.setProperty("pointer-events", "none", "important");
+      return;
+    }
     iframe.style.removeProperty("max-width");
     iframe.style.setProperty("display", "inline-block", "important");
     iframe.style.setProperty("width", "304px", "important");
     iframe.style.setProperty("height", "78px", "important");
-    const h = iframe.getBoundingClientRect().height || iframe.offsetHeight || 78;
-    mount.style.setProperty("min-height", `${Math.ceil(h)}px`, "important");
+  });
+
+  const host = mount.querySelector<HTMLElement>("[data-cms-recaptcha-host]");
+  if (host) {
+    host.style.setProperty("height", "auto", "important");
+    host.style.setProperty("min-height", "78px", "important");
+    host.style.setProperty("line-height", "0", "important");
   }
+  mount.style.setProperty("min-height", "78px", "important");
+  mount.style.setProperty("height", "auto", "important");
 
   // Grapes sometimes saves fixed height/overflow on the form panel — unlock those too.
   let parent: HTMLElement | null = mount.parentElement;
@@ -225,11 +265,6 @@ async function handleSubmit(
     return;
   }
 
-  if (!state.recaptchaToken) {
-    showAlert(form, "error", "Please complete the reCAPTCHA verification before submitting.");
-    return;
-  }
-
   const inquiry_type = (form.querySelector('[name="inquiry_type"]') as HTMLSelectElement)?.value?.trim() ?? "";
   const first_name = (form.querySelector('[name="first_name"]') as HTMLInputElement)?.value?.trim() ?? "";
   const last_name = (form.querySelector('[name="last_name"]') as HTMLInputElement)?.value?.trim() ?? "";
@@ -237,9 +272,31 @@ async function handleSubmit(
   const contact_number = (form.querySelector('[name="contact_number"]') as HTMLInputElement)?.value?.trim() ?? "";
   const message = (form.querySelector('[name="message"]') as HTMLTextAreaElement)?.value?.trim() ?? "";
 
+  if (!inquiry_type) {
+    showAlert(form, "error", "Please select an inquiry type.");
+    return;
+  }
+  if (!first_name || !last_name) {
+    showAlert(form, "error", "Please enter your first and last name.");
+    return;
+  }
+  if (!email) {
+    showAlert(form, "error", "Please enter your email address.");
+    return;
+  }
+  if (!message) {
+    showAlert(form, "error", "Please enter your message.");
+    return;
+  }
+
   const phoneError = phMobileError(contact_number, true);
   if (phoneError) {
     showAlert(form, "error", phoneError);
+    return;
+  }
+
+  if (!state.recaptchaToken) {
+    showAlert(form, "error", "Please complete the reCAPTCHA verification before submitting.");
     return;
   }
 
@@ -270,8 +327,15 @@ async function handleSubmit(
     showAlert(form, "success", "Thank you! Your message has been sent successfully.");
     resetForm(form, state);
   } catch (err: any) {
-    const msg =
-      err?.response?.data?.message || "Something went wrong. Please try again later.";
+    const data = err?.response?.data;
+    const fieldErrors = data?.errors;
+    let msg =
+      (typeof data?.message === "string" && data.message) ||
+      "Something went wrong. Please try again later.";
+    if (fieldErrors && typeof fieldErrors === "object") {
+      const first = Object.values(fieldErrors).flat().find((v) => typeof v === "string");
+      if (typeof first === "string" && first.trim()) msg = first;
+    }
     showAlert(form, "error", msg);
     if (state.widgetId !== null && window.grecaptcha) {
       window.grecaptcha.reset(state.widgetId);
@@ -297,6 +361,9 @@ export function initCmsContactForms(options: InitOptions = {}) {
   forms.forEach((form) => {
     if (form.dataset.cmsContactBound === "1") return;
     form.dataset.cmsContactBound = "1";
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "#");
+    form.setAttribute("novalidate", "true");
 
     const state: FormState = { recaptchaToken: null, widgetId: null, submitting: false };
     boundForms.set(form, state);
@@ -304,6 +371,8 @@ export function initCmsContactForms(options: InitOptions = {}) {
     void mountRecaptcha(form, state, siteKey);
 
     form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       void handleSubmit(event, form, state, siteKey);
     });
   });
