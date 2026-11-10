@@ -38,11 +38,15 @@ const getPageSaveErrorMessage = (error: any, mode: "create" | "update") => {
     return "Page slug already exists. Please change Page Title or Label, then save again.";
   }
 
+  if (/data too long|1406|content is too large/i.test(source)) {
+    return "Page content is too large to save. Simplify the Contact template styles, then try again.";
+  }
+
   if (/insert\s+into\s+`?pages`?|update\s+`?pages`?/i.test(source)) {
     return fallback;
   }
 
-  if (typeof apiMessage === "string" && apiMessage.trim()) {
+  if (typeof apiMessage === "string" && apiMessage.trim() && !/^server error$/i.test(apiMessage.trim())) {
     return apiMessage;
   }
 
@@ -208,8 +212,8 @@ function EditPage() {
       await updatePage(pageId, {
         name: title,
         label: label || undefined,
-        album_id: albumId,
-        menu_id: menuId,
+        album_id: albumId === "" ? null : albumId,
+        menu_id: menuId === "" ? null : menuId,
         contents: contentToSave,
         content_type: "grapes",
         grapes_html: hasGrapesData ? grapesParts.grapes_html : undefined,
@@ -233,7 +237,7 @@ function EditPage() {
       if (!opts?.silent) toast.success(opts?.publish ? "Page published" : "Page updated successfully");
     } catch (error: any) {
       console.error(error);
-      toast.error(getPageSaveErrorMessage(error, "update"));
+      if (!opts?.silent) toast.error(getPageSaveErrorMessage(error, "update"));
     } finally {
       setLoading(false);
     }

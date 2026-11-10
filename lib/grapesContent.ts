@@ -71,6 +71,14 @@ export function sanitizeGrapesPublicHtml(html: string): string {
   out = out.replace(/<\/?head[^>]*>[\s\S]*?(<\/head>|$)/gi, "");
   out = out.replace(/<\/?body[^>]*>/gi, "");
 
+  // Editor-only notes (banner tips, etc.) must not appear on the live site.
+  out = out.replace(/<[^>]+data-cms-editor-only[^>]*>[\s\S]*?<\/[^>]+>/gi, "");
+  out = out.replace(/<[^>]+class="[^"]*\bcms-editor-only\b[^"]*"[^>]*>[\s\S]*?<\/[^>]+>/gi, "");
+  out = out.replace(
+    /\s*(?:Hero image|Sub-banner) above is managed in(?:\s|<[^>]+>)*?(?:Manage Banner)[\s\S]*?(?:Sub Banner\.?|<\/strong>\.?)/gi,
+    "",
+  );
+
   return out.trim();
 }
 

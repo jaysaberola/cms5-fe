@@ -67,7 +67,7 @@ export function buildCmsContactFormMarkup(options?: { title?: string; hint?: str
     <textarea id="cms_message" name="message" rows="5" required class="exec-input"></textarea>
   </div>
   ${preferredServices()}
-  <div class="exec-contact-recaptcha" data-cms-contact-recaptcha="1"></div>
+  <div class="exec-contact-recaptcha" data-cms-contact-recaptcha="1"><div data-cms-recaptcha-host="1"></div></div>
   <button type="submit" data-cms-contact-submit="1" class="exec-btn exec-btn--primary exec-btn--no-arrow">Send message</button>
 </form>`;
 }

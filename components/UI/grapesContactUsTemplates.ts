@@ -12,7 +12,7 @@ const OFFICE = {
 };
 
 function formCard(extraStyle = "") {
-  return `<div style="padding:28px;border-radius:24px;background:#fff;border:1px solid #e2e8f0;box-shadow:0 20px 44px rgba(15,23,42,.08);${extraStyle}">${buildCmsContactFormMarkup()}</div>`;
+  return `<div class="exec-contact-form-panel cms-contact-form-card" style="min-width:0;max-width:100%;overflow:visible;height:auto;padding:28px;border-radius:24px;background:#fff;border:1px solid #e2e8f0;box-shadow:0 20px 44px rgba(15,23,42,.08);${extraStyle}">${buildCmsContactFormMarkup()}</div>`;
 }
 
 function infoPanel(dark = false) {
@@ -44,7 +44,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
     thumb: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="split-indigo" style="padding:48px 20px;background:#fff;font-family:Inter,Segoe UI,sans-serif;">
-        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:.95fr 1.05fr;gap:20px;align-items:stretch;">
+        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:20px;align-items:start;">
           ${infoPanel(true)}
           ${formCard()}
         </div>
@@ -76,7 +76,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
             <p style="margin:0;color:#64748b;max-width:520px;">${OFFICE.address}</p>
           </div>
         </div>
-        <div style="max-width:1120px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:1fr 1.1fr;gap:20px;">
+        <div style="max-width:1120px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:start;">
           ${infoPanel(false)}
           ${formCard("box-shadow:none;border-radius:20px;")}
         </div>
@@ -91,10 +91,10 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
         <div style="max-width:1120px;margin:0 auto;">
           <h1 style="margin:0 0 8px;font-size:40px;text-align:center;color:#0f172a;">Contact ${OFFICE.company}</h1>
           <p style="margin:0 auto 28px;max-width:620px;text-align:center;color:#64748b;line-height:1.7;">Choose the channel that fits your request, then submit the inquiry form.</p>
-          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:24px;">
-            <div style="padding:20px;border-radius:18px;border:1px solid #e2e8f0;background:#f8fafc;"><strong>Address</strong><p style="margin:8px 0 0;color:#64748b;font-size:14px;line-height:1.6;">${OFFICE.address}</p></div>
-            <div style="padding:20px;border-radius:18px;border:1px solid #e2e8f0;background:#f8fafc;"><strong>Phone</strong><p style="margin:8px 0 0;color:#64748b;font-size:14px;">${OFFICE.phone}</p></div>
-            <div style="padding:20px;border-radius:18px;border:1px solid #e2e8f0;background:#f8fafc;"><strong>Email</strong><p style="margin:8px 0 0;color:#64748b;font-size:14px;">${OFFICE.email}</p></div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:24px;align-items:start;">
+            <div style="min-width:0;padding:20px;border-radius:18px;border:1px solid #e2e8f0;background:#f8fafc;"><strong>Address</strong><p style="margin:8px 0 0;color:#64748b;font-size:14px;line-height:1.6;">${OFFICE.address}</p></div>
+            <div style="min-width:0;padding:20px;border-radius:18px;border:1px solid #e2e8f0;background:#f8fafc;"><strong>Phone</strong><p style="margin:8px 0 0;color:#64748b;font-size:14px;">${OFFICE.phone}</p></div>
+            <div style="min-width:0;padding:20px;border-radius:18px;border:1px solid #e2e8f0;background:#f8fafc;"><strong>Email</strong><p style="margin:8px 0 0;color:#64748b;font-size:14px;">${OFFICE.email}</p></div>
           </div>
           ${formCard()}
         </div>
@@ -132,8 +132,8 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
     thumb: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="support" style="padding:48px 20px;background:#f0fdf4;font-family:Inter,Segoe UI,sans-serif;">
-        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start;">
-          <div>
+        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px;align-items:start;">
+          <div style="min-width:0;">
             <span style="display:inline-block;padding:6px 12px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:800;margin-bottom:12px;">Customer Care</span>
             <h1 style="margin:0 0 12px;font-size:38px;color:#14532d;">Need help with your service?</h1>
             <p style="margin:0 0 20px;color:#475569;line-height:1.75;">Our support team handles hosting, domains, billing, and technical questions. Include as much detail as you can so we can assist faster.</p>
@@ -149,14 +149,14 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
     thumb: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="teal" style="padding:56px 20px;background:#ecfeff;font-family:Inter,Segoe UI,sans-serif;">
-        <div style="max-width:1120px;margin:0 auto;border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1fr 1.15fr;background:#fff;border:1px solid #99f6e4;">
-          <div style="padding:32px;background:linear-gradient(180deg,#0f766e,#115e59);color:#fff;">
+        <div style="max-width:1120px;margin:0 auto;border-radius:28px;overflow:visible;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);background:#fff;border:1px solid #99f6e4;">
+          <div style="min-width:0;padding:32px;border-radius:28px 0 0 28px;background:linear-gradient(180deg,#0f766e,#115e59);color:#fff;">
             <h1 style="margin:0 0 12px;font-size:34px;">Contact Us</h1>
             <p style="margin:0 0 20px;color:#ccfbf1;line-height:1.7;">${OFFICE.company}</p>
             <p style="margin:0 0 8px;color:#99f6e4;">${OFFICE.phone}</p>
             <p style="margin:0;color:#99f6e4;">${OFFICE.email}</p>
           </div>
-          <div style="padding:28px;">${buildCmsContactFormMarkup({ title: "Request a callback", hint: "We typically respond within one business day." })}</div>
+          <div class="exec-contact-form-panel" style="min-width:0;overflow:visible;height:auto;padding:28px;border:0;border-radius:0 28px 28px 0;box-shadow:none;background:#fff;">${buildCmsContactFormMarkup({ title: "Request a callback", hint: "We typically respond within one business day." })}</div>
         </div>
       </div>`,
   },
@@ -171,9 +171,9 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
             <h1 style="margin:0 0 10px;font-size:40px;color:#9a3412;">Let's connect</h1>
             <p style="margin:0;color:#78716c;">Partnerships, quotes, and product questions welcome.</p>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start;">
             ${formCard("border-color:#fed7aa;")}
-            <div style="padding:28px;border-radius:24px;background:#ffedd5;border:1px solid #fdba74;">
+            <div style="min-width:0;padding:28px;border-radius:24px;background:#ffedd5;border:1px solid #fdba74;">
               <h3 style="margin:0 0 12px;color:#9a3412;">Office hours</h3>
               <p style="margin:0 0 16px;color:#78350f;line-height:1.7;">Monday – Friday<br/>8:00 AM – 5:00 PM (PHT)</p>
               <p style="margin:0;color:#78350f;font-size:14px;line-height:1.7;">${OFFICE.address}</p>
@@ -188,9 +188,9 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
     thumb: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=640&q=80",
     content: `
       <div class="public-contact cms-contact-page" data-cms-contact-page="1" data-cms-contact-template="sidebar-light" style="padding:48px 20px;background:#f1f5f9;font-family:Inter,Segoe UI,sans-serif;">
-        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start;">
-          <aside>${infoPanel(false)}</aside>
-          <main>${formCard()}</main>
+        <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;align-items:start;">
+          <aside style="min-width:0;">${infoPanel(false)}</aside>
+          <main style="min-width:0;">${formCard()}</main>
         </div>
       </div>`,
   },

@@ -73,10 +73,28 @@ body {
   transform: none !important;
 }
 
-/* Contact page blocks in canvas */
+/* Contact page blocks in canvas (mirrors public contact layout rules) */
 .exec-tpl.exec-contact .exec-contact-form-panel,
-.exec-tpl .exec-contact-form-panel {
+.exec-tpl .exec-contact-form-panel,
+.exec-tpl .cms-contact-form-card,
+.cms-contact-page .exec-contact-form-panel {
   min-width: 0;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.exec-tpl .exec-contact-recaptcha,
+.cms-contact-page .exec-contact-recaptcha {
+  width: auto;
+  max-width: 100%;
+  min-height: 78px;
+  height: auto !important;
+  max-height: none !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
 }
 
 .exec-tpl .exec-input:disabled {

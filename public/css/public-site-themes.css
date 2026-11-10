@@ -374,6 +374,12 @@ html[data-public-theme] .public-page-content .exec-contact .exec-preferred-grid 
 html[data-public-theme] .public-page-content.public-contact .exec-contact-recaptcha,
 html[data-public-theme] .public-page-content .exec-contact .exec-contact-recaptcha {
   color: var(--exec-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
 }
 
 /* ——— News listing & article pages ——— */

@@ -98,6 +98,52 @@ function bindPhoneInput(form: HTMLFormElement) {
   });
 }
 
+function unlockRecaptchaLayout(mount: HTMLElement) {
+  const clearSizeLocks = (el: HTMLElement | null) => {
+    if (!el) return;
+    el.style.removeProperty("height");
+    el.style.removeProperty("max-height");
+    el.style.removeProperty("overflow");
+    el.style.removeProperty("overflow-x");
+    el.style.removeProperty("overflow-y");
+    el.style.setProperty("height", "auto", "important");
+    el.style.setProperty("max-height", "none", "important");
+    el.style.setProperty("overflow", "visible", "important");
+  };
+
+  clearSizeLocks(mount);
+  clearSizeLocks(mount.querySelector<HTMLElement>("[data-cms-recaptcha-host]"));
+  clearSizeLocks(mount.querySelector<HTMLElement>(".g-recaptcha"));
+
+  const iframe = mount.querySelector("iframe");
+  if (iframe) {
+    iframe.style.removeProperty("max-width");
+    iframe.style.setProperty("display", "inline-block", "important");
+    // Let Google size the iframe; only unlock clipping from our wrappers.
+    const h = iframe.getBoundingClientRect().height || iframe.offsetHeight;
+    if (h > 0) {
+      mount.style.setProperty("min-height", `${Math.ceil(h)}px`, "important");
+    }
+  }
+
+  // Grapes sometimes saves fixed height/overflow on the form panel — unlock those too.
+  let parent: HTMLElement | null = mount.parentElement;
+  while (parent && parent !== document.body) {
+    if (
+      parent.classList.contains("exec-contact-form-panel") ||
+      parent.classList.contains("cms-wsi-contact-form") ||
+      parent.classList.contains("cms-contact-form-card")
+    ) {
+      parent.style.removeProperty("height");
+      parent.style.removeProperty("max-height");
+      parent.style.setProperty("overflow", "visible", "important");
+      parent.style.setProperty("height", "auto", "important");
+    }
+    if (parent.matches("form[data-cms-contact-form]")) break;
+    parent = parent.parentElement;
+  }
+}
+
 async function mountRecaptcha(form: HTMLFormElement, state: FormState, siteKey: string) {
   const mount = form.querySelector("[data-cms-contact-recaptcha]") as HTMLElement | null;
   if (!mount || mount.dataset.cmsRecaptchaMounted === "1") return;
@@ -111,7 +157,18 @@ async function mountRecaptcha(form: HTMLFormElement, state: FormState, siteKey: 
   try {
     await loadRecaptchaScript();
     if (!window.grecaptcha) return;
-    state.widgetId = window.grecaptcha.render(mount, {
+
+    unlockRecaptchaLayout(mount);
+
+    // Render into an inner host so wrappers never clip the Google iframe.
+    let host = mount.querySelector<HTMLElement>("[data-cms-recaptcha-host]");
+    if (!host) {
+      host = document.createElement("div");
+      host.setAttribute("data-cms-recaptcha-host", "1");
+      mount.replaceChildren(host);
+    }
+
+    state.widgetId = window.grecaptcha.render(host, {
       sitekey: siteKey,
       callback: (token) => {
         state.recaptchaToken = token;
@@ -124,6 +181,11 @@ async function mountRecaptcha(form: HTMLFormElement, state: FormState, siteKey: 
       },
     });
     mount.dataset.cmsRecaptchaMounted = "1";
+
+    // Google finishes sizing asynchronously (and error states are taller).
+    window.requestAnimationFrame(() => unlockRecaptchaLayout(mount));
+    window.setTimeout(() => unlockRecaptchaLayout(mount), 250);
+    window.setTimeout(() => unlockRecaptchaLayout(mount), 1000);
   } catch {
     mount.innerHTML =
       '<p style="margin:0;font-size:13px;color:#b45309;">Unable to load reCAPTCHA. Please refresh and try again.</p>';

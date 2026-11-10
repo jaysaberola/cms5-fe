@@ -891,6 +891,10 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
   align-items: start;
 }
 
+.exec-contact-layout > * {
+  min-width: 0;
+}
+
 @media (min-width: 992px) {
   .exec-contact-layout {
     grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
@@ -904,6 +908,7 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 .exec-contact-stack {
   display: grid;
   gap: 1rem;
+  min-width: 0;
 }
 
 .exec-contact-info {
@@ -979,11 +984,23 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 }
 
 .exec-contact-form-panel {
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+  box-sizing: border-box;
   padding: clamp(1.35rem, 3vw, 1.75rem);
   border: 1px solid var(--exec-border);
   border-radius: 16px;
   background: var(--exec-surface);
   box-shadow: 0 16px 40px color-mix(in srgb, var(--exec-bg, #000) 28%, transparent);
+}
+
+.exec-contact-form-panel .cms-wsi-contact-form,
+.exec-tpl .cms-wsi-contact-form {
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .exec-contact .exec-card {
@@ -1135,11 +1152,41 @@ html.exec-anim-armed .exec-tpl .exec-reveal.is-in {
 }
 
 .exec-contact-recaptcha {
-  margin-bottom: 1rem;
-  padding: 0.85rem;
-  border-radius: 10px;
-  border: 1px solid var(--exec-border);
-  background: var(--exec-surface-2);
+  display: block;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 78px;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+.exec-contact-recaptcha [data-cms-recaptcha-host],
+.exec-contact-recaptcha .g-recaptcha {
+  display: inline-block;
+  width: auto;
+  max-width: none;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  line-height: 0;
+}
+
+.exec-contact-recaptcha iframe {
+  display: inline-block;
+  width: 304px;
+  max-width: none !important;
+  height: auto;
+  min-height: 78px;
+  border: 0;
+  overflow: hidden !important;
 }
 
 .exec-btn--no-arrow::after {
