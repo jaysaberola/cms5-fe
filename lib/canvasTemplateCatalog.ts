@@ -37,8 +37,17 @@ export function getCanvas7IntroImageUrl(relativePath: string) {
 }
 
 export function htmlNeedsCanvas7Assets(html: string) {
+  const source = String(html || "");
+  // Contact Us templates must never pull Canvas 7 CSS — it hides .menu-link span globally.
+  if (
+    /data-cms-contact-page|data-cms-contact-template|cms-contact-page|id=["']wf-contact["']/i.test(
+      source,
+    )
+  ) {
+    return false;
+  }
   return /data-cms-site-template\s*=\s*["']?1|canvas7-onepage|data-cms-template\s*=\s*["']onepage-/.test(
-    String(html || "")
+    source,
   );
 }
 

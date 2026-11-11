@@ -63,7 +63,7 @@ const CONTACT_TEMPLATES: ContactTemplateDef[] = [
     label: "01 · Executra Dark",
     thumb: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=640&q=80",
     content: `
-      <div class="public-contact exec-tpl exec-contact cms-contact-page cms-contact-page--dark" data-cms-contact-page="1" data-cms-contact-template="executra-dark" data-cms-site-template="1" style="padding:0 0 4rem;background:#050505;color:rgba(255,255,255,0.72);font-family:Outfit,Inter,Segoe UI,sans-serif;">
+      <div class="public-contact exec-tpl exec-contact cms-contact-page cms-contact-page--dark" data-cms-contact-page="1" data-cms-contact-template="executra-dark" style="padding:0 0 4rem;background:#050505;color:rgba(255,255,255,0.72);font-family:Outfit,Inter,Segoe UI,sans-serif;">
         <div class="exec-contact-hero cms-contact-hero" style="position:relative;overflow:hidden;padding:clamp(3rem,8vw,5rem) 1.25rem clamp(2rem,5vw,3rem);border-bottom:1px solid rgba(255,255,255,0.08);text-align:center;background:radial-gradient(ellipse 80% 60% at 100% 0%,rgba(235,81,36,0.14) 0%,transparent 55%),#050505;">
           <div style="max-width:720px;margin:0 auto;">
             <p class="cms-contact-hero-eyebrow" style="margin:0 0 0.75rem;font-size:0.6875rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.45);">Contact Us</p>

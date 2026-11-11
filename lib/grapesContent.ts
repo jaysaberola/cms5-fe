@@ -79,6 +79,17 @@ export function sanitizeGrapesPublicHtml(html: string): string {
     "",
   );
 
+  // Canvas 7 stylesheets leaked into page HTML break the public site header nav
+  // (.menu-link span { display:none } hides Home / About / News / Contact labels).
+  out = out.replace(
+    /<link\b[^>]*href=["'][^"']*(?:Canvas(?:%20|\s)?7(?:%20|\s)?Files|canvas7|one-page\/onepage\.css|css\/font-icons\.css|css\/swiper\.css|css\/custom\.css)[^"']*["'][^>]*>/gi,
+    "",
+  );
+  out = out.replace(
+    /<script\b[^>]*>\s*document\.documentElement\.classList\.add\(["']stretched["']\)[\s\S]*?<\/script>/gi,
+    "",
+  );
+
   return out.trim();
 }
 

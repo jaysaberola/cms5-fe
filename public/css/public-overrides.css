@@ -1121,6 +1121,23 @@ html.biz-anim-armed .public-page-content .wsi-reveal.is-visible {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
+/* Protect public header nav from Canvas 7 global .menu-link span { display:none } */
+.public-site-shell .public-site-header .menu-link > span,
+.public-site-shell .public-site-nav .menu-link > span,
+.public-site-header .nav-list .menu-link > span {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: static !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
 .public-site-shell--executra .nav-list :global(.menu-link) {
   color: var(--pub-nav-link, rgba(255, 255, 255, 0.78)) !important;
 }

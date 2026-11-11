@@ -168,7 +168,7 @@
 }
 
 .public-site-header .public-site-nav :is(.menu-link, [class*="menu-link"]) {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   padding: 9px 14px;
   border-radius: 999px;
@@ -176,7 +176,28 @@
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 600;
-  white-space: nowrap;
+  white-space: nowrap !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+/* Canvas 7 .menu-link span { display:none } must never hide CMS nav labels */
+.public-site-header .menu-link span,
+.public-site-header .public-site-nav .menu-link span,
+.public-site-shell .public-site-header .menu-link > span {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  overflow: visible !important;
+  position: static !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
 }
 
 .public-site-header .public-site-nav :is(.menu-link, [class*="menu-link"]):hover {
