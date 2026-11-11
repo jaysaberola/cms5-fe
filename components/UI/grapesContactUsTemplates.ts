@@ -29,9 +29,9 @@ function darkFormCard() {
 
 function darkInfoCard(title: string, bodyHtml: string) {
   return `
-    <div class="exec-card" style="min-width:0;padding:1.35rem 1.4rem;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:#121212;">
-      <h3 style="margin:0 0 0.65rem;color:#fff;font-size:1.125rem;font-weight:500;">${title}</h3>
-      <div style="margin:0;color:rgba(255,255,255,0.62);line-height:1.65;font-size:0.9375rem;">${bodyHtml}</div>
+    <div class="exec-card cms-contact-info-card" style="min-width:0;min-height:0;height:auto;padding:1.35rem 1.4rem;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:#121212;">
+      <h3 class="cms-contact-info-title" style="margin:0 0 0.65rem;color:#fff;font-size:1.125rem;font-weight:500;">${title}</h3>
+      <div class="cms-contact-info-body" style="margin:0;color:rgba(255,255,255,0.62);line-height:1.65;font-size:0.9375rem;">${bodyHtml}</div>
     </div>`;
 }
 

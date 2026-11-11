@@ -561,11 +561,17 @@ html[data-public-theme="light"] .public-site-shell--executra .public-page-conten
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: #fff"],
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:#ffffff"],
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: #ffffff"],
-html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: rgb(255, 255, 255)"] {
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:rgb(255, 255, 255)"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: rgb(255, 255, 255)"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:rgb(255,255,255)"] {
   color: var(--exec-heading, #0f172a) !important;
 }
 
-html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:rgba(255, 255, 255"] {
+/* Grapes often saves rgba without spaces — both forms must remapped for light mode */
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:rgba(255, 255, 255"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: rgba(255, 255, 255"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color:rgba(255,255,255"],
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content [style*="color: rgba(255,255,255"] {
   color: var(--exec-text, #334155) !important;
 }
 

@@ -39,6 +39,94 @@
   gap: 1.25rem !important;
 }
 
+/* Contact info cards — don't force tall empty-looking boxes */
+.public-page-content.public-contact .exec-card,
+.public-page-content #wf-contact .exec-card,
+.public-page-content .cms-contact-page .exec-card {
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.public-page-content.public-contact .exec-card:has(form),
+.public-page-content #wf-contact .exec-card:has(form),
+.public-page-content.public-contact .exec-contact-form-panel,
+.public-page-content #wf-contact .exec-contact-form-panel {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/*
+ * Light mode: Grapes dark templates keep inline white/rgba text.
+ * Remap contact cards + form labels so Address / phone / links stay readable.
+ */
+html[data-public-theme="light"] .public-page-content.public-contact,
+html[data-public-theme="light"] .public-page-content #wf-contact {
+  color: #334155 !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-contact-form-panel,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-contact-form-panel {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card h2,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card h3,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-form-title,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card h2,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card h3,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-form-title,
+html[data-public-theme="light"] .public-page-content #wf-contact form h2,
+html[data-public-theme="light"] .public-page-content #wf-contact form h3 {
+  color: #0f172a !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card p,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card div,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card span,
+html[data-public-theme="light"] .public-page-content.public-contact .exec-label,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card p,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card div,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card span:not(.exec-label-required),
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-label {
+  color: #475569 !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-card a,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-card a,
+html[data-public-theme="light"] .public-page-content.public-contact a[href^="tel"],
+html[data-public-theme="light"] .public-page-content.public-contact a[href^="mailto"],
+html[data-public-theme="light"] .public-page-content #wf-contact a[href^="tel"],
+html[data-public-theme="light"] .public-page-content #wf-contact a[href^="mailto"] {
+  color: #c2410c !important;
+}
+
+html[data-public-theme="light"] .public-page-content.public-contact .exec-label-required,
+html[data-public-theme="light"] .public-page-content #wf-contact .exec-label-required {
+  color: #ea580c !important;
+}
+
+/* Class hooks for remapped Grapes contact info (works even with compact rgba inline styles) */
+html[data-public-theme="light"] .public-page-content .cms-contact-info-title {
+  color: #0f172a !important;
+}
+
+html[data-public-theme="light"] .public-page-content .cms-contact-info-body,
+html[data-public-theme="light"] .public-page-content .cms-contact-info-body a {
+  color: #475569 !important;
+}
+
+html[data-public-theme="light"] .public-page-content .cms-contact-info-body a[href^="tel"],
+html[data-public-theme="light"] .public-page-content .cms-contact-info-body a[href^="mailto"] {
+  color: #c2410c !important;
+}
+
 .public-page-content.public-contact .exec-contact-recaptcha,
 .public-page-content .exec-contact .exec-contact-recaptcha,
 .public-page-content.public-contact [data-cms-contact-recaptcha],
