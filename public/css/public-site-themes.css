@@ -625,6 +625,21 @@ html[data-public-theme="light"] .public-site-shell--executra .public-page-conten
   color: var(--exec-text) !important;
 }
 
+/* Dark contact heroes keep light text (must win over the remaps above) */
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact-hero,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .cms-contact-hero,
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact-hero :is(h1, h2, h3, h4, h5, h6, p, span, div, .exec-h2, .exec-lead, .exec-eyebrow),
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .cms-contact-hero :is(h1, h2, h3, h4, h5, h6, p, span, div, .exec-h2, .exec-lead, .exec-eyebrow) {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-contact-hero :is(p, .exec-lead, .exec-eyebrow),
+html[data-public-theme="light"] .public-site-shell--executra .public-page-content .cms-contact-hero :is(p, .exec-lead, .exec-eyebrow) {
+  color: rgba(255, 255, 255, 0.65) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.65) !important;
+}
+
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-tab strong,
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-card h3,
 html[data-public-theme="light"] .public-site-shell--executra .public-page-content .exec-tpl .exec-step h3 {

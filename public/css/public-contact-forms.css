@@ -112,6 +112,57 @@ html[data-public-theme="light"] .public-page-content #wf-contact .exec-label-req
   color: #ea580c !important;
 }
 
+/*
+ * Contact Us dark hero must stay readable in light mode.
+ * Global light remaps turn #fff headings navy while the banner stays black.
+ */
+html[data-public-theme="light"] .public-page-content .exec-contact-hero,
+html[data-public-theme="light"] .public-page-content .cms-contact-hero,
+html[data-public-theme="light"] .public-page-content [data-cms-contact-template="executra-dark"] .exec-contact-hero,
+html[data-public-theme="light"] .public-page-content .cms-contact-page--dark .exec-contact-hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(235, 81, 36, 0.14) 0%, transparent 55%),
+    #050505 !important;
+  color: #fff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-public-theme="light"] .public-page-content .exec-contact-hero :is(h1, h2, h3, .exec-h2, .cms-contact-hero-title),
+html[data-public-theme="light"] .public-page-content .cms-contact-hero :is(h1, h2, h3, .exec-h2, .cms-contact-hero-title),
+html[data-public-theme="light"] .public-page-content .cms-contact-page--dark .exec-contact-hero :is(h1, h2, h3, .exec-h2),
+html[data-public-theme="light"] .public-page-content .exec-contact-hero [style*="color:#fff"],
+html[data-public-theme="light"] .public-page-content .exec-contact-hero [style*="color: #fff"],
+html[data-public-theme="light"] .public-page-content .cms-contact-hero [style*="color:#fff"],
+html[data-public-theme="light"] .public-page-content .cms-contact-hero [style*="color: #fff"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html[data-public-theme="light"] .public-page-content .exec-contact-hero :is(p, .exec-lead, .exec-eyebrow, .cms-contact-hero-eyebrow, .cms-contact-hero-lead),
+html[data-public-theme="light"] .public-page-content .cms-contact-hero :is(p, .exec-lead, .exec-eyebrow, .cms-contact-hero-eyebrow, .cms-contact-hero-lead),
+html[data-public-theme="light"] .public-page-content .cms-contact-page--dark .exec-contact-hero :is(p, .exec-lead, .exec-eyebrow),
+html[data-public-theme="light"] .public-page-content .exec-contact-hero [style*="color:rgba(255"],
+html[data-public-theme="light"] .public-page-content .exec-contact-hero [style*="color: rgba(255"],
+html[data-public-theme="light"] .public-page-content .cms-contact-hero [style*="color:rgba(255"],
+html[data-public-theme="light"] .public-page-content .cms-contact-hero [style*="color: rgba(255"] {
+  color: rgba(255, 255, 255, 0.65) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* Ensure site topbar stays above contact hero overlays */
+.public-site-shell--executra .public-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.public-page-content.public-contact .exec-contact-hero,
+.public-page-content .cms-contact-page--dark .exec-contact-hero,
+.public-page-content .cms-contact-hero {
+  position: relative;
+  z-index: 0;
+}
+
 /* Class hooks for remapped Grapes contact info (works even with compact rgba inline styles) */
 html[data-public-theme="light"] .public-page-content .cms-contact-info-title {
   color: #0f172a !important;
